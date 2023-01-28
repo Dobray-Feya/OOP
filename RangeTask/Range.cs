@@ -8,5 +8,7 @@ namespace RangeTask
 {
     internal class Range
     {
+        public double from;
+        public int to;
     }
 }
