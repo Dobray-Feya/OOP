@@ -1,37 +1,42 @@
-﻿namespace Range
+﻿using System.Runtime.Serialization.Formatters;
+
+namespace RangeTask
 {
     public class Program
     {
         static void Main(string[] args)
         {
-            double x11 = 300;
-            double x12 = -100;
+            // Часть 1
+            double x1 = -5.0;
+            double x2 = 0.0;
+            double x3 = 3.0;
+            double x4 = 5.0;
 
-            double x21 = 300;
-            double x22 = 200;
+            Range[] rangesArray =
+                { new Range(x1, x2),
+                  new Range(x2, x3),
+                  new Range(x3, x4),
+                  new Range(x2, x4),
+                  new Range(x1, x3),
+                  new Range(x1, x4) };
 
-            Range range1 = new Range(x11, x12);
-            Range range2 = new Range(x21, x22);
+            Console.WriteLine("Длина отрезка:");
+            for (int i = 0; i < rangesArray.Length; i++)
+            {
+                Console.WriteLine($"[{rangesArray[i].From}, {rangesArray[i].To}] равна {rangesArray[i].GetLength()}");
+            }
 
-            Console.WriteLine($"Длина отрезка 1 равна {range1.GetLength()}.");
-            Console.WriteLine($"Длина отрезка 2 равна {range2.GetLength()}.");
+            Console.WriteLine();
 
-            if (range1.IsInside(range2.From) && range1.IsInside(range2.To))
+            double point = 1.5;
+            Console.WriteLine($"Принадлежит точка {point} отрезку?");
+
+            for (int i = 0; i < rangesArray.Length; i++)
             {
-                Console.WriteLine("Отрезок 2 лежит внутри отрезка 1.");
+                Console.WriteLine($"[{rangesArray[i].From}, {rangesArray[i].To}] — {rangesArray[i].IsInside(point)}");
             }
-            else if (range2.IsInside(range1.From) && range2.IsInside(range1.To))
-            {
-                Console.WriteLine("Отрезок 1 лежит внутри отрезка 2.");
-            }
-            else if (range2.IsInside(range1.From) || range2.IsInside(range1.To))
-            {
-                Console.WriteLine("Отрезки пересекаются");
-            }
-            else
-            {
-                Console.WriteLine("Отрезки не пересекаются");
-            }
+
+            // Часть 2
         }
     }
 }

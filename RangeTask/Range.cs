@@ -1,4 +1,4 @@
-﻿namespace Range
+﻿namespace RangeTask
 {
     internal class Range
     {
@@ -31,6 +31,25 @@
         public bool IsInside(double number)
         {
             return From <= number && number <= To;
+        }
+
+        public Range GetIntersectionWith(Range anotherRange)
+        {
+            if (this.From == anotherRange.From)
+            {
+                return new Range(this.From, Math.Min(this.To, anotherRange.To));
+            }
+
+            if (this.From < anotherRange.From)
+            {
+                return this.To > anotherRange.From 
+                    ? new Range(anotherRange.From, Math.Min(this.To, anotherRange.To)) 
+                    : null;
+            }
+
+            return this.From < anotherRange.To 
+                ? new Range(this.From, Math.Min(this.To, anotherRange.To)) 
+                : null;
         }
     }
 }
