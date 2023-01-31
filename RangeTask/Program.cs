@@ -1,7 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System.Runtime.Serialization.Formatters;
-
-namespace RangeTask
+﻿namespace Arkashova.RangeTask
 {
     public class Program
     {

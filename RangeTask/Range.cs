@@ -1,4 +1,4 @@
-﻿namespace RangeTask
+﻿namespace Arkashova.RangeTask
 {
     internal class Range
     {
