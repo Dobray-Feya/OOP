@@ -35,21 +35,52 @@
 
         public Range GetIntersectionWith(Range anotherRange)
         {
-            if (this.From == anotherRange.From)
+            if (this.IsInside(anotherRange.From))
+            {
+                return new Range(anotherRange.From, Math.Min(this.To, anotherRange.To));
+            }
+
+            if (anotherRange.IsInside(this.From))
             {
                 return new Range(this.From, Math.Min(this.To, anotherRange.To));
             }
 
-            if (this.From < anotherRange.From)
+            return null;
+        }
+
+        public Range[] GetUnionWith(Range anotherRange)
+        {
+            if (this.IsInside(anotherRange.From) || anotherRange.IsInside(this.From))
             {
-                return this.To > anotherRange.From 
-                    ? new Range(anotherRange.From, Math.Min(this.To, anotherRange.To)) 
-                    : null;
+                return new Range[] { new Range(Math.Min(this.From, anotherRange.From), Math.Max(this.To, anotherRange.To)) };
             }
 
-            return this.From < anotherRange.To 
-                ? new Range(this.From, Math.Min(this.To, anotherRange.To)) 
-                : null;
+            return new Range[] { this, anotherRange };
+        }
+
+        public Range[] GetDifferenceWith(Range anotherRange)
+        {
+            if ((anotherRange.From <= this.From) && (anotherRange.To >= this.To))
+            {
+                return null;
+            }
+
+            if ((anotherRange.From >= this.To) || (anotherRange.To <= this.From))
+            {
+                return new Range[] { this };
+            }
+
+            if ((anotherRange.From <= this.From) && (this.IsInside(anotherRange.To)))
+            {
+                return new Range[] { new Range(anotherRange.To, this.To) };
+            }
+
+            if ((anotherRange.To >= this.To) && (this.IsInside(anotherRange.From)))
+            {
+                return new Range[] { new Range(this.From, anotherRange.From) };
+            }
+
+            return new Range[] { new Range(this.From, anotherRange.From), new Range(anotherRange.To, this.To) };
         }
     }
 }
