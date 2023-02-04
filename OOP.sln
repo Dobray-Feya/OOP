@@ -5,7 +5,9 @@ VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arkashova.RangeTask", "RangeTask\Arkashova.RangeTask.csproj", "{52E1C071-027F-4A4A-84B5-6D7AB4435A4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCheatSheet", "MyCheatSheet\MyCheatSheet.csproj", "{B8B60899-4074-419B-822F-ED65C3F92A4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AboutClasses", "MyCheatSheet\AboutClasses.csproj", "{B8B60899-4074-419B-822F-ED65C3F92A4D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MyCheatSheets", "MyCheatSheets", "{1AAE353C-E01F-4D30-815D-1F023EA025C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +26,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B8B60899-4074-419B-822F-ED65C3F92A4D} = {1AAE353C-E01F-4D30-815D-1F023EA025C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4C0BBBBB-85EB-4056-BBD5-2FDDDB2EEAB5}

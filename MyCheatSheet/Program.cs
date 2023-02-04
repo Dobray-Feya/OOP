@@ -1,4 +1,4 @@
-﻿namespace MyCheatSheet
+﻿namespace AboutClasses
 {
     public class Contact
     {
