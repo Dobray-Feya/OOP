@@ -1,4 +1,6 @@
-﻿namespace Arkashova.RangeTask
+﻿using System;
+
+namespace Arkashova.RangeTask
 {
     internal class Range
     {
@@ -33,54 +35,54 @@
             return From <= number && number <= To;
         }
 
-        public Range GetIntersectionWith(Range anotherRange)
+        public Range? GetIntersection(Range range)
         {
-            if (this.IsInside(anotherRange.From))
-            {
-                return new Range(anotherRange.From, Math.Min(this.To, anotherRange.To));
-            }
-
-            if (anotherRange.IsInside(this.From))
-            {
-                return new Range(this.From, Math.Min(this.To, anotherRange.To));
-            }
-
-            return null;
-        }
-
-        public Range[] GetUnionWith(Range anotherRange)
-        {
-            if (this.IsInside(anotherRange.From) || anotherRange.IsInside(this.From))
-            {
-                return new Range[] { new Range(Math.Min(this.From, anotherRange.From), Math.Max(this.To, anotherRange.To)) };
-            }
-
-            return new Range[] { this, anotherRange };
-        }
-
-        public Range[] GetDifferenceWith(Range anotherRange)
-        {
-            if ((anotherRange.From <= this.From) && (anotherRange.To >= this.To))
+            if ((range.To <= From) || (range.From >= To))
             {
                 return null;
             }
 
-            if ((anotherRange.From >= this.To) || (anotherRange.To <= this.From))
+            return new Range(Math.Max(From, range.From), Math.Min(To, range.To));
+        }
+
+        public Range[] GetUnion(Range range)
+        {
+            if (range.To < From)
             {
-                return new Range[] { this };
+                return new Range[] { new Range(range.From, range.To), new Range(From, To) };
             }
 
-            if ((anotherRange.From <= this.From) && (this.IsInside(anotherRange.To)))
+            if (range.From > To)
             {
-                return new Range[] { new Range(anotherRange.To, this.To) };
+                return new Range[] { new Range(From, To), new Range(range.From, range.To) };
             }
 
-            if ((anotherRange.To >= this.To) && (this.IsInside(anotherRange.From)))
+            return new Range[] { new Range(Math.Min(From, range.From), Math.Max(To, range.To)) };
+        }
+
+        public Range[] GetDifference(Range range)
+        {
+            if ((range.From <= From) && (range.To >= To))
             {
-                return new Range[] { new Range(this.From, anotherRange.From) };
+                return Array.Empty<Range>();  // это пустой массив
             }
 
-            return new Range[] { new Range(this.From, anotherRange.From), new Range(anotherRange.To, this.To) };
+            if ((range.To <= From) || (range.From >= To))
+            {
+                return new Range[] { new Range(From, To) };
+            }
+
+            if ((range.From > From) && (range.To < To))
+            {
+                return new Range[] { new Range(From, range.From), new Range(range.To, To) };
+            }
+
+            if ((range.From > From) && (range.From < To) )
+            {
+                return new Range[] { new Range(From, range.From) };
+            }
+
+            return new Range[] { new Range(range.To, To) };
         }
     }
 }
