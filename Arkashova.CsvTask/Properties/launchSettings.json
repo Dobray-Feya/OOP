@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Arkashova.CsvTask": {
+      "commandName": "Project",
+      "commandLineArgs": "..\\\\..\\\\..\\\\data.csv ..\\\\..\\\\..\\\\data.html"
+    }
+  }
+}
