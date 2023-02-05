@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-
-namespace Arkashova.RangeTask
+﻿namespace Arkashova.RangeTask
 {
     public class Program
     {
