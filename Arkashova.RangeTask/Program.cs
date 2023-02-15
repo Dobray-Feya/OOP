@@ -23,19 +23,19 @@
             // Часть 1
 
             Console.WriteLine("Длина отрезка:");
-            foreach (Range item in ranges)
+
+            foreach (Range range in ranges)
             {
-                Console.WriteLine($"[{item.From}, {item.To}] равна {item.GetLength()}");
+                Console.WriteLine($"{range} равна {range.GetLength()}");
             }
 
-            Console.WriteLine();
-
             double point = 1.5;
+            Console.WriteLine();
             Console.WriteLine($"Принадлежит точка {point} отрезку?");
 
-            foreach (Range item in ranges)
+            foreach (Range range in ranges)
             {
-                Console.WriteLine($"[{item.From}, {item.To}] — {item.IsInside(point)}");
+                Console.WriteLine($"{range} — {range.IsInside(point)}");
             }
 
             Console.WriteLine();
@@ -43,14 +43,13 @@
             // Часть 2
 
             Range testRange = new Range(-1, 1);
+            Console.WriteLine($"Пересечение отрезка {testRange} с отрезками:");
 
-            Console.WriteLine($"Пересечение отрезка [{testRange.From}, {testRange.To}] с отрезками:");
-
-            foreach (Range item in ranges)
+            foreach (Range range in ranges)
             {
-                Console.Write($"[{item.From}, {item.To}] — ");
+                Console.Write($"{range} — ");
 
-                Range? intersection = item.GetIntersection(testRange);
+                Range? intersection = range.GetIntersection(testRange);
 
                 if (intersection == null)
                 {
@@ -58,35 +57,35 @@
                 }
                 else
                 {
-                    Console.WriteLine($"[{intersection.From}, {intersection.To}]");
+                    Console.WriteLine($"{intersection}");
                 }
             }
 
             Console.WriteLine();
-            Console.WriteLine($"Объединение отрезка [{testRange.From}, {testRange.To}] с отрезками:");
+            Console.WriteLine($"Объединение отрезка {testRange} с отрезками:");
 
-            foreach (Range item in ranges)
+            foreach (Range range in ranges)
             {
-                Console.Write($"[{item.From}, {item.To}] — ");
+                Console.Write($"{range} — ");
 
-                Range[] union = item.GetUnion(testRange);
+                Range[] union = range.GetUnion(testRange);
 
                 foreach (Range unionPiece in union)
                 {
-                    Console.Write($"[{unionPiece.From}, {unionPiece.To}] ");
+                    Console.Write($"{unionPiece} ");
                 }
 
                 Console.WriteLine();
             }
 
             Console.WriteLine();
-            Console.WriteLine($"Результат вычитания отрезка [{testRange.From}, {testRange.To}] из отрезков:");
+            Console.WriteLine($"Результат вычитания отрезка {testRange} из отрезков:");
 
-            foreach (Range item in ranges)
+            foreach (Range range in ranges)
             {
-                Console.Write($"[{item.From}, {item.To}] — ");
+                Console.Write($"{range} — ");
 
-                Range[] difference = item.GetDifference(testRange);
+                Range[] difference = range.GetDifference(testRange);
 
                 if (difference.Length == 0)
                 {
@@ -96,7 +95,7 @@
                 {
                     foreach (Range differencePiece in difference)
                     {
-                        Console.Write($"[{differencePiece.From}, {differencePiece.To}] ");
+                        Console.Write($"{differencePiece} ");
                     }
 
                     Console.WriteLine();

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Arkashova.RangeTask
+﻿namespace Arkashova.RangeTask
 {
     internal class Range
     {
@@ -67,22 +65,31 @@ namespace Arkashova.RangeTask
                 return Array.Empty<Range>();  // это пустой массив
             }
 
-            if ((range.To <= From) || (range.From >= To))
+            if ((range.From >= To) || (range.To <= From))
             {
                 return new Range[] { new Range(From, To) };
             }
 
             if ((range.From > From) && (range.To < To))
             {
-                return new Range[] { new Range(From, range.From), new Range(range.To, To) };
+                return new Range[]
+                {
+                    new Range(From, range.From),
+                    new Range(range.To, To)
+                };
             }
 
-            if ((range.From > From) && (range.From < To) )
+            if (range.From > From)
             {
                 return new Range[] { new Range(From, range.From) };
             }
 
             return new Range[] { new Range(range.To, To) };
+        }
+
+        public override string ToString()
+        {
+            return $"[{From}, {To}]";
         }
     }
 }
