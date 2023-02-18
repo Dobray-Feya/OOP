@@ -20,33 +20,36 @@ namespace Arkashova.CsvTask
                 return;
             }
 
-            if (ConvertCsvToHtml(args[0], args[1]))
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            Encoding encoding = Encoding.GetEncoding(1251); 
+
+            string sourceFileName = args[0];
+            string resultFileName = args[1];
+
+            try
             {
+                using StreamReader reader = new StreamReader(sourceFileName, encoding);
+                using StreamWriter writer = new StreamWriter(resultFileName, false, encoding);
+
+                ConvertCsvToHtml(reader, writer, encoding);
+
                 Console.WriteLine("Конвертация завершена.");
+                Console.WriteLine($"Исходный CSV-файл: {Path.GetFullPath(sourceFileName)}.");
+                Console.WriteLine($"Итоговый HTML-файл: {Path.GetFullPath(resultFileName)}.");
             }
-            else
+            catch (Exception e)
             {
-                Console.WriteLine("Конвертация прервана.");
+                Console.WriteLine($"Произошла ошибка. Конвертация прервана.");
+                Console.WriteLine("Полное описание ошибки:");
+                Console.WriteLine(e);
             }
         }
 
-        public static bool ConvertCsvToHtml(string sourceFileName, string resultFileName)
+        private static void ConvertCsvToHtml(StreamReader reader, StreamWriter writer, Encoding encoding)
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Encoding targetEncoding = Encoding.GetEncoding(1251);
+            WriteHtmlHeaderToFile(writer, encoding);
 
-            using StreamReader reader = new StreamReader(sourceFileName, targetEncoding);
-            using StreamWriter writer = new StreamWriter(resultFileName, false, targetEncoding);
-
-            writer.WriteLine("<!DOCTYPE html>");
-            writer.WriteLine("<html>");
-            writer.WriteLine("<head>");
-            writer.WriteLine("<meta charset = " + targetEncoding.WebName + ">");
-            writer.WriteLine("</head>");
-            writer.WriteLine("<body>");
-            writer.WriteLine("<table border=\"1\">");
-
-            string currentLine;
+            string? currentLine;
 
             while ((currentLine = reader.ReadLine()) != null)
             {
@@ -54,100 +57,120 @@ namespace Arkashova.CsvTask
 
                 while (quotesCount % 2 == 1)
                 {
-                    string nextLine = reader.ReadLine();
+                    string? nextLine = reader.ReadLine();
+
+                    if (nextLine == null)
+                    { 
+                        break;
+                    }
 
                     quotesCount += GetQuotesCount(nextLine);
-
                     currentLine += "\r" + nextLine;
                 }
 
-                writer.Write("<tr>");
-
-                int currentLineLength = currentLine.Length;
-                int beginCellIndex = 0;
-                int endCellIndex;
-                int nextCellBeginIndex;
-
-                while (beginCellIndex < currentLineLength)
-                {
-                    writer.Write("<td>");
-
-                    if (currentLine[beginCellIndex] == ',')
-                    {
-                        endCellIndex = beginCellIndex - 1;  // need to avoid to write symbol ','
-                                                            // in the end of this function
-                        nextCellBeginIndex = beginCellIndex + 1;
-                    }
-                    else if (currentLine[beginCellIndex] == '"')
-                    {
-                        beginCellIndex++;
-                        endCellIndex = GetClosingQuoteIndex(currentLine, beginCellIndex) - 1;
-                        nextCellBeginIndex = endCellIndex + 3;
-
-                        if ((endCellIndex + 2 < currentLineLength) && (currentLine[endCellIndex + 2] != ','))
-                        {
-                            Console.WriteLine("Неверный формат исходного CSV файла в строке:");
-                            Console.WriteLine(currentLine);
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        int endCommaIndex = currentLine.IndexOf(",", beginCellIndex);
-                        endCellIndex = (endCommaIndex == -1) ? currentLineLength - 1 : endCommaIndex - 1;
-                        nextCellBeginIndex = endCellIndex + 2;
-                    }
-
-                    bool isQuoteIndexOdd = true;
-
-                    string convertedSymbol;
-
-                    for (int i = beginCellIndex; i <= endCellIndex; i++)
-                    {
-                        switch (currentLine[i])
-                        {
-                            case '<':
-                                convertedSymbol = "&lt;";
-                                break;
-                            case '>':
-                                convertedSymbol = "&gt;";
-                                break;
-                            case '&':
-                                convertedSymbol = "&amp;";
-                                break;
-                            case '\r':
-                                convertedSymbol = "<br/>";
-                                break;
-                            case '"':
-                                convertedSymbol = isQuoteIndexOdd ? "\"" : "";
-                                isQuoteIndexOdd = !isQuoteIndexOdd;
-                                break;
-                            default:
-                                convertedSymbol = currentLine[i].ToString();
-                                break;
-                        }
-
-                        writer.Write(convertedSymbol);
-                    }
-
-                    writer.Write("</td>");
-
-                    if ((nextCellBeginIndex == currentLineLength) && (currentLine[currentLineLength - 1] == ','))
-                    {
-                        writer.Write("<td></td>");
-                    }
-
-                    beginCellIndex = nextCellBeginIndex;
-                }
-
-                writer.WriteLine("</tr>");
+                WriteHtmlLineToFile(currentLine, writer);
             }
 
+            WriteHtmlFooterToFile(writer);
+        }
+
+        private static void WriteHtmlHeaderToFile(StreamWriter writer, Encoding encoding)
+        {
+            writer.WriteLine("<!DOCTYPE html>");
+            writer.WriteLine("<html>");
+            writer.WriteLine("<head>");
+            writer.WriteLine($"<meta charset=\"{encoding.WebName}\">");
+            writer.WriteLine("</head>");
+            writer.WriteLine("<body>");
+            writer.WriteLine("<table border=\"1\">");
+        }
+
+        private static void WriteHtmlFooterToFile(StreamWriter writer)
+        {
             writer.WriteLine("</table>");
             writer.WriteLine("</body>");
             writer.WriteLine("</html>");
+        }
 
-            return true;
+        private static void WriteHtmlLineToFile(string currentLine, StreamWriter writer)
+        {
+            writer.Write("<tr>");
+
+            int beginCellIndex = 0;
+            int endCellIndex;
+            int nextCellBeginIndex;
+
+            while (beginCellIndex < currentLine.Length)
+            {
+                writer.Write("<td>");
+
+                if (currentLine[beginCellIndex] == ',')
+                {
+                    endCellIndex = beginCellIndex - 1;
+                    nextCellBeginIndex = beginCellIndex + 1;
+                }
+                else if (currentLine[beginCellIndex] == '"')
+                {
+                    beginCellIndex++;
+                    endCellIndex = GetClosingQuoteIndex(currentLine, beginCellIndex) - 1;
+                    nextCellBeginIndex = endCellIndex + 3;
+
+                    // Выявляется неверный формат строки, когда в кавычки взято не все содержимое ячейки, например, "абс"d
+                    if ((endCellIndex + 2 < currentLine.Length) && (currentLine[endCellIndex + 2] != ','))
+                     {
+                         throw new ArgumentException("Неверный формат исходного CSV-файла в строке:", currentLine); 
+                     }
+                }
+                else
+                {
+                    int endCommaIndex = currentLine.IndexOf(",", beginCellIndex);
+                    endCellIndex = (endCommaIndex == -1) ? currentLine.Length - 1 : endCommaIndex - 1;
+                    nextCellBeginIndex = endCellIndex + 2;
+                }
+
+                bool isQuoteIndexOdd = true;
+
+                string convertedSymbol;
+
+                for (int i = beginCellIndex; i <= endCellIndex; i++)
+                {
+                    switch (currentLine[i])
+                    {
+                        case '<':
+                            convertedSymbol = "&lt;";
+                            break;
+                        case '>':
+                            convertedSymbol = "&gt;";
+                            break;
+                        case '&':
+                            convertedSymbol = "&amp;";
+                            break;
+                        case '\r':
+                            convertedSymbol = "<br/>";
+                            break;
+                        case '"':
+                            convertedSymbol = isQuoteIndexOdd ? "\"" : "";
+                            isQuoteIndexOdd = !isQuoteIndexOdd;
+                            break;
+                        default:
+                            convertedSymbol = currentLine[i].ToString();
+                            break;
+                    }
+
+                    writer.Write(convertedSymbol);
+                }
+
+                writer.Write("</td>");
+
+                if ((nextCellBeginIndex == currentLine.Length) && (currentLine[currentLine.Length - 1] == ','))
+                {
+                    writer.Write("<td></td>");
+                }
+
+                beginCellIndex = nextCellBeginIndex;
+            }
+
+            writer.WriteLine("</tr>");
         }
 
         private static int GetQuotesCount(string line)
