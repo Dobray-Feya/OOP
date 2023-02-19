@@ -215,7 +215,7 @@ namespace Arkashova.VectorTask
 
         public double? GetComponent(int index)
         {
-            if (index >= 0 && index < size && size > 0)
+            if (index >= 0 && index < size)
             {
                 return components[index];
             }
@@ -224,10 +224,9 @@ namespace Arkashova.VectorTask
             {
                 Console.WriteLine($"Предупреждение: Не удалось получить компоненту {index} вектора {this}, т.к. вектор не содержит компонент.");
             }
-            
-            if (index > size)
+            else if (index >= size)
             {
-                Console.WriteLine($"Предупреждение: Нельзя получить компоненту {index} вектора {this}, т.к. размерность вектора {size} меньше {index}");
+                Console.WriteLine($"Предупреждение: Нельзя получить компоненту {index} вектора {this}. Индекс компоненты должен быть от 0 до {size - 1}.");
             }
             else
             {
@@ -248,10 +247,9 @@ namespace Arkashova.VectorTask
             {
                 Console.WriteLine($"Предупреждение: Не удалось задать значение компоненте {index} вектора {this}, т.к. вектор не содержит компонент.");
             }
-
-            if (index > size)
+            else if (index > size)
             {
-                Console.WriteLine($"Предупреждение: Нельзя задать значение компоненте {index} вектора {this}, т.к. размерность вектора {size} меньше {index}");
+                Console.WriteLine($"Предупреждение: Нельзя задать значение компоненте {index} вектора {this}. Индекс компоненты должен быть от 0 до {size - 1}.");
             }
             else
             {
