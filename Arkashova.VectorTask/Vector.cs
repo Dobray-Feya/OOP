@@ -1,82 +1,101 @@
-﻿namespace Arkashova.VectorTask
-{
-    internal class Vector
-    {
-        public int Size { get; set; }
+﻿using System.Numerics;
+using System.Runtime.Intrinsics;
 
-        double[] Components { get; set; } // use "?"
+namespace Arkashova.VectorTask
+{
+    public class Vector
+    {
+        private int size;
+        private double[] components;
 
         public Vector(int size)
         {
-            Size = size;
-            Components = new double[Size];
-
-            //if (size < 0)
-            //{ нужно исключение}
-
-            /* if (size == 0)
+            if (size < 0)
             {
-                Components = Array.Empty<double>();
-            }*/
+                throw new ArgumentException($"Разменость вектора должна больше нуля. Указана резмерность: {size}.");
+            }
 
-            for (int i = 0; i < Size; i++)
+            this.size = size;
+            components = new double[size];
+
+            for (int i = 0; i < this.size; i++)
             {
-                Components[i] = 0;
+                components[i] = 0;
             }
         }
 
         public Vector(Vector vector)
         {
-            Size = vector.Size;
-            Components = new double[Size];
-
-            for (int i = 0; i < Size; i++)  // Components = vector.Components; - wrong! creates link, not araay
+            if (vector is null)
             {
-                Components[i] = vector.Components[i];
+                throw new ArgumentNullException($"Нельзя создать вектор путем копирования null.");
+            }
+
+            size = vector.size;
+            components = new double[size];
+
+            for (int i = 0; i < size; i++)
+            {
+                components[i] = vector.components[i];
             }
         }
 
         public Vector(double[] numbers)
         {
-            Size = numbers.Length;
-            Components = new double[Size];
-
-            for (int i = 0; i < Size; i++)
+            if (numbers is null)
             {
-                Components[i] = numbers[i];
+                throw new ArgumentNullException($"Нельзя создать вектор из массива null.");
+            }
+
+            size = numbers.Length;
+            components = new double[size];
+
+            for (int i = 0; i < size; i++)
+            {
+                components[i] = numbers[i];
             }
         }
 
         public Vector(int size, double[] numbers)
         {
-            Size = size;
-            Components = new double[Size];
-
-            for (int i = 0; i < Size && i < numbers.Length; i++)
+            if (size < 0)
             {
-                Components[i] = numbers[i];
+                throw new ArgumentException($"Разменость вектора должна больше нуля. Указана резмерность: {size}.");
             }
 
-            for (int i = numbers.Length; i < Size; i++)
+            if (numbers is null)
             {
-                Components[i] = 0;
+                throw new ArgumentNullException($"Нельзя создать вектор из массива null.");
+            }
+
+            this.size = size;
+            components = new double[size];
+
+            for (int i = 0; i < size && i < numbers.Length; i++)
+            {
+                components[i] = numbers[i];
+            }
+
+            for (int i = numbers.Length; i < size; i++)
+            {
+                components[i] = 0;
             }
         }
 
         public int GetSize()
         {
-            return Size;
+            return size;
         }
 
         public override string ToString()
         {
-            if (Components == null)
+            if (components is null)
             {
                 return String.Empty;
             }
             else
             {
-                return "{" + String.Join(", ", Components) + "}";
+                return "{" + String.Join(", ", components) + "}";
             }
         }
 
@@ -94,14 +113,14 @@
 
             Vector vector = (Vector)obj;
 
-            if (vector.Size != Size)
+            if (vector.size != size)
             {
                 return false;
             }
 
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < size; i++)
             {
-                if (vector.Components[i] != Components[i])
+                if (vector.components[i] != components[i])
                 {
                     return false;
                 }
@@ -114,11 +133,11 @@
         {
             const int prime = 37;
 
-            int hash = prime + Size;
+            int hash = prime + size;
 
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < size; i++)
             {
-                hash = hash * prime + Components[i].GetHashCode();
+                hash = hash * prime + components[i].GetHashCode();
             }
 
             return hash;
@@ -126,45 +145,55 @@
 
         public Vector Add(Vector vector)
         {
-            int maxSize = Math.Max(Size, vector.Size);
+            if (vector is null)
+            {
+                return new Vector(this);
+            }
 
-            Vector vector1 = new Vector(maxSize, Components);
-            Vector vector2 = new Vector(maxSize, vector.Components);
+            int maxSize = Math.Max(size, vector.size);
 
-            double[] resultComponents = new double[maxSize];
+            Vector vector1 = new Vector(maxSize, components);
+            Vector vector2 = new Vector(maxSize, vector.components);
+
+            double[] resultcomponents = new double[maxSize];
 
             for (int i = 0; i < maxSize; i++)
             {
-                resultComponents[i] = vector1.Components[i] + vector2.Components[i];
+                resultcomponents[i] = vector1.components[i] + vector2.components[i];
             }
 
-            return new Vector(resultComponents);
+            return new Vector(resultcomponents);
         }
 
         public Vector Subtract(Vector vector)
         {
-            int maxSize = Math.Max(Size, vector.Size);
+            if (vector is null)
+            {
+                return new Vector(this);
+            }
 
-            Vector vector1 = new Vector(maxSize, this.Components);
-            Vector vector2 = new Vector(maxSize, vector.Components);
+            int maxSize = Math.Max(size, vector.size);
 
-            double[] resultComponents = new double[maxSize];
+            Vector vector1 = new Vector(maxSize, this.components);
+            Vector vector2 = new Vector(maxSize, vector.components);
+
+            double[] resultcomponents = new double[maxSize];
 
             for (int i = 0; i < maxSize; i++)
             {
-                resultComponents[i] = vector1.Components[i] - vector2.Components[i];
+                resultcomponents[i] = vector1.components[i] - vector2.components[i];
             }
 
-            return new Vector(resultComponents);
+            return new Vector(resultcomponents);
         }
 
         public Vector MultiplyByScalar(double scalar)
         {
             Vector resultVector = new Vector(this);
 
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < size; i++)
             {
-                resultVector.Components[i] *= scalar;
+                resultVector.components[i] *= scalar;
             }
 
             return resultVector;
@@ -172,16 +201,16 @@
 
         public Vector Reverse()
         {
-            return this.MultiplyByScalar(-1);
+            return new Vector(this.MultiplyByScalar(-1));
         }
 
         public double GetLength()
         {
             double length = 0;
 
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < size; i++)
             {
-                length += Components[i] * Components[i];
+                length += components[i] * components[i];
             }
 
             return Math.Sqrt(length);
@@ -189,34 +218,97 @@
 
         public double? GetComponent(int index)
         {
-            if (index >= 0 && index < Size && Size > 0) // Size > 0 - make another case
+            if (index >= 0 && index < size && size > 0)
             {
-                return Components[index];
+                return components[index];
             }
 
-            return null; // must be warning. write test for index < 0 or > Size
+            if (size == 0)
+            {
+                Console.WriteLine($"Предупреждение: Не удалось получить компоненту {index} вектора {this}, т.к. вектор не содержит компонент.");
+            }
+            
+            if (index > size)
+            {
+                Console.WriteLine($"Предупреждение: Нельзя получить компоненту {index} вектора {this}, т.к. размерность вектора {size} меньше {index}");
+            }
+            else
+            {
+                Console.WriteLine($"Ошибка: Нельзя получить компоненту вектора {this} по индексу {index}. Индекс должен быть больше нуля.");
+            }
+
+            return null;
         }
 
         public void SetComponent(int index, double value)
         {
-            if (index >= 0 && index < Size && Size > 0) // Size > 0 - make another case
+            if (index >= 0 && index < size && size > 0)
             {
-                Components[index] = value;
+                components[index] = value;
+            }
+
+            if (size == 0)
+            {
+                Console.WriteLine($"Предупреждение: Не удалось задать значение компоненте {index} вектора {this}, т.к. вектор не содержит компонент.");
+            }
+
+            if (index > size)
+            {
+                Console.WriteLine($"Предупреждение: Нельзя задать значение компоненте {index} вектора {this}, т.к. размерность вектора {size} меньше {index}");
+            }
+            else
+            {
+                Console.WriteLine($"Ошибка: Нельзя задать значение компоненте вектора {this} по индексу {index}. Индекс должен быть больше нуля.");
             }
         }
 
-        public static Vector AddVectors(Vector vector1, Vector vector2)
+        public static Vector? AddVectors(Vector vector1, Vector vector2)
         {
+            if (vector1 is null && vector2 is null)
+            {
+                return null;
+            }
+
+            if (vector1 is null)
+            {
+                return new Vector(vector2);
+            }
+
+            if (vector2 is null)
+            {
+                return new Vector(vector1);
+            }
+
             return vector1.Add(vector2);
         }
 
-        public static Vector SubtractVectors(Vector vector1, Vector vector2)
+        public static Vector? SubtractVectors(Vector vector1, Vector vector2)
         {
+            if (vector1 is null && vector2 is null)
+            {
+                return null;
+            }
+
+            if (vector1 is null)
+            {
+                return new Vector(vector2.Reverse());
+            }
+
+            if (vector2 is null)
+            {
+                return new Vector(vector1);
+            }
+
             return vector1.Subtract(vector2);
         }
 
-        public static Vector MultiplyByScalar(Vector vector, double scalar)
+        public static Vector? MultiplyByScalar(Vector vector, double scalar)
         {
+            if (vector is null)
+            {
+                return null;
+            }
+
             return vector.MultiplyByScalar(scalar);
         }
     }
