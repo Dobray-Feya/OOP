@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Numerics;
-
-namespace Arkashova.VectorTask
+﻿namespace Arkashova.VectorTask
 {
     internal class Program
     {

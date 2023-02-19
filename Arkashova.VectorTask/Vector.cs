@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using System.Runtime.Intrinsics;
+﻿// Вопрос: вместо проверки на null и кидания исключения лучше сделать через .?  см. https://metanit.com/sharp/tutorial/3.26.php
 
 namespace Arkashova.VectorTask
 {
@@ -93,10 +92,8 @@ namespace Arkashova.VectorTask
             {
                 return String.Empty;
             }
-            else
-            {
-                return "{" + String.Join(", ", components) + "}";
-            }
+            
+            return "{" + String.Join(", ", components) + "}";
         }
 
         public override bool Equals(object? obj)
