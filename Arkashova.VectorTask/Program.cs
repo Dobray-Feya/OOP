@@ -1,4 +1,6 @@
-﻿namespace Arkashova.VectorTask
+﻿using System.Collections;
+
+namespace Arkashova.VectorTask
 {
     internal class Program
     {
@@ -69,23 +71,41 @@
                 Console.WriteLine($"{vector,-16}  ->  {vector.GetLength()}");
             }
 
-            int index = 44;
+            int index = 4;
             Console.WriteLine();
             Console.WriteLine($"Получить {index}-ую компоненту вектора:");
+
             foreach (Vector vector in vectors)
             {
-                double? component = vector.GetComponent(index);
-                Console.WriteLine($"{vector,-16}  ->  {(component is null ? " - " : component),2}");
+                Console.Write($"{vector,-16}  ->  ");
+
+                try
+                {
+                    Console.WriteLine(vector.GetComponent(index));
+                }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
 
             double value = 100.0;
             Console.WriteLine();
             Console.WriteLine($"Установить {index}-ую компоненту вектора, равной {value}:");
+
             foreach (Vector vector in vectors)
             {
                 Console.Write($"{vector,-16}  ->  ");
-                vector.SetComponent(index, value);
-                Console.WriteLine($"{vector,-16}");
+
+                try
+                {
+                    vector.SetComponent(index, value);
+                    Console.WriteLine($"{vector,-16}");
+                }
+                catch (ArgumentException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
 
             Vector? badVector = null;
@@ -95,31 +115,47 @@
             Console.WriteLine("vector                     vector.Add(null)      Vector.AddVectors(vector, null) Vector.AddVectors(null, vector)");
             foreach (Vector vector in vectors)
             {
-                Console.WriteLine($"{vector,-16} + null =  {vector.Add(badVector)}  {Vector.AddVectors(vector, badVector),20}  {Vector.AddVectors(badVector, vector),30}");
+                Console.WriteLine($"{vector,-18} + null =  {vector.Add(badVector)}  {Vector.AddVectors(vector, badVector),20}  {Vector.AddVectors(badVector, vector),30}");
             }
 
             Console.WriteLine();
             Console.WriteLine("Результат вычитания вектора и null:");
-            Console.WriteLine("vector                vector.Subtract(null)      Vector.SubtractVectors(vector, null) Vector.SubtractVectors(null, vector)");
+            Console.WriteLine("vector                vector.Subtract(null)   Vector.SubtractVectors(vector, null)   Vector.SubtractVectors(null, vector)");
             foreach (Vector vector in vectors)
             {
-                Console.WriteLine($"{vector,-16} - null =  {vector.Subtract(badVector)}  {Vector.SubtractVectors(vector, badVector),20}  {Vector.SubtractVectors(badVector, vector),30}");
+                Console.WriteLine($"{vector,-18} - null =  {vector.Subtract(badVector)}  {Vector.SubtractVectors(vector, badVector),20}  {Vector.SubtractVectors(badVector, vector),30}");
             }
 
             Console.WriteLine();
+            Console.WriteLine("Vector(-5) = ");
 
             try
             {
-                // tes1
-                // Vector badVector1 = new Vector(-5);
-                // Console.WriteLine(badVector1);
+                Console.WriteLine(new Vector(-5));
+            }
+            catch (ArgumentException e)
+            { 
+                Console.WriteLine(e);
+            }
 
-                // test2
-                // Vector? badVector2 = null; 
-                // Console.WriteLine(new Vector(badVector2));
-                
-                // test3
-                double[]? badArray = null;
+            Console.WriteLine(); 
+            Console.WriteLine("new Vector(null vector) =");
+
+            try
+            {
+                Vector? badVector1 = null;
+                Console.WriteLine(new Vector(badVector1));
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(e);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("new Vector(null array) =");
+            try
+            {
+                double[] badArray = null;
                 Console.WriteLine(new Vector(badArray));
             }
             catch (ArgumentException e)

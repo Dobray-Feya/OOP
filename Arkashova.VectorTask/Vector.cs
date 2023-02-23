@@ -1,5 +1,7 @@
 ﻿// Вопрос: вместо проверки на null и кидания исключения лучше сделать через .?  см. https://metanit.com/sharp/tutorial/3.26.php
 
+using System.Numerics;
+
 namespace Arkashova.VectorTask
 {
     public class Vector
@@ -59,7 +61,7 @@ namespace Arkashova.VectorTask
         {
             if (size < 0)
             {
-                throw new ArgumentException($"Разменость вектора должна больше нуля. Указана резмерность: {size}.");
+                throw new ArgumentException($"Размерность вектора должна больше нуля. Указана резмерность: {size}.");
             }
 
             if (numbers is null)
@@ -213,55 +215,41 @@ namespace Arkashova.VectorTask
             return Math.Sqrt(length);
         }
 
-        public double? GetComponent(int index)
+        public double GetComponent(int index)
         {
-            if (index >= 0 && index < size)
-            {
-                return components[index];
-            }
-
             if (size == 0)
             {
-                Console.WriteLine($"Предупреждение: Не удалось получить компоненту {index} вектора {this}, т.к. вектор не содержит компонент.");
+                throw new ArgumentException($"Нельзя получить компоненту {index} вектора {this}, т.к. вектор не содержит компонент.");
             }
-            else if (index >= size)
+            
+            if (index >= size || index < 0)
             {
-                Console.WriteLine($"Предупреждение: Нельзя получить компоненту {index} вектора {this}. Индекс компоненты должен быть от 0 до {size - 1}.");
-            }
-            else
-            {
-                Console.WriteLine($"Ошибка: Нельзя получить компоненту вектора {this} по индексу {index}. Индекс должен быть больше нуля.");
+                throw new ArgumentException($"Нельзя получить компоненту {index} вектора {this}. Индекс компоненты должен быть от 0 до {size - 1}.");
             }
 
-            return null;
+            return components[index];
         }
 
         public void SetComponent(int index, double value)
         {
-            if (index >= 0 && index < size && size > 0)
-            {
-                components[index] = value;
-            }
-
             if (size == 0)
             {
-                Console.WriteLine($"Предупреждение: Не удалось задать значение компоненте {index} вектора {this}, т.к. вектор не содержит компонент.");
+                throw new ArgumentException($"Нельзя задать значение компоненте {index} вектора {this}, т.к. вектор не содержит компонент.");
             }
-            else if (index > size)
+            
+            if (index >= size || index < 0)
             {
-                Console.WriteLine($"Предупреждение: Нельзя задать значение компоненте {index} вектора {this}. Индекс компоненты должен быть от 0 до {size - 1}.");
+                throw new ArgumentException($"Нельзя задать значение компоненте {index} вектора {this}. Индекс компоненты должен быть от 0 до {size - 1}.");
             }
-            else
-            {
-                Console.WriteLine($"Ошибка: Нельзя задать значение компоненте вектора {this} по индексу {index}. Индекс должен быть больше нуля.");
-            }
+
+            components[index] = value;
         }
 
-        public static Vector? AddVectors(Vector vector1, Vector vector2)
+        public static Vector AddVectors(Vector vector1, Vector vector2)
         {
             if (vector1 is null && vector2 is null)
             {
-                return null;
+                throw new ArgumentNullException($"Нельзя складывать векторы, если хотя бы один из них null. Переданы векторы {vector1} и {vector2}.");
             }
 
             if (vector1 is null)
@@ -277,11 +265,11 @@ namespace Arkashova.VectorTask
             return vector1.Add(vector2);
         }
 
-        public static Vector? SubtractVectors(Vector vector1, Vector vector2)
+        public static Vector SubtractVectors(Vector vector1, Vector vector2)
         {
             if (vector1 is null && vector2 is null)
             {
-                return null;
+                throw new ArgumentNullException($"Нельзя вычитать векторы, если хотя бы один из них null. Переданы векторы {vector1} и {vector2}.");
             }
 
             if (vector1 is null)
@@ -297,11 +285,11 @@ namespace Arkashova.VectorTask
             return vector1.Subtract(vector2);
         }
 
-        public static Vector? MultiplyByScalar(Vector vector, double scalar)
+        public static Vector MultiplyByScalar(Vector vector, double scalar)
         {
             if (vector is null)
             {
-                return null;
+                throw new ArgumentNullException($"Нельзя умножить вектор на число, т.к. он равен null.");
             }
 
             return vector.MultiplyByScalar(scalar);
