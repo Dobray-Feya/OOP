@@ -119,10 +119,38 @@ namespace Arkashova.MatrixTask
             Console.WriteLine(Matrix.Add(matrix7, matrix6));
 
             Console.Write("Матрица A - B = ");
-            Console.WriteLine(matrix7.Subtract(matrix6));
+            Console.WriteLine(matrix6.Subtract(matrix7));
 
             Console.Write("Матрица A - B = ");
-            Console.WriteLine(Matrix.Subtract(matrix7, matrix6));
+            Console.WriteLine(Matrix.Subtract(matrix6, matrix7));
+            Console.WriteLine();
+
+            double[,] numbers8 =
+            {
+                { 1, 1, 1 },
+                { 2, 2, 2 },
+                { 3, 3, 3 },
+                { 4, 4, 4 },
+                { 5, 5, 5 }
+            };
+
+            Matrix matrix8 = new Matrix(numbers8);
+            Console.Write("Матрица C =     ");
+            Console.WriteLine(matrix8);
+
+            double[,] numbers9 =
+            {
+                {  1, 2 },
+                { -1, 3 },
+                {  4, 1 }
+            };
+
+            Matrix matrix9 = new Matrix(numbers9);
+            Console.Write("Матрица D =     ");
+            Console.WriteLine(matrix9);
+
+            Console.Write("Матрица C x D = ");
+            Console.WriteLine(Matrix.Multiply(matrix8, matrix9));
         }
     }
 }

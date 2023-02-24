@@ -311,15 +311,15 @@ namespace Arkashova.MatrixTask
 
         public Vector MultiplyByVector(Vector vector)
         {
-            if (GetXSize() != vector.GetSize())
+            if (xSize != vector.GetSize())
             {
                 throw new ArgumentException($"Нельзя умножить матрицу на вектор, " +
-                    $"т.к. количество столбцов в матрице ({GetXSize()}) не равно размерности вектора ({vector.GetSize()}).");
+                    $"т.к. количество столбцов в матрице ({xSize}) не равно размерности вектора ({vector.GetSize()}).");
             }
 
             double[] numbers = new double[ySize];
 
-            for (int i = 0; i < xSize; i++)
+            for (int i = 0; i < ySize; i++)
             {
                 for (int j = 0; j < xSize; j++)
                 {
@@ -367,6 +367,25 @@ namespace Arkashova.MatrixTask
             }
 
             return new Matrix(vectors);
+        }
+
+        public static Matrix Multiply(Matrix matrix1, Matrix matrix2)
+        {
+            if (matrix1.GetXSize() != matrix2.GetYSize())
+            {
+                throw new ArgumentException("Нельзя перемножить две матрицы, т.к. количество столбцов в первой матрице не равно количеству строк во второй. " +
+                    $"Размеры первой матрицы: {matrix1.GetXSize()} и {matrix1.GetYSize()}. " +
+                    $"Размеры второй матрицы: {matrix2.GetXSize()} и {matrix2.GetYSize()}.");
+            }
+
+            Vector[] vectors = new Vector[matrix2.GetXSize()];
+
+            for (int i = 0; i < matrix2.GetXSize(); i++)
+            {
+                vectors[i] = matrix1.MultiplyByVector(matrix2.GetColumn(i));
+            }
+
+            return new Matrix(vectors).Transpose();
         }
     }
 }
