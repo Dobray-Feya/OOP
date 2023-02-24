@@ -1,10 +1,13 @@
-﻿namespace Arkashova.ShapesTask
+﻿namespace Arkashova.ShapesTask.Shapes
 {
     public interface IShape
     {
         double GetWidth();
+
         double GetHeight();
+
         double GetArea();
+
         double GetPerimeter();
     }
 }

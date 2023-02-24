@@ -1,4 +1,7 @@
-﻿namespace Arkashova.ShapesTask
+﻿using Arkashova.ShapesTask.Shapes;
+using Arkashova.ShapesTask.Comparers;
+
+namespace Arkashova.ShapesTask
 {
     internal class Program
     {
@@ -18,52 +21,42 @@
                 new Circle(1.0001)
             };
 
-            Console.WriteLine($"{"фигура",-34} {"площадь",10} {"периметр",11} {"высота",10} {"ширина",10} {"хэш",10}");
+            Console.WriteLine($"{"фигура",-41} {"площадь",10} {"периметр",11} {"высота",10} {"ширина",10} {"хэш",10}");
 
-            for (int i = 0; i < shapes.Length; i++)
+            foreach (IShape shape in shapes)
             {
-                Console.WriteLine($"{shapes[i],-35} {shapes[i].GetArea(),10:f3} {shapes[i].GetPerimeter(),10:f3} {shapes[i].GetHeight(),10:f3} {shapes[i].GetWidth(),10:f3} {shapes[i].GetHashCode(),15:f3}");
+                Console.WriteLine($"{shape,-42} {shape.GetArea(),10:f3} {shape.GetPerimeter(),10:f3} {shape.GetHeight(),10:f3} {shape.GetWidth(),10:f3} {shape.GetHashCode(),15:f3}");
             }
 
             Console.WriteLine();
 
-            IShape shape1 = GetShapeWithMaxArea(shapes);
-            Console.WriteLine($"Фигура с максимальной площадью: {shape1} ({shape1.GetArea()}).");
+            IShape shapeWithMaxArea = GetShapeWithMaxArea(shapes);
+            Console.WriteLine($"Фигура с максимальной площадью: {shapeWithMaxArea} ({shapeWithMaxArea.GetArea()}).");
             Console.WriteLine();
 
-            IShape shape2 = GetShapeWithSecondPerimeter(shapes);
-            Console.WriteLine($"Фигура со вторым по величине периметром: {shape2} ({shape2.GetPerimeter()}).");
+            IShape shapeWithSecondPerimeter = GetShapeWithSecondPerimeter(shapes);
+            Console.WriteLine($"Фигура со вторым по величине периметром: {shapeWithSecondPerimeter} ({shapeWithSecondPerimeter.GetPerimeter()}).");
             Console.WriteLine();
         }
 
         public static IShape GetShapeWithMaxArea(IShape[] shapes)
         {
-            // Вспомогательный массив, чтобы не менять сортировку исходного массива
-            IShape[] temp = new IShape[shapes.Length];
+            IShape[] sortedShapes = new IShape[shapes.Length];
+            shapes.CopyTo(sortedShapes, 0);
 
-            for (int i = 0; i < temp.Length; i++)
-            {
-                temp[i] = shapes[i];
-            }
+            Array.Sort(sortedShapes, new AreaComparer());
 
-            Array.Sort(temp, new AreaComparer());
-
-            return temp[temp.Length - 1];
+            return sortedShapes[^1];
         }
 
         public static IShape GetShapeWithSecondPerimeter(IShape[] shapes)
         {
-            // Вспомогательный массив, чтобы не менять сортировку исходного массива
-            IShape[] temp = new IShape[shapes.Length];
+            IShape[] sortedShapes = new IShape[shapes.Length];
+            shapes.CopyTo(sortedShapes, 0);
 
-            for (int i = 0; i < temp.Length; i++)
-            {
-                temp[i] = shapes[i];
-            }
+            Array.Sort(sortedShapes, new PerimeterComparer());
 
-            Array.Sort(temp, new PerimeterComparer());
-
-            return temp[temp.Length - 2];
+            return sortedShapes[^2];
         }
     }
 }

@@ -1,42 +1,42 @@
-﻿namespace Arkashova.ShapesTask
+﻿namespace Arkashova.ShapesTask.Shapes
 {
-    internal class Square : IShape
+    internal class Circle : IShape
     {
-        public double Size { get; set; }
+        public double Radius { get; set; }
 
-        public Square(double size)
+        public Circle(double radius)
         {
-            Size = size;
+            Radius = radius;
         }
 
         public double GetHeight()
         {
-            return Size;
+            return 2 * Radius;
         }
 
         public double GetWidth()
         {
-            return Size;
+            return 2 * Radius;
         }
 
         public double GetArea()
         {
-            return Size * Size;
+            return Math.PI * Radius * Radius;
         }
 
         public double GetPerimeter()
         {
-            return 4 * Size;
+            return 2 * Math.PI * Radius;
         }
 
         public override string ToString()
         {
-            return $"квадрат {Size} x {Size}";
+            return $"Круг радиуса {Radius}";
         }
 
         public override int GetHashCode()
         {
-            return Size.GetHashCode();
+            return Radius.GetHashCode();
         }
 
         public override bool Equals(object? obj)
@@ -51,9 +51,9 @@
                 return false;
             }
 
-            Square square = (Square)obj;
+            Circle circle = (Circle)obj;
 
-            return square.Size == Size;
+            return circle.Radius == Radius;
         }
     }
 }
