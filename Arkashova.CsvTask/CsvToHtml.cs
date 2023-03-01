@@ -21,7 +21,7 @@ namespace Arkashova.CsvTask
             }
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Encoding encoding = Encoding.GetEncoding(1251); 
+            Encoding encoding = Encoding.GetEncoding(1251);
 
             string sourceFileName = args[0];
             string resultFileName = args[1];
@@ -37,11 +37,17 @@ namespace Arkashova.CsvTask
                 Console.WriteLine($"Исходный CSV-файл: {Path.GetFullPath(sourceFileName)}.");
                 Console.WriteLine($"Итоговый HTML-файл: {Path.GetFullPath(resultFileName)}.");
             }
+            catch (FileNotFoundException e)
+            {
+                Console.WriteLine("Файл не найден. Конвертация невозможна.");
+                Console.WriteLine("Описание ошибки:");
+                Console.WriteLine(e.Message);
+            }
             catch (Exception e)
             {
-                Console.WriteLine($"Произошла ошибка. Конвертация прервана.");
-                Console.WriteLine("Полное описание ошибки:");
-                Console.WriteLine(e);
+                Console.WriteLine("Произошла ошибка. Конвертация прервана.");
+                Console.WriteLine("Описание ошибки:");
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -60,7 +66,7 @@ namespace Arkashova.CsvTask
                     string? nextLine = reader.ReadLine();
 
                     if (nextLine == null)
-                    { 
+                    {
                         break;
                     }
 
@@ -68,7 +74,7 @@ namespace Arkashova.CsvTask
                     currentLine += "\r" + nextLine;
                 }
 
-                WriteHtmlLineToFile(currentLine, writer);
+                WriteHtmlRowToFile(currentLine, writer);
             }
 
             WriteHtmlFooterToFile(writer);
@@ -92,17 +98,18 @@ namespace Arkashova.CsvTask
             writer.WriteLine("</html>");
         }
 
-        private static void WriteHtmlLineToFile(string currentLine, StreamWriter writer)
+        private static void WriteHtmlRowToFile(string currentLine, StreamWriter writer)
         {
             writer.Write("<tr>");
 
             int beginCellIndex = 0;
-            int endCellIndex;
-            int nextCellBeginIndex;
 
             while (beginCellIndex < currentLine.Length)
             {
                 writer.Write("<td>");
+
+                int endCellIndex;
+                int nextCellBeginIndex;
 
                 if (currentLine[beginCellIndex] == ',')
                 {
@@ -117,9 +124,9 @@ namespace Arkashova.CsvTask
 
                     // Выявляется неверный формат строки, когда в кавычки взято не все содержимое ячейки, например, "абс"d
                     if ((endCellIndex + 2 < currentLine.Length) && (currentLine[endCellIndex + 2] != ','))
-                     {
-                         throw new ArgumentException("Неверный формат исходного CSV-файла в строке:", currentLine); 
-                     }
+                    {
+                        throw new ArgumentException("Неверный формат исходного CSV-файла в строке:", currentLine);
+                    }
                 }
                 else
                 {
@@ -130,10 +137,10 @@ namespace Arkashova.CsvTask
 
                 bool isQuoteIndexOdd = true;
 
-                string convertedSymbol;
-
                 for (int i = beginCellIndex; i <= endCellIndex; i++)
                 {
+                    string convertedSymbol;
+
                     switch (currentLine[i])
                     {
                         case '<':
@@ -162,7 +169,7 @@ namespace Arkashova.CsvTask
 
                 writer.Write("</td>");
 
-                if ((nextCellBeginIndex == currentLine.Length) && (currentLine[currentLine.Length - 1] == ','))
+                if ((nextCellBeginIndex == currentLine.Length) && (currentLine[^1] == ','))
                 {
                     writer.Write("<td></td>");
                 }
