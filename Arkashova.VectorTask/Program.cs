@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Arkashova.VectorTask
+﻿namespace Arkashova.VectorTask
 {
     internal class Program
     {
@@ -11,61 +9,86 @@ namespace Arkashova.VectorTask
             Vector[] vectors =
             {
                 new Vector(5),
-                new Vector(Array.Empty<double>()),
+                new Vector(new double[] { 10 }),
                 new Vector(testVector),
-                new Vector(5, new double[] {1.0, 2.0, 3.0 }),
-                new Vector(3, new double[] {1.0, -2.0, 3.0, 4.0 })
+                new Vector(5, new double[] { 1.0, 2.0, 3.0 }),
+                new Vector(3, new double[] { 1.0, -2.0, 3.0, 4.0 })
             };
 
             Console.WriteLine();
             Console.WriteLine("Размерность вектора и его хэш:");
+
             foreach (Vector vector in vectors)
             {
                 Console.WriteLine($"{vector,-16} - {vector.GetSize()} - {vector.GetHashCode()}");
             }
+
             Console.WriteLine($"{testVector,-16} - {testVector.GetSize()} - {testVector.GetHashCode()}");
 
             Console.WriteLine();
             Console.WriteLine($"Результат проверки на равенство вектору {testVector}:");
+
             foreach (Vector vector in vectors)
             {
                 Console.WriteLine($"{vector,-16} - {vector.Equals(testVector)}");
             }
 
             Console.WriteLine();
-            Console.WriteLine("Результат сложения векторов:");
-            Console.WriteLine("vector              testVector       vector.Add(testVector)        Vector.AddVectors(vector, testVector)");
+            Console.WriteLine("Скалярное произведение векторов:");
+            Console.WriteLine("vector              testVector       Vector.GetDotProduct(vector, testVector)");
+
             foreach (Vector vector in vectors)
             {
-                Console.WriteLine($"{vector,-16} + {testVector,13}  =  {vector.Add(testVector)}  {Vector.AddVectors(vector, testVector),28}");
+                Console.WriteLine($"{vector,-16}  x {testVector,13}  =  {Vector.GetVectorsDotProduct(vector, testVector),5}");
             }
 
             Console.WriteLine();
-            Console.WriteLine($"Результат вычитания векторов:");
-            Console.WriteLine("vector              testVector       vector.Subtract(testVector)   Vector.SubtractVectors(vector, testVector)");
+            Console.WriteLine("Результат сложения векторов:");
+            Console.WriteLine("vector              testVector       vector.Add(testVector)        testVector       Vector.AddVectors(vector, testVector)");
+
             foreach (Vector vector in vectors)
             {
-                Console.WriteLine($"{vector,-16} - {testVector,13}  =  {vector.Subtract(testVector)}  {Vector.SubtractVectors(vector, testVector),28}");
+                Console.Write($"{vector,-16}  + {testVector,13}  = ");
+                vector.Add(testVector);
+                Console.WriteLine($"{vector,16}  + {testVector,16} = {Vector.GetVectorsSum(vector, testVector),20}");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Результат вычитания векторов:");
+            Console.WriteLine("vector              testVector       vector.Subtract(testVector)   testVector       Vector.SubtractVectors(vector, testVector)");
+
+            foreach (Vector vector in vectors)
+            {
+                Console.Write($"{vector,-16}  - {testVector,13}  =  ");
+                vector.Subtract(testVector);
+                Console.WriteLine($"{vector,16}  - {testVector,16} = {Vector.GetVectorsDifference(vector, testVector),20}");
             }
 
             double scalar = -2.0;
             Console.WriteLine();
             Console.WriteLine("Результат умножения вектора на скаляр:");
-            Console.WriteLine("vector              scalar     vector.MultiplyByScalar(scalar)     Vector.MultiplyByScalar(vector, scalar)");
+            Console.WriteLine("vector              scalar     vector.MultiplyByScalar(scalar)");
+
             foreach (Vector vector in vectors)
             {
-                Console.WriteLine($"{vector,-16} * {scalar,-7}  =  {vector.MultiplyByScalar(scalar)} {Vector.MultiplyByScalar(vector, scalar),35}");
+                Console.Write($"{vector,-16} * {scalar,-7}  =  ");
+                vector.MultiplyByScalar(scalar);
+                Console.WriteLine($"{vector,16}");
             }
 
             Console.WriteLine();
             Console.WriteLine("Результат \"разворота\" вектора:");
+
             foreach (Vector vector in vectors)
             {
-                Console.WriteLine($"{vector,-16}  ->  {vector.Reverse()}");
+                Console.Write($"{vector,-20}  ->  ");
+                vector.Reverse();
+                Console.WriteLine($"{vector}");
             }
 
             Console.WriteLine();
             Console.WriteLine("Длина вектора:");
+
             foreach (Vector vector in vectors)
             {
                 Console.WriteLine($"{vector,-16}  ->  {vector.GetLength()}");
@@ -83,7 +106,7 @@ namespace Arkashova.VectorTask
                 {
                     Console.WriteLine(vector.GetComponent(index));
                 }
-                catch (ArgumentException e)
+                catch (IndexOutOfRangeException e)
                 {
                     Console.WriteLine(e.Message);
                 }
@@ -100,67 +123,75 @@ namespace Arkashova.VectorTask
                 try
                 {
                     vector.SetComponent(index, value);
-                    Console.WriteLine($"{vector,-16}");
+                    Console.WriteLine($"{vector}");
                 }
-                catch (ArgumentException e)
+                catch (IndexOutOfRangeException e)
                 {
                     Console.WriteLine(e.Message);
                 }
             }
 
-            Vector? badVector = null;
-
             Console.WriteLine();
-            Console.WriteLine("Результат сложения вектора с null:");
-            Console.WriteLine("vector                     vector.Add(null)      Vector.AddVectors(vector, null) Vector.AddVectors(null, vector)");
-            foreach (Vector vector in vectors)
-            {
-                Console.WriteLine($"{vector,-18} + null =  {vector.Add(badVector)}  {Vector.AddVectors(vector, badVector),20}  {Vector.AddVectors(badVector, vector),30}");
-            }
-
-            Console.WriteLine();
-            Console.WriteLine("Результат вычитания вектора и null:");
-            Console.WriteLine("vector                vector.Subtract(null)   Vector.SubtractVectors(vector, null)   Vector.SubtractVectors(null, vector)");
-            foreach (Vector vector in vectors)
-            {
-                Console.WriteLine($"{vector,-18} - null =  {vector.Subtract(badVector)}  {Vector.SubtractVectors(vector, badVector),20}  {Vector.SubtractVectors(badVector, vector),30}");
-            }
-
-            Console.WriteLine();
-            Console.WriteLine("Vector(-5) = ");
 
             try
             {
-                Console.WriteLine(new Vector(-5));
+                Vector? badVector = null;
+                Vector? goodVector = new Vector(new double[] { 1.0, 2.0, 3.0 });
+
+                Console.WriteLine($"{goodVector} + {badVector} =");
+                Console.WriteLine(Vector.GetVectorsSum(goodVector, badVector));
             }
-            catch (ArgumentException e)
-            { 
-                Console.WriteLine(e);
+            catch (ArgumentNullException e)
+            {
+                Console.WriteLine($"Произошла ошибка в параметре {e.ParamName}.");
+                Console.WriteLine("Описание ошибки:");
+                Console.WriteLine(e.Message);
             }
 
-            Console.WriteLine(); 
-            Console.WriteLine("new Vector(null vector) =");
+            Console.WriteLine();
+
+            try
+            {
+                Console.WriteLine("Vector(-5) =");
+                Console.Write(new Vector(-5));
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine($"Произошла ошибка в параметре {e.ParamName}.");
+                Console.WriteLine("Описание ошибки:");
+                Console.WriteLine(e.Message);
+            }
+
+            Console.WriteLine();
 
             try
             {
                 Vector? badVector1 = null;
+
+                Console.WriteLine("new Vector(null vector) =");
                 Console.WriteLine(new Vector(badVector1));
             }
-            catch (ArgumentException e)
+            catch (ArgumentNullException e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine($"Произошла ошибка в параметре {e.ParamName}.");
+                Console.WriteLine("Описание ошибки:");
+                Console.WriteLine(e.Message);
             }
 
             Console.WriteLine();
-            Console.WriteLine("new Vector(null array) =");
+
             try
             {
-                double[] badArray = null;
+                double[] badArray = { };
+
+                Console.WriteLine("new Vector({ }) =");
                 Console.WriteLine(new Vector(badArray));
             }
             catch (ArgumentException e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine($"Произошла ошибка в параметре {e.ParamName}.");
+                Console.WriteLine("Описание ошибки:");
+                Console.WriteLine(e.Message);
             }
         }
     }

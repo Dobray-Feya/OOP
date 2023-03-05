@@ -1,101 +1,93 @@
 ﻿// Вопрос: вместо проверки на null и кидания исключения лучше сделать через .?  см. https://metanit.com/sharp/tutorial/3.26.php
 
-using System.Numerics;
+using System.Text;
 
 namespace Arkashova.VectorTask
 {
     public class Vector
     {
-        private int size;
         private double[] components;
 
         public Vector(int size)
         {
-            if (size < 0)
+            if (size <= 0)
             {
-                throw new ArgumentException($"Разменость вектора должна больше нуля. Указана резмерность: {size}.");
+                throw new ArgumentException($"Размерность вектора должна быть больше, чем 0. Передана размерность: {size}.", nameof(size));
             }
 
-            this.size = size;
-            components = new double[size];
-
-            for (int i = 0; i < this.size; i++)
-            {
-                components[i] = 0;
-            }
+            components = new double[size];  // Заметка для себя: элементам массива чисел не нужно явно присваивать 0, т.к. это значение по умолчанию.
         }
 
         public Vector(Vector vector)
         {
             if (vector is null)
             {
-                throw new ArgumentNullException($"Нельзя создать вектор путем копирования null.");
+                throw new ArgumentNullException(nameof(vector), "Нельзя создать вектор путем копирования null."); 
             }
 
-            size = vector.size;
+            int size = vector.GetSize();
+
             components = new double[size];
-
-            for (int i = 0; i < size; i++)
-            {
-                components[i] = vector.components[i];
-            }
+            Array.Copy(vector.components, components, size);
         }
 
         public Vector(double[] numbers)
         {
             if (numbers is null)
             {
-                throw new ArgumentNullException($"Нельзя создать вектор из массива null.");
+                throw new ArgumentNullException(nameof(numbers), "Нельзя создать вектор из массива null.");
             }
 
-            size = numbers.Length;
-            components = new double[size];
-
-            for (int i = 0; i < size; i++)
+            if (numbers.Length == 0)
             {
-                components[i] = numbers[i];
+                throw new ArgumentException("Нельзя создать вектор из массива длины 0.", nameof(numbers));
             }
+
+            components = new double[numbers.Length];
+            Array.Copy(numbers, components, numbers.Length);
         }
 
         public Vector(int size, double[] numbers)
         {
-            if (size < 0)
+            if (size <= 0)
             {
-                throw new ArgumentException($"Размерность вектора должна больше нуля. Указана резмерность: {size}.");
+                throw new ArgumentException($"Размерность вектора должна быть больше, чем 0. Передана резмерность: {size}.", nameof(size));
             }
 
             if (numbers is null)
             {
-                throw new ArgumentNullException($"Нельзя создать вектор из массива null.");
+                throw new ArgumentNullException(nameof(numbers), "Нельзя создать вектор из массива null.");
             }
 
-            this.size = size;
+            if (numbers.Length == 0)
+            {
+                throw new ArgumentException("Нельзя создать вектор из массива длины 0", nameof(numbers));
+            }
+
             components = new double[size];
-
-            for (int i = 0; i < size && i < numbers.Length; i++)
-            {
-                components[i] = numbers[i];
-            }
-
-            for (int i = numbers.Length; i < size; i++)
-            {
-                components[i] = 0;
-            }
+            Array.Copy(numbers, components, Math.Min(size, numbers.Length));
         }
 
         public int GetSize()
         {
-            return size;
+            return components.Length;
         }
 
         public override string ToString()
         {
-            if (components is null)
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("{");
+
+            foreach (double component in components)
             {
-                return String.Empty;
+                stringBuilder.Append(component)
+                             .Append(", ");
             }
-            
-            return "{" + String.Join(", ", components) + "}";
+
+            stringBuilder.Remove(stringBuilder.Length - 2, 2);
+            stringBuilder.Append("}");
+
+            return stringBuilder.ToString();
         }
 
         public override bool Equals(object? obj)
@@ -112,12 +104,12 @@ namespace Arkashova.VectorTask
 
             Vector vector = (Vector)obj;
 
-            if (vector.size != size)
+            if (vector.GetSize() != components.Length)
             {
                 return false;
             }
 
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < components.Length; i++)
             {
                 if (vector.components[i] != components[i])
                 {
@@ -132,99 +124,76 @@ namespace Arkashova.VectorTask
         {
             const int prime = 37;
 
-            int hash = prime + size;
+            int hash = prime + components.Length;
 
-            for (int i = 0; i < size; i++)
+            foreach (double component in components)
             {
-                hash = hash * prime + components[i].GetHashCode();
+                hash = hash * prime + component.GetHashCode();
             }
 
             return hash;
         }
 
-        public Vector Add(Vector vector)
+        public void Add(Vector vector)
         {
             if (vector is null)
             {
-                return new Vector(this);
+                throw new ArgumentNullException(nameof(vector), $"Нельзя добавить к вектору {this} вектор null.");
             }
 
-            int maxSize = Math.Max(size, vector.size);
+            Array.Resize(ref components, Math.Max(GetSize(), vector.GetSize()));
 
-            Vector vector1 = new Vector(maxSize, components);
-            Vector vector2 = new Vector(maxSize, vector.components);
-
-            double[] resultcomponents = new double[maxSize];
-
-            for (int i = 0; i < maxSize; i++)
+            for (int i = 0; i < vector.GetSize(); i++)
             {
-                resultcomponents[i] = vector1.components[i] + vector2.components[i];
+                components[i] += vector.components[i];
             }
-
-            return new Vector(resultcomponents);
         }
 
-        public Vector Subtract(Vector vector)
+        public void Subtract(Vector vector)
         {
             if (vector is null)
             {
-                return new Vector(this);
+                throw new ArgumentNullException(nameof(vector), $"Нельзя вычесть из вектора {this} вектор null.");
             }
 
-            int maxSize = Math.Max(size, vector.size);
+            Array.Resize(ref components, Math.Max(GetSize(), vector.GetSize()));
 
-            Vector vector1 = new Vector(maxSize, this.components);
-            Vector vector2 = new Vector(maxSize, vector.components);
-
-            double[] resultcomponents = new double[maxSize];
-
-            for (int i = 0; i < maxSize; i++)
+            for (int i = 0; i < vector.GetSize(); i++)
             {
-                resultcomponents[i] = vector1.components[i] - vector2.components[i];
+                components[i] -= vector.components[i];
             }
-
-            return new Vector(resultcomponents);
         }
 
-        public Vector MultiplyByScalar(double scalar)
+        public void MultiplyByScalar(double scalar)
         {
-            Vector resultVector = new Vector(this);
-
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < components.Length; i++)
             {
-                resultVector.components[i] *= scalar;
+                components[i] *= scalar;
             }
-
-            return resultVector;
         }
 
-        public Vector Reverse()
+        public void Reverse()
         {
-            return new Vector(this.MultiplyByScalar(-1));
+            MultiplyByScalar(-1);
         }
 
         public double GetLength()
         {
-            double length = 0;
+            double sum = 0;
 
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < components.Length; i++)
             {
-                length += components[i] * components[i];
+                sum += components[i] * components[i];
             }
 
-            return Math.Sqrt(length);
+            return Math.Sqrt(sum);
         }
 
         public double GetComponent(int index)
         {
-            if (size == 0)
+            if (index < 0 || index >= components.Length)
             {
-                throw new ArgumentException($"Нельзя получить компоненту {index} вектора {this}, т.к. вектор не содержит компонент.");
-            }
-            
-            if (index >= size || index < 0)
-            {
-                throw new ArgumentException($"Нельзя получить компоненту {index} вектора {this}. Индекс компоненты должен быть от 0 до {size - 1}.");
+                throw new IndexOutOfRangeException($"Нельзя получить компоненту {index} вектора {this}. Индекс компоненты должен быть от 0 до {components.Length - 1}.");
             }
 
             return components[index];
@@ -232,67 +201,70 @@ namespace Arkashova.VectorTask
 
         public void SetComponent(int index, double value)
         {
-            if (size == 0)
+            if (index < 0 || index >= components.Length)
             {
-                throw new ArgumentException($"Нельзя задать значение компоненте {index} вектора {this}, т.к. вектор не содержит компонент.");
-            }
-            
-            if (index >= size || index < 0)
-            {
-                throw new ArgumentException($"Нельзя задать значение компоненте {index} вектора {this}. Индекс компоненты должен быть от 0 до {size - 1}.");
+                throw new IndexOutOfRangeException($"Нельзя задать значение компоненте {index} вектора {this}. Индекс компоненты должен быть от 0 до {components.Length - 1}.");
             }
 
             components[index] = value;
         }
 
-        public static Vector AddVectors(Vector vector1, Vector vector2)
+        public static Vector GetVectorsSum(Vector vector1, Vector vector2)
         {
-            if (vector1 is null && vector2 is null)
-            {
-                throw new ArgumentNullException($"Нельзя складывать векторы, если хотя бы один из них null. Переданы векторы {vector1} и {vector2}.");
-            }
-
             if (vector1 is null)
             {
-                return new Vector(vector2);
+                throw new ArgumentNullException(nameof(vector1), $"Нельзя складывать векторы, если хотя бы один из них null. Переданы векторы {vector1} и {vector2}.");
             }
 
             if (vector2 is null)
             {
-                return new Vector(vector1);
+                throw new ArgumentNullException(nameof(vector2), $"Нельзя складывать векторы, если хотя бы один из них null. Переданы векторы {vector1} и {vector2}.");
             }
 
-            return vector1.Add(vector2);
+            double[] resultComponents = new double[Math.Max(vector1.GetSize(), vector2.GetSize())];
+
+            Array.Copy(vector1.components, resultComponents, vector1.GetSize());
+
+            Vector resultVector = new Vector(resultComponents);
+            
+            resultVector.Add(vector2);
+
+            return resultVector;
         }
 
-        public static Vector SubtractVectors(Vector vector1, Vector vector2)
+        public static Vector GetVectorsDifference(Vector vector1, Vector vector2)
         {
-            if (vector1 is null && vector2 is null)
-            {
-                throw new ArgumentNullException($"Нельзя вычитать векторы, если хотя бы один из них null. Переданы векторы {vector1} и {vector2}.");
-            }
-
             if (vector1 is null)
             {
-                return new Vector(vector2.Reverse());
+                throw new ArgumentNullException(nameof(vector1), $"Нельзя вычитать векторы, если хотя бы один из них null. Переданы векторы {vector1} и {vector2}.");
             }
 
             if (vector2 is null)
             {
-                return new Vector(vector1);
+                throw new ArgumentNullException(nameof(vector2), $"Нельзя вычитать векторы, если хотя бы один из них null. Переданы векторы {vector1} и {vector2}.");
             }
 
-            return vector1.Subtract(vector2);
+            double[] resultComponents = new double[Math.Max(vector1.GetSize(), vector2.GetSize())];
+
+            Array.Copy(vector1.components, resultComponents, vector1.GetSize());
+
+            Vector resultVector = new Vector(resultComponents);
+
+            resultVector.Subtract(vector2);
+
+            return resultVector;
         }
 
-        public static Vector MultiplyByScalar(Vector vector, double scalar)
+        public static double GetVectorsDotProduct(Vector vector1, Vector vector2)
         {
-            if (vector is null)
-            {
-                throw new ArgumentNullException($"Нельзя умножить вектор на число, т.к. он равен null.");
-            }
+            double dotProduct = 0;
 
-            return vector.MultiplyByScalar(scalar);
+            for (int i = 0; i < Math.Min(vector1.GetSize(), vector2.GetSize()); i++)
+            {
+                dotProduct += vector1.components[i] * vector2.components[i];
+            }
+            
+            return dotProduct;
         }
     }
 }
