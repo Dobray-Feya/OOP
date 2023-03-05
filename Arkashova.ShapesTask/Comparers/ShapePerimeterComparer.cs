@@ -2,7 +2,7 @@
 
 namespace Arkashova.ShapesTask.Comparers
 {
-    class AreaComparer : IComparer<IShape>
+    class ShapePerimeterComparer : IComparer<IShape>
     {
         public int Compare(IShape? shape1, IShape? shape2)
         {
@@ -21,9 +21,7 @@ namespace Arkashova.ShapesTask.Comparers
                 return 1;
             }
 
-            return shape1.GetArea().CompareTo(shape2.GetArea());
+            return shape1.GetPerimeter().CompareTo(shape2.GetPerimeter());
         }
     }
 }
-
-// Заметка для себя. Статья о компораторах: https://metanit.com/sharp/tutorial/3.23.php

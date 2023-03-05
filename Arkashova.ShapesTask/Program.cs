@@ -44,7 +44,7 @@ namespace Arkashova.ShapesTask
             IShape[] sortedShapes = new IShape[shapes.Length];
             shapes.CopyTo(sortedShapes, 0);
 
-            Array.Sort(sortedShapes, new AreaComparer());
+            Array.Sort(sortedShapes, new ShapeAreaComparer());
 
             return sortedShapes[^1];
         }
@@ -54,7 +54,7 @@ namespace Arkashova.ShapesTask
             IShape[] sortedShapes = new IShape[shapes.Length];
             shapes.CopyTo(sortedShapes, 0);
 
-            Array.Sort(sortedShapes, new PerimeterComparer());
+            Array.Sort(sortedShapes, new ShapePerimeterComparer());
 
             return sortedShapes[^2];
         }
