@@ -4,9 +4,9 @@
     {
         public double SideLength { get; set; }
 
-        public Square(double SideLength)
+        public Square(double sideLength)
         {
-            SideLength = SideLength;
+            SideLength = sideLength;
         }
 
         public double GetHeight()
