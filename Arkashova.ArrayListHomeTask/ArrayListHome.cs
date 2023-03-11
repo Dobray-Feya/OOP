@@ -47,30 +47,31 @@
             Console.WriteLine();
 
             List<int> numbersList = new List<int> { 0, 2, 2, 2, 4, 1, 4 };
-            Console.WriteLine("Исходный список: " + string.Join<int>(" ", numbersList));
+            Console.WriteLine("Исходный список: " + string.Join(" ", numbersList));  // Заметка для себя: Вместо string.Join<int>() можно писать string.Join().
+                                                                                     // Указывать generic-типы при вызове методов нужно только если без этого код не компилируется или тип получается неправильный
 
-            int index = 0;
+            int i = 0;
 
-            while (index < numbersList.Count)
+            while (i < numbersList.Count)
             {
-                if (numbersList[index] % 2 == 0)
+                if (numbersList[i] % 2 == 0)
                 {
-                    numbersList.RemoveAt(index);
+                    numbersList.RemoveAt(i);
                 }
                 else
                 {
-                    index++;
+                    i++;
                 }
             }
 
-            Console.WriteLine("Список после удаления четных элементов: " + string.Join<int>(" ", numbersList));
+            Console.WriteLine("Список после удаления четных элементов: " + string.Join(" ", numbersList));
             Console.WriteLine();
 
             Console.WriteLine("Задача 3. Есть список из целых чисел. Надо создать новый список, в котором будут элементы первого списка в таком же порядке, но без повторений.");
             Console.WriteLine();
 
             List<int> sourceNumbersList = new List<int> { 0, 1, 0, 2, 0, 1, 3, 2, 4, 5, 5, 0 };
-            Console.WriteLine("Исходный список: " + string.Join<int>(" ", sourceNumbersList));
+            Console.WriteLine("Исходный список: " + string.Join(" ", sourceNumbersList));
 
             List<int> numbersListWithoutDuplications = new List<int>(sourceNumbersList.Count);
 
@@ -82,7 +83,7 @@
                 }
             }
 
-            Console.WriteLine("Список Без повторяющихся элементов: " + string.Join<int>(" ", numbersListWithoutDuplications));
+            Console.WriteLine("Список Без повторяющихся элементов: " + string.Join(" ", numbersListWithoutDuplications));
         }
     }
 }
