@@ -1,4 +1,6 @@
-﻿namespace Arkashova.ArayListTask
+﻿using static System.Net.Mime.MediaTypeNames;
+
+namespace Arkashova.ArayListTask
 {
     internal class Program
     {
@@ -55,6 +57,12 @@
             Console.WriteLine($"TrimExcess() -> Count = {integersList.Count}, Capacity = {integersList.Capacity}");
             Console.WriteLine();
 
+            Console.WriteLine($"{integersList} -> Count = {integersList.Count}");
+            integersList.Clear();
+            Console.WriteLine($"Clear() -> {integersList} -> Count = {integersList.Count}");
+            Console.WriteLine();
+
+
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             ArrayList<string> linesList = new ArrayList<string> { null, "hello", "hello", "1234", "" };
             Console.WriteLine(linesList);
@@ -82,11 +90,24 @@
 
             IEnumerator<string> iterator = linesList.GetEnumerator();
 
-            while (iterator.MoveNext())
+            try
             {
-                string text = iterator.Current;
+                int index = 0;
 
-                Console.WriteLine(text);
+                while (iterator.MoveNext())
+                {
+                    if (index == 2)
+                    {
+                        linesList.Remove("0");
+                    }
+                    index++;
+
+                    Console.WriteLine(iterator.Current);
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
     }

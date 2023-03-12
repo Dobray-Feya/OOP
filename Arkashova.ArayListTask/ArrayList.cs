@@ -7,6 +7,8 @@ namespace Arkashova.ArayListTask
     {
         private int count;
 
+        private int modCount;
+
         private const int defaultCapacity = 4;
 
         private T[] items;
@@ -53,12 +55,16 @@ namespace Arkashova.ArayListTask
         {
             count = 0;
 
+            modCount = 0;
+
             items = new T[defaultCapacity];
         }
 
         public ArrayList(int capacity)
         {
             count = 0;
+
+            modCount = 0;
 
             items = new T[capacity];
         }
@@ -96,6 +102,8 @@ namespace Arkashova.ArayListTask
                 }
 
                 items[index] = value;
+
+                modCount++;
             }
         }
 
@@ -109,6 +117,8 @@ namespace Arkashova.ArayListTask
             items[count] = item;
 
             count++;
+
+            modCount++;
         }
 
         private void IncreaseCapacity()
@@ -134,6 +144,8 @@ namespace Arkashova.ArayListTask
 #pragma warning restore CS8601 // Possible null reference assignment.
 
             count--;
+
+            modCount++;
         }
 
         public bool Remove(T item)
@@ -159,19 +171,23 @@ namespace Arkashova.ArayListTask
                 index++;
             }
 
+            modCount++;
+
             return false;
         }
 
         public void Clear()
         {
-            count = 0;
-
             for (int i = 0; i < Count; i++)
             {
 #pragma warning disable CS8601 // Possible null reference assignment.
                 items[i] = default;
 #pragma warning restore CS8601 // Possible null reference assignment.
             }
+
+            count = 0;
+
+            modCount++;
         }
 
         public void Insert(int index, T item)
@@ -195,6 +211,8 @@ namespace Arkashova.ArayListTask
             items[index] = item;
 
             count++;
+
+            modCount++;
         }
 
         public void CopyTo(T[] array, int arrayIndex)
@@ -291,8 +309,15 @@ namespace Arkashova.ArayListTask
 
         public IEnumerator<T> GetEnumerator()
         {
+            int beginModCount = modCount;
+
             for (int i = 0; i < count; i++)
             {
+                if (modCount != beginModCount)
+                {
+                    throw new InvalidOperationException("Проход итератором по списку не возможен, потому что с момента начала обхода список был изменен.");
+                }
+
                 yield return items[i];
             }
         }
