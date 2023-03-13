@@ -50,7 +50,7 @@
             {
                 Console.Write($"{vector,-16}  + {testVector,13}  = ");
                 vector.Add(testVector);
-                Console.WriteLine($"{vector,16}  + {testVector,16} = {Vector.GetVectorsSum(vector, testVector),20}");
+                Console.WriteLine($"{vector,16}  + {testVector,16} = {Vector.GetSum(vector, testVector),20}");
             }
 
             Console.WriteLine();
@@ -61,7 +61,7 @@
             {
                 Console.Write($"{vector,-16}  - {testVector,13}  =  ");
                 vector.Subtract(testVector);
-                Console.WriteLine($"{vector,16}  - {testVector,16} = {Vector.GetVectorsDifference(vector, testVector),20}");
+                Console.WriteLine($"{vector,16}  - {testVector,16} = {Vector.GetDifference(vector, testVector),20}");
             }
 
             double scalar = -2.0;
@@ -139,7 +139,7 @@
                 Vector? goodVector = new Vector(new double[] { 1.0, 2.0, 3.0 });
 
                 Console.WriteLine($"{goodVector} + {badVector} =");
-                Console.WriteLine(Vector.GetVectorsSum(goodVector, badVector));
+                Console.WriteLine(Vector.GetSum(goodVector, badVector));
             }
             catch (ArgumentNullException e)
             {
