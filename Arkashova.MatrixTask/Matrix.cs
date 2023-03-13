@@ -7,21 +7,15 @@ namespace Arkashova.MatrixTask
     {
         private Vector[] rows;
 
-        public int RowsCount
-        {
-            get { return GetRowsCount(); }
-        }
+        public int RowsCount => rows.Length; // Заметка для себя: это краткий синтаксис коротких вычисляемых свойств только с геттером { get { return ... } }
 
-        public int ColumnsCount
-        {
-            get { return GetColumnsCount(); }
-        }
+        public int ColumnsCount => rows[0].GetSize();
 
         public Matrix(int rowsCount, int columnsCount)
         {
             if (rowsCount <= 0 || columnsCount <= 0)
             {
-                throw new ArgumentException($"Ошибка: Размеры матрицы должны быть больше нуля. Задана матрица с размерами {rowsCount} и {columnsCount}.",
+                throw new ArgumentException($"Ошибка: Размеры матрицы должны быть больше нуля. Передана матрица с {rowsCount} строками и {columnsCount} столбцами.",
                                             $"{nameof(rowsCount)}, {nameof(columnsCount)}");
             }
 
@@ -37,14 +31,12 @@ namespace Arkashova.MatrixTask
         {
             if (matrix is null)
             {
-                throw new ArgumentNullException(nameof(matrix), "Нельзя создать матрицу путем копирования null.");
+                throw new ArgumentNullException(nameof(matrix), "Нельзя скопировать матрицу. В качестве копируемой матрицы передано значение null.");
             }
 
-            int rowsCount = matrix.RowsCount;
+            rows = new Vector[matrix.RowsCount];
 
-            rows = new Vector[rowsCount];
-
-            for (int i = 0; i < rowsCount; i++)
+            for (int i = 0; i < matrix.RowsCount; i++)
             {
                 rows[i] = matrix.GetRow(i);
             }
@@ -54,12 +46,12 @@ namespace Arkashova.MatrixTask
         {
             if (numbers is null)
             {
-                throw new ArgumentNullException(nameof(numbers), "Нельзя создать матрицу из массива null.");
+                throw new ArgumentNullException(nameof(numbers), "Не удалось создать матрицу из массива чисел. Передан массив равен null.");
             }
 
             if (numbers.Length == 0)
             {
-                throw new ArgumentException("Не удалось создать матрицу из массива чисел. Переданный массив чисел не содержит элементов.", nameof(numbers));
+                throw new ArgumentException("Не удалось создать матрицу из массива чисел. Переданный массив не содержит элементов.", nameof(numbers));
             }
 
             int rowsCount = numbers.GetLength(0);
@@ -84,23 +76,23 @@ namespace Arkashova.MatrixTask
         {
             if (rows is null)
             {
-                throw new ArgumentNullException(nameof(rows), "Нельзя создать матрицу из массива строк null.");
+                throw new ArgumentNullException(nameof(rows), "Не удалось создать матрицу из массива векторов. Переданный массив равен null.");
             }
 
             if (rows.Length == 0)
             {
-                throw new ArgumentException("Не удалось создать матрицу из массива векторов. Переданный массив векторов не содержит элементов.", nameof(rows));
+                throw new ArgumentException("Не удалось создать матрицу из массива векторов. Переданный массив не содержит элементов.", nameof(rows));
             }
 
-            int rowsCount = rows.GetLength(0);
+            int rowsCount = rows.Length;
 
             int maxColumnsCount = 0;
 
-            for (int i = 0; i < rowsCount; i++)
+            foreach (Vector row in rows)
             {
-                if (rows[i].GetSize() > maxColumnsCount)
+                if (row.GetSize() > maxColumnsCount)
                 {
-                    maxColumnsCount = rows[i].GetSize();
+                    maxColumnsCount = row.GetSize();
                 }
             }
 
@@ -114,21 +106,11 @@ namespace Arkashova.MatrixTask
             }
         }
 
-        public int GetRowsCount()
-        {
-            return rows.Length;
-        }
-
-        public int GetColumnsCount()
-        {
-            return rows[0].GetSize();
-        }
-
         public Vector GetRow(int index)
         {
             if (index < 0 || index >= RowsCount)
             {
-                throw new ArgumentException($"Нельзя получить строку {index} матрицы. Индекс строки должен быть от 0 до {RowsCount - 1}.", nameof(index));
+                throw new ArgumentOutOfRangeException(nameof(index), $"Не удалось получить строку матрицы с индексом {index}. Индекс строки должен быть от 0 до {RowsCount - 1}.");
             }
 
             return new Vector(rows[index]);  // Заметка для себя: нужно выдавать копию вектора, а не ссылку на вектор. Иначе если поменяется вектор, то изменится строка матрицы.
@@ -136,20 +118,20 @@ namespace Arkashova.MatrixTask
 
         public void SetRow(int index, Vector row)
         {
-            if (index < 0 || index >= RowsCount)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Индекс строки должен быть от 0 до {RowsCount - 1}. Задан индекс: {index}.");
-            }
-
             if (row is null)
             {
-                throw new ArgumentNullException(nameof(row), "Нельзя задать строку матрицы, равной null.");
+                throw new ArgumentNullException(nameof(row), "Нельзя задать строку матрицы равной null.");
             }
 
             if (row.GetSize() != ColumnsCount)
             {
                 throw new ArgumentOutOfRangeException(nameof(row), $"Размер вектора-строки должен быть равен {ColumnsCount}." +
                                                                    $"Передан вектор-строка размера {row.GetSize()}");
+            }
+
+            if (index < 0 || index >= RowsCount)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), $"Не удалось задать строку матрицы с индексом {index}. Индекс строки должен быть от 0 до {RowsCount - 1}.");
             }
 
             rows[index] = new Vector(row);
@@ -159,7 +141,7 @@ namespace Arkashova.MatrixTask
         {
             if (index < 0 || index >= ColumnsCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Нельзя получить столбец {index} матрицы. Индекс столбца должен быть от 0 до {ColumnsCount - 1}.");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Нельзя получить столбец матрицы с индексом {index}. Индекс столбца должен быть от 0 до {ColumnsCount - 1}.");
             }
 
             Vector vector = new Vector(RowsCount);
@@ -175,39 +157,37 @@ namespace Arkashova.MatrixTask
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("{");
+            stringBuilder.Append('{');
 
             foreach (Vector row in rows)
             {
-                stringBuilder.Append(row.ToString())
+                stringBuilder.Append(row)
                              .Append(", ");
             }
 
             stringBuilder.Remove(stringBuilder.Length - 2, 2);
-            stringBuilder.Append("}");
+            stringBuilder.Append('}');
 
             return stringBuilder.ToString();
         }
 
         public void Transpose()
         {
-            Matrix sourceMatrix = new Matrix(this);
+            Vector[] vectors = new Vector[ColumnsCount];
 
-            int rowsCount = sourceMatrix.ColumnsCount;
-
-            rows = new Vector[rowsCount];
-
-            for (int i = 0; i < rowsCount; i++)
+            for (int i = 0; i < ColumnsCount; i++)
             {
-                rows[i] = sourceMatrix.GetColumn(i);
+                vectors[i] = GetColumn(i);
             }
+
+            rows = vectors;
         }
 
         public void MultiplyByScalar(double scalar)
         {
-            for (int i = 0; i < RowsCount; i++)
+            foreach (Vector row in rows)
             {
-                rows[i].MultiplyByScalar(scalar);
+                row.MultiplyByScalar(scalar);
             }
         }
 
@@ -223,12 +203,12 @@ namespace Arkashova.MatrixTask
 
             if (matricolumnsCount == 1)
             {
-                return GetRow(0).GetComponent(0);
+                return rows[0].GetComponent(0);
             }
 
             if (matricolumnsCount == 2)
             {
-                return GetRow(0).GetComponent(0) * GetRow(1).GetComponent(1) - GetRow(0).GetComponent(1) * GetRow(1).GetComponent(0);
+                return rows[0].GetComponent(0) * rows[1].GetComponent(1) - rows[0].GetComponent(1) * rows[1].GetComponent(0);
             }
 
             int sign = 1;
@@ -236,7 +216,7 @@ namespace Arkashova.MatrixTask
 
             for (int i = 0; i < matricolumnsCount; i++)
             {
-                sum += sign * GetRow(0).GetComponent(i) * GetMatrixWithoutZeroRowAndCertainColumn(this, i).GetDeterminant();
+                sum += sign * rows[0].GetComponent(i) * GetMatrixWithoutZeroRowAndCertainColumn(this, i).GetDeterminant();
 
                 sign *= -1;
             }
@@ -268,12 +248,7 @@ namespace Arkashova.MatrixTask
 
         public void Add(Matrix matrix)
         {
-            if (HaveDifferentSizes(this, matrix))
-            {
-                throw new ArgumentException("Нельзя сложить две матрицы, т.к. их размеры не совпадают. " +
-                                            $"Размеры первой матрицы: {RowsCount} на {ColumnsCount}. " +
-                                            $"Размеры второй матрицы: {matrix.RowsCount} на {matrix.ColumnsCount}.", nameof(matrix));
-            }
+            ThrowExceptionIfHaveDifferentSizes(this, matrix);
 
             for (int i = 0; i < RowsCount; i++)
             {
@@ -283,12 +258,7 @@ namespace Arkashova.MatrixTask
 
         public void Subtract(Matrix matrix)
         {
-            if (HaveDifferentSizes(this, matrix))
-            {
-                throw new ArgumentException("Нельзя получить разность матриц, т.к. их размеры не совпадают. " +
-                                            $"Размеры первой матрицы: {RowsCount} на {ColumnsCount}. " +
-                                            $"Размеры второй матрицы: {matrix.RowsCount} на {matrix.ColumnsCount}.", nameof(matrix));
-            }
+            ThrowExceptionIfHaveDifferentSizes(this, matrix);
 
             for (int i = 0; i < RowsCount; i++)
             {
@@ -296,9 +266,15 @@ namespace Arkashova.MatrixTask
             }
         }
 
-        private static bool HaveDifferentSizes(Matrix matrix1, Matrix matrix2)
+        private static void ThrowExceptionIfHaveDifferentSizes(Matrix matrix1, Matrix matrix2)
         {
-            return matrix1.RowsCount != matrix2.RowsCount || matrix1.ColumnsCount != matrix2.ColumnsCount;
+            if (matrix1.RowsCount != matrix2.RowsCount || matrix1.ColumnsCount != matrix2.ColumnsCount)
+            {
+                throw new ArgumentException("Не удалось выполнить операцию над матрицами, т.к. их размеры не совпадают. " +
+                                            $"Первая матрица: строк - {matrix1.RowsCount}, столбцов - {matrix1.ColumnsCount}. " +
+                                            $"Вторая матрица: строк - {matrix2.RowsCount}, столбцов - {matrix2.ColumnsCount}.",
+                                            $"{nameof(matrix1)}, {nameof(matrix2)}");
+            }
         }
 
         public Vector MultiplyByVector(Vector vector)
@@ -319,15 +295,9 @@ namespace Arkashova.MatrixTask
             return new Vector(numbers);
         }
 
-        public static Matrix GetMatriсesSum(Matrix matrix1, Matrix matrix2)
+        public static Matrix GetSum(Matrix matrix1, Matrix matrix2)
         {
-            if (HaveDifferentSizes(matrix1, matrix2))
-            {
-                throw new ArgumentException("Нельзя сложить две матрицы, т.к. их размеры не совпадают. " +
-                                           $"Размеры первой матрицы: {matrix1.RowsCount} на {matrix1.ColumnsCount}. " +
-                                           $"Размеры второй матрицы: {matrix2.RowsCount} на {matrix2.ColumnsCount}.",
-                                           $"{nameof(matrix1)}, {nameof(matrix2)}");
-            }
+            ThrowExceptionIfHaveDifferentSizes(matrix1, matrix2);
 
             Matrix resultMatrix = new Matrix(matrix1);
 
@@ -339,15 +309,9 @@ namespace Arkashova.MatrixTask
             return resultMatrix;
         }
 
-        public static Matrix GetMatriсesDifference(Matrix matrix1, Matrix matrix2)
+        public static Matrix GetDifference(Matrix matrix1, Matrix matrix2)
         {
-            if (HaveDifferentSizes(matrix1, matrix2))
-            {
-                throw new ArgumentException("Нельзя вычесть две матрицы, т.к. их размеры не совпадают. " +
-                                           $"Размеры первой матрицы: {matrix1.RowsCount} на {matrix1.ColumnsCount}. " +
-                                           $"Размеры второй матрицы: {matrix2.RowsCount} на {matrix2.ColumnsCount}.",
-                                           $"{nameof(matrix1)}, {nameof(matrix2)}");
-            }
+            ThrowExceptionIfHaveDifferentSizes(matrix1, matrix2);
 
             Matrix resultMatrix = new Matrix(matrix1);
 
@@ -359,7 +323,7 @@ namespace Arkashova.MatrixTask
             return resultMatrix;
         }
 
-        public static Matrix GetMatricesProduct(Matrix matrix1, Matrix matrix2)
+        public static Matrix GetProduct(Matrix matrix1, Matrix matrix2)
         {
             if (matrix1.ColumnsCount != matrix2.RowsCount)
             {

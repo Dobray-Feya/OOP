@@ -41,10 +41,10 @@ namespace Arkashova.MatrixTask
             Console.WriteLine(matrix3.GetRow(1));
 
             Console.Write("GetColumnsCount() = ");
-            Console.WriteLine(matrix3.GetColumnsCount());
+            Console.WriteLine(matrix3.ColumnsCount);
 
             Console.Write("GetRowsCount() = ");
-            Console.WriteLine(matrix3.GetRowsCount());
+            Console.WriteLine(matrix3.RowsCount);
             Console.WriteLine();
 
             Matrix matrix4 = new Matrix(matrix3);
@@ -56,15 +56,16 @@ namespace Arkashova.MatrixTask
             Console.WriteLine(matrix4);
             Console.WriteLine();
 
-            Console.WriteLine(matrix4); 
+            Console.WriteLine(matrix4);
             Console.Write("GetColumn(4) = ");
             Console.WriteLine(matrix4.GetColumn(4));
             Console.WriteLine();
 
-            Console.WriteLine(matrix4); 
+            Console.WriteLine(matrix4);
             Console.WriteLine("Транспонированная матрица:");
             matrix4.Transpose();
             Console.WriteLine(matrix4);
+            Console.WriteLine();
             Console.WriteLine();
 
             double scalar = 3;
@@ -126,7 +127,7 @@ namespace Arkashova.MatrixTask
             Console.Write("Матрица B =     ");
             Console.WriteLine(matrix7);
             Console.Write("Матрица A + B = ");
-            Console.WriteLine(Matrix.GetMatriсesSum(matrix6, matrix7));
+            Console.WriteLine(Matrix.GetSum(matrix6, matrix7));
             Console.WriteLine();
 
             Console.Write("Матрица A =     ");
@@ -143,7 +144,7 @@ namespace Arkashova.MatrixTask
             Console.Write("Матрица B =     ");
             Console.WriteLine(matrix7);
             Console.Write("Матрица A - B = ");
-            Console.WriteLine(Matrix.GetMatriсesDifference(matrix6, matrix7));
+            Console.WriteLine(Matrix.GetDifference(matrix6, matrix7));
             Console.WriteLine();
 
             double[,] numbers8 =
@@ -171,7 +172,7 @@ namespace Arkashova.MatrixTask
             Console.WriteLine(matrix9);
 
             Console.Write("Матрица C x D = ");
-            Console.WriteLine(Matrix.GetMatricesProduct(matrix8, matrix9));
+            Console.WriteLine(Matrix.GetProduct(matrix8, matrix9));
         }
     }
 }
