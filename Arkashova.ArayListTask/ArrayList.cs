@@ -13,10 +13,7 @@ namespace Arkashova.ArayListTask
 
         private T[] items;
 
-        public int Count
-        {
-            get { return count; }
-        }
+        public int Count => count;
 
         /// <summary>
         ///     Gets or sets the total number of elements the internal data structure can hold without resizing.
@@ -39,10 +36,10 @@ namespace Arkashova.ArayListTask
                     throw new ArgumentOutOfRangeException(nameof(value), "Нельзя сделать вместимость списка равной 0.");
                 }
 
-                if (value < Count)
+                if (value < count)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), $"Нельзя сделать вместимость списка равной {value}, " +
-                                                                         $"т.к. это меньше, чем текущее количество элементов в списке ({Count})");
+                                                                         $"т.к. это меньше, чем текущее количество элементов в списке ({count})");
                 }
 
                 Array.Resize(ref items, value);
@@ -161,7 +158,10 @@ namespace Arkashova.ArayListTask
                     return true;
                 }
 
-                if (items[index] is not null && items[index]!.Equals(item)) // Пришлось поставить !, чтобы не было warning'а (и ниже в трех подобных местах)
+                if (items[index] is not null && items[index]!.Equals(item)) // Пришлось поставить !, чтобы не было warning'а (и ниже в трех подобных местах). 
+                                                                            // Заметка для себя: про оператор "!", допускающий значение null (null-forgiving operator) см.:
+                                                                            // https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/operators/null-forgiving и
+                                                                            // https://metanit.com/sharp/tutorial/3.50.php
                 {
                     RemoveAt(index);
 
@@ -178,7 +178,7 @@ namespace Arkashova.ArayListTask
 
         public void Clear()
         {
-            for (int i = 0; i < Count; i++)
+            for (int i = 0; i < count; i++)
             {
 #pragma warning disable CS8601 // Possible null reference assignment.
                 items[i] = default;
@@ -230,7 +230,7 @@ namespace Arkashova.ArayListTask
 
             if (arrayIndex + count > array.Length)
             {
-                throw new ArgumentOutOfRangeException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
+                throw new ArgumentOutOfRangeException($"{nameof(array.Length)}, {nameof(count)}, {nameof(arrayIndex)}",
                                                       $"Превышен размер маcсива {array.Length}. Список длины {count} не может быть вставлен в массив по индексу {arrayIndex}.");
             }
 
@@ -242,7 +242,7 @@ namespace Arkashova.ArayListTask
 
         public bool Contains(T item)
         {
-            for (int i = 0; i < Count; i++)
+            for (int i = 0; i < count; i++)
             {
                 if (items[i] is null && item is null)
                 {
@@ -260,7 +260,7 @@ namespace Arkashova.ArayListTask
 
         public int IndexOf(T item)
         {
-            for (int i = 0; i < Count; i++)
+            for (int i = 0; i < count; i++)
             {
                 if (items[i] is null && item is null)
                 {

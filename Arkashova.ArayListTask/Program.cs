@@ -1,6 +1,4 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace Arkashova.ArayListTask
+﻿namespace Arkashova.ArayListTask
 {
     internal class Program
     {
@@ -27,7 +25,7 @@ namespace Arkashova.ArayListTask
             Console.WriteLine();
 
             Console.WriteLine(integersList);
-            int index1 = 2;
+            int index1 = 3;
             integersList.Insert(index1, 100);
             Console.WriteLine($"Insert({index1}, 100) -> " + integersList);
             Console.WriteLine();
@@ -61,7 +59,6 @@ namespace Arkashova.ArayListTask
             integersList.Clear();
             Console.WriteLine($"Clear() -> {integersList} -> Count = {integersList.Count}");
             Console.WriteLine();
-
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             ArrayList<string> linesList = new ArrayList<string> { null, "hello", "hello", "1234", "" };
