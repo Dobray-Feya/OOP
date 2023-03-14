@@ -39,7 +39,7 @@
 
             foreach (Vector vector in vectors)
             {
-                Console.WriteLine($"{vector,-16}  x {testVector,13}  =  {Vector.GetVectorsDotProduct(vector, testVector),5}");
+                Console.WriteLine($"{vector,-16}  x {testVector,13}  =  {Vector.GetDotProduct(vector, testVector),5}");
             }
 
             Console.WriteLine();

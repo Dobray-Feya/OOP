@@ -49,7 +49,7 @@ namespace Arkashova.VectorTask
         {
             if (size < 0)
             {
-                throw new ArgumentException($"Размерность вектора должна быть > 0. Передана резмерность: {size}.", nameof(size));
+                throw new ArgumentException($"Размерность вектора должна быть > 0. Передана размерность: {size}.", nameof(size));
             }
 
             if (numbers is null)
@@ -240,13 +240,13 @@ namespace Arkashova.VectorTask
             return resultVector;
         }
 
-        public static double GetVectorsDotProduct(Vector vector1, Vector vector2)
+        public static double GetDotProduct(Vector vector1, Vector vector2)
         {
             double dotProduct = 0;
 
-            int minLength = Math.Min(vector1.components.Length, vector2.components.Length);
+            int minSize = Math.Min(vector1.components.Length, vector2.components.Length);
 
-            for (int i = 0; i < minLength; i++)
+            for (int i = 0; i < minSize; i++)
             {
                 dotProduct += vector1.components[i] * vector2.components[i];
             }
