@@ -42,33 +42,33 @@ namespace Arkashova.MatrixTask
             }
         }
 
-        public Matrix(double[,] numbers)
+        public Matrix(double[,] matrixComponents)
         {
-            if (numbers is null)
+            if (matrixComponents is null)
             {
-                throw new ArgumentNullException(nameof(numbers), "Не удалось создать матрицу из массива чисел. Передан массив равен null.");
+                throw new ArgumentNullException(nameof(matrixComponents), "Не удалось создать матрицу из массива чисел. Переданный массив равен null.");
             }
 
-            if (numbers.Length == 0)
+            if (matrixComponents.Length == 0)
             {
-                throw new ArgumentException("Не удалось создать матрицу из массива чисел. Переданный массив не содержит элементов.", nameof(numbers));
+                throw new ArgumentException("Не удалось создать матрицу из массива чисел. Переданный массив не содержит элементов.", nameof(matrixComponents));
             }
 
-            int rowsCount = numbers.GetLength(0);
-            int columnsCount = numbers.GetLength(1);
+            int rowsCount = matrixComponents.GetLength(0);
+            int columnsCount = matrixComponents.GetLength(1);
 
             rows = new Vector[rowsCount];
 
-            double[] numbersRow = new double[columnsCount];
+            double[] vectorComponents = new double[columnsCount];
 
             for (int i = 0; i < rowsCount; i++)
             {
                 for (int j = 0; j < columnsCount; j++)
                 {
-                    numbersRow[j] = numbers[i, j];
+                    vectorComponents[j] = matrixComponents[i, j];
                 }
 
-                rows[i] = new Vector(numbersRow);
+                rows[i] = new Vector(vectorComponents);
             }
         }
 
@@ -125,8 +125,7 @@ namespace Arkashova.MatrixTask
 
             if (row.GetSize() != ColumnsCount)
             {
-                throw new ArgumentOutOfRangeException(nameof(row), $"Размер вектора-строки должен быть равен {ColumnsCount}." +
-                                                                   $"Передан вектор-строка размера {row.GetSize()}");
+                throw new ArgumentException($"Размер вектора-строки должен быть равен {ColumnsCount}. Передан вектор-строка размера {row.GetSize()}", nameof(row));
             }
 
             if (index < 0 || index >= RowsCount)
@@ -199,14 +198,14 @@ namespace Arkashova.MatrixTask
                                                    $"Переданная матрица имеет размеры {RowsCount} на {ColumnsCount}.");
             }
 
-            int matricolumnsCount = ColumnsCount;
+            int matrixColumnsCount = ColumnsCount;
 
-            if (matricolumnsCount == 1)
+            if (matrixColumnsCount == 1)
             {
                 return rows[0].GetComponent(0);
             }
 
-            if (matricolumnsCount == 2)
+            if (matrixColumnsCount == 2)
             {
                 return rows[0].GetComponent(0) * rows[1].GetComponent(1) - rows[0].GetComponent(1) * rows[1].GetComponent(0);
             }
@@ -214,7 +213,7 @@ namespace Arkashova.MatrixTask
             int sign = 1;
             double sum = 0;
 
-            for (int i = 0; i < matricolumnsCount; i++)
+            for (int i = 0; i < matrixColumnsCount; i++)
             {
                 sum += sign * rows[0].GetComponent(i) * GetMatrixWithoutZeroRowAndCertainColumn(this, i).GetDeterminant();
 
@@ -248,7 +247,7 @@ namespace Arkashova.MatrixTask
 
         public void Add(Matrix matrix)
         {
-            ThrowExceptionIfHaveDifferentSizes(this, matrix);
+            CheckSizesEquation(this, matrix);
 
             for (int i = 0; i < RowsCount; i++)
             {
@@ -258,7 +257,7 @@ namespace Arkashova.MatrixTask
 
         public void Subtract(Matrix matrix)
         {
-            ThrowExceptionIfHaveDifferentSizes(this, matrix);
+            CheckSizesEquation(this, matrix);
 
             for (int i = 0; i < RowsCount; i++)
             {
@@ -266,7 +265,7 @@ namespace Arkashova.MatrixTask
             }
         }
 
-        private static void ThrowExceptionIfHaveDifferentSizes(Matrix matrix1, Matrix matrix2)
+        private static void CheckSizesEquation(Matrix matrix1, Matrix matrix2)
         {
             if (matrix1.RowsCount != matrix2.RowsCount || matrix1.ColumnsCount != matrix2.ColumnsCount)
             {
@@ -285,40 +284,30 @@ namespace Arkashova.MatrixTask
                                             $"размерности вектора ({vector.GetSize()}).", nameof(vector));
             }
 
-            double[] numbers = new double[RowsCount];
+            double[] vectorComponents = new double[RowsCount];
 
             for (int i = 0; i < RowsCount; i++)
             {
-                numbers[i] = Vector.GetVectorsDotProduct(rows[i], vector);
+                vectorComponents[i] = Vector.GetDotProduct(rows[i], vector);
             }
 
-            return new Vector(numbers);
+            return new Vector(vectorComponents);
         }
 
         public static Matrix GetSum(Matrix matrix1, Matrix matrix2)
         {
-            ThrowExceptionIfHaveDifferentSizes(matrix1, matrix2);
-
             Matrix resultMatrix = new Matrix(matrix1);
 
-            for (int i = 0; i < matrix1.RowsCount; i++)
-            {
-                resultMatrix.rows[i].Add(matrix2.rows[i]);
-            }
+            resultMatrix.Add(matrix2);
 
             return resultMatrix;
         }
 
         public static Matrix GetDifference(Matrix matrix1, Matrix matrix2)
         {
-            ThrowExceptionIfHaveDifferentSizes(matrix1, matrix2);
-
             Matrix resultMatrix = new Matrix(matrix1);
 
-            for (int i = 0; i < matrix1.RowsCount; i++)
-            {
-                resultMatrix.rows[i].Subtract(matrix2.rows[i]);
-            }
+            resultMatrix.Subtract(matrix2);
 
             return resultMatrix;
         }
@@ -334,17 +323,17 @@ namespace Arkashova.MatrixTask
                                             $"{nameof(matrix1)}, {nameof(matrix2)}");
             }
 
-            double[,] numbers = new double[matrix1.RowsCount, matrix2.ColumnsCount];
+            double[,] matrixComponents = new double[matrix1.RowsCount, matrix2.ColumnsCount];
 
             for (int i = 0; i < matrix1.RowsCount; i++)
             {
                 for (int j = 0; j < matrix2.ColumnsCount; j++)
                 {
-                    numbers[i, j] = Vector.GetVectorsDotProduct(matrix1.rows[i], matrix2.GetColumn(j));
+                    matrixComponents[i, j] = Vector.GetDotProduct(matrix1.rows[i], matrix2.GetColumn(j));
                 }
             }
 
-            return new Matrix(numbers);
+            return new Matrix(matrixComponents);
         }
     }
 }
