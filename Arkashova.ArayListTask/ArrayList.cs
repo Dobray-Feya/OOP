@@ -5,15 +5,13 @@ namespace Arkashova.ArayListTask
 {
     public class ArrayList<T> : IList<T>
     {
-        private int count;
+        private const int DefaultCapacity = 4;
 
         private int modCount;
 
-        private const int defaultCapacity = 4;
+        private T?[] items;
 
-        private T[] items;
-
-        public int Count => count;
+        public int Count { get; private set; }
 
         /// <summary>
         ///     Gets or sets the total number of elements the internal data structure can hold without resizing.
@@ -31,37 +29,36 @@ namespace Arkashova.ArayListTask
 
             set
             {
-                if (value == 0)
+                if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(value), "Нельзя сделать вместимость списка равной 0.");
+                    throw new ArgumentOutOfRangeException(nameof(value), $"Нельзя сделать вместимость списка равной {value}. " +
+                                                                         "Вместимость списка должна быть больше или равна 0.");
                 }
 
-                if (value < count)
+                if (value < Count)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), $"Нельзя сделать вместимость списка равной {value}, " +
-                                                                         $"т.к. это меньше, чем текущее количество элементов в списке ({count})");
+                                                                         $"т.к. это меньше, чем текущее количество элементов в списке ({Count})");
                 }
 
                 Array.Resize(ref items, value);
             }
         }
 
-        public bool IsReadOnly => throw new NotImplementedException(); // Пока не знаю, как реализовать
+        public bool IsReadOnly => false;
 
         public ArrayList()
         {
-            count = 0;
-
-            modCount = 0;
-
-            items = new T[defaultCapacity];
+            items = new T[DefaultCapacity];
         }
 
         public ArrayList(int capacity)
         {
-            count = 0;
-
-            modCount = 0;
+            if (capacity < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(capacity), $"Нельзя сделать вместимость списка равной {capacity}. " +
+                                                                        "Вместимость списка должна быть больше или равна 0.");
+            }
 
             items = new T[capacity];
         }
@@ -71,32 +68,14 @@ namespace Arkashova.ArayListTask
 
             get
             {
-                if (count == 0)
-                {
-                    throw new ArgumentException("Нельзя получить элемент списка. Список не содержит элементов.");
-                }
+                CheckIndex(index);
 
-                if (index < 0 || index >= count)
-                {
-                    throw new IndexOutOfRangeException($" Нельзя получить элемент списка по индексу {index}. " +
-                                                       $" Индекс элемента должен быть от 0 до {count - 1}.");
-                }
-
-                return items[index];
+                return items[index]!;
             }
 
             set
             {
-                if (count == 0)
-                {
-                    throw new ArgumentException("Нельзя задать значение элементу списка. Список не содержит элементов.");
-                }
-
-                if (index < 0 || index >= count)
-                {
-                    throw new IndexOutOfRangeException($" Нельзя задать элемент списка по индексу {index}. " +
-                                                       $"Индекс элемента должен быть от 0 до {count - 1}.");
-                }
+                CheckIndex(index);
 
                 items[index] = value;
 
@@ -104,118 +83,108 @@ namespace Arkashova.ArayListTask
             }
         }
 
-        public void Add(T item)
+        private void CheckIndex(int index)
         {
-            if (count >= items.Length)
+            if (Count == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(Count) + nameof(index), "Нельзя получить элемент списка. Список не содержит элементов.");
+            }
+
+            if (index < 0 || index >= Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), $"Нельзя получить элемент списка по индексу {index}. " +
+                                                                     $"Индекс элемента должен быть от 0 до {Count - 1}.");
+            }
+        }
+
+        public void Add(T? item)
+        {
+            Insert(Count, item);
+        }
+
+        public void Insert(int index, T? item)
+        {
+            if (index < 0 || index > Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), $"Нельзя вставить элемент списка по индексу {index}. " +
+                                                                     $"Индекс элемента должен быть от 0 до {Count}.");
+            }
+
+            if (Capacity == Count)
             {
                 IncreaseCapacity();
             }
 
-            items[count] = item;
+            if (index < Count)
+            {
+                Array.Copy(items, index, items, index + 1, Count - index);
+            }
 
-            count++;
+            items[index] = item;
 
+            Count++;
             modCount++;
         }
 
         private void IncreaseCapacity()
         {
-            Array.Resize(ref items, items.Length * 2);
+            Capacity *= 2;
+
+            if (Capacity == 0)
+            {
+                Capacity = 1;
+            }
+
+            Array.Resize(ref items, Capacity);
         }
 
         public void RemoveAt(int index)
         {
-            if (index < 0 || index >= count)
+            if (index < 0 || index >= Count)
             {
                 throw new IndexOutOfRangeException($"Нельзя удалить элемент списка по индексу {index}. " +
-                                                   $"Индекс элемента должен быть от 0 до {count - 1}.");
+                                                   $"Индекс элемента должен быть от 0 до {Count - 1}.");
             }
 
-            if (index < count - 1)
+            if (index < Count - 1)
             {
-                Array.Copy(items, index + 1, items, index, count - index - 1);
+                Array.Copy(items, index + 1, items, index, Count - index - 1);
             }
 
-#pragma warning disable CS8601 // Possible null reference assignment. // Пришлось отключить warning (и ниже в одном месте)
-            items[count - 1] = default;  // Заметка для себя: default для ссылочных типов выдает null, а для value - типов – экземпляр структуры, созданный через конструктор без аргументов
-#pragma warning restore CS8601 // Possible null reference assignment.
+            items[Count - 1] = default;  // Заметка для себя: default для ссылочных типов выдает null, а для value - типов – экземпляр структуры, созданный через конструктор без аргументов
 
-            count--;
-
+            Count--;
             modCount++;
         }
 
-        public bool Remove(T item)
+        public bool Remove(T? item)
         {
-            int index = 0;
+            int index = IndexOf(item);
 
-            while (index < count)
+            if (index != -1)
             {
-                if (items[index] is null && item is null)
-                {
-                    RemoveAt(index);
+                RemoveAt(index);
 
-                    return true;
-                }
-
-                if (items[index] is not null && items[index]!.Equals(item)) // Пришлось поставить !, чтобы не было warning'а (и ниже в трех подобных местах). 
-                                                                            // Заметка для себя: про оператор "!", допускающий значение null (null-forgiving operator) см.:
-                                                                            // https://learn.microsoft.com/ru-ru/dotnet/csharp/language-reference/operators/null-forgiving и
-                                                                            // https://metanit.com/sharp/tutorial/3.50.php
-                {
-                    RemoveAt(index);
-
-                    return true;
-                }
-
-                index++;
+                return true;
             }
-
-            modCount++;
 
             return false;
         }
 
         public void Clear()
         {
-            for (int i = 0; i < count; i++)
+            if (Count == 0)
             {
-#pragma warning disable CS8601 // Possible null reference assignment.
-                items[i] = default;
-#pragma warning restore CS8601 // Possible null reference assignment.
+                return;
             }
 
-            count = 0;
+            Array.Clear(items);
 
+            Count = 0;
             modCount++;
         }
 
-        public void Insert(int index, T item)
-        {
-            if (Capacity == count)
-            {
-                IncreaseCapacity();
-            }
-
-            if (index < 0 || index > count)
-            {
-                throw new IndexOutOfRangeException($"Нельзя вставить элемент списка по индексу {index}. " +
-                                                   $"Индекс элемента должен быть от 0 до {count}.");
-            }
-
-            if (index < count)
-            {
-                Array.Copy(items, index, items, index + 1, count - index + 1);
-            }
-
-            items[index] = item;
-
-            count++;
-
-            modCount++;
-        }
-
-        public void CopyTo(T[] array, int arrayIndex)
+        public void CopyTo(T?[] array, int arrayIndex)
         {
             if (array is null)
             {
@@ -224,50 +193,39 @@ namespace Arkashova.ArayListTask
 
             if (array.Length == 0)
             {
-                throw new ArgumentException("Вставка списка в массив невозможна. Целевой массив пуст.",
-                                           $"{nameof(array.Length)}");
+                throw new ArgumentOutOfRangeException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
+                                                      "Вставка списка в массив невозможна. Целевой массив пуст.");
             }
 
-            if (arrayIndex + count > array.Length)
+            if (arrayIndex + Count > array.Length)
             {
-                throw new ArgumentOutOfRangeException($"{nameof(array.Length)}, {nameof(count)}, {nameof(arrayIndex)}",
-                                                      $"Превышен размер маcсива {array.Length}. Список длины {count} не может быть вставлен в массив по индексу {arrayIndex}.");
+                throw new ArgumentOutOfRangeException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
+                                                      $"Превышен размер маcсива {array.Length}. Список длины {Count} не может быть вставлен в массив по индексу {arrayIndex}.");
             }
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < Count; i++)
             {
                 array[i + arrayIndex] = items[i];
             }
+
+            Array.Copy(array, arrayIndex, items, 0, Count);
         }
 
-        public bool Contains(T item)
+        public bool Contains(T? item)
         {
-            for (int i = 0; i < count; i++)
+            if (IndexOf(item) == -1)
             {
-                if (items[i] is null && item is null)
-                {
-                    return true;
-                }
-
-                if (items[i] is not null && items[i]!.Equals(item))
-                {
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            return true;
         }
 
-        public int IndexOf(T item)
+        public int IndexOf(T? item)
         {
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < Count; i++)
             {
-                if (items[i] is null && item is null)
-                {
-                    return i;
-                }
-
-                if (items[i] is not null && items[i]!.Equals(item))
+                if (Equals(items[i], item))
                 {
                     return i;
                 }
@@ -278,47 +236,49 @@ namespace Arkashova.ArayListTask
 
         public override string ToString()
         {
-            if (count == 0)
+            if (Count == 0)
             {
-                return "";
+                return "[]";
             }
 
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append('[');
 
-            for (int i = 0; i < count; i++)
+            foreach (T? item in this)
             {
-                stringBuilder.Append(this[i])
+                stringBuilder.Append(item)
                              .Append(", ");
             }
 
             stringBuilder.Remove(stringBuilder.Length - 2, 2);
+            stringBuilder.Append(']');
 
             return stringBuilder.ToString();
         }
 
         /// <summary>
-        /// Changes array capacity to elements in list count, if this count is less than 90 % of array capacity.
+        /// Changes array capacity to elements in list Count, if this Count is less than 90 % of array capacity.
         /// </summary>
         public void TrimExcess()
         {
-            if (count < 0.9 * Capacity)
+            if (Count < 0.9 * Capacity)
             {
-                Capacity = count;
-            };
+                Capacity = Count;
+            }
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            int beginModCount = modCount;
+            int initialModCount = modCount;
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < Count; i++)
             {
-                if (modCount != beginModCount)
+                if (modCount != initialModCount)
                 {
                     throw new InvalidOperationException("Проход итератором по списку не возможен, потому что с момента начала обхода список был изменен.");
                 }
 
-                yield return items[i];
+                yield return items[i]!;
             }
         }
 
@@ -328,4 +288,3 @@ namespace Arkashova.ArayListTask
         }
     }
 }
-
