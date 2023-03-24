@@ -142,8 +142,8 @@ namespace Arkashova.ArayListTask
         {
             if (index < 0 || index >= Count)
             {
-                throw new IndexOutOfRangeException($"Нельзя удалить элемент списка по индексу {index}. " +
-                                                   $"Индекс элемента должен быть от 0 до {Count - 1}.");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Нельзя удалить элемент списка по индексу {index}. " +
+                                                                     $"Индекс элемента должен быть от 0 до {Count - 1}.");
             }
 
             if (index < Count - 1)
