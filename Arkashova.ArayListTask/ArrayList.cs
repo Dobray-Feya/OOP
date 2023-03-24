@@ -203,12 +203,7 @@ namespace Arkashova.ArayListTask
                                                       $"Превышен размер маcсива {array.Length}. Список длины {Count} не может быть вставлен в массив по индексу {arrayIndex}.");
             }
 
-            for (int i = 0; i < Count; i++)
-            {
-                array[i + arrayIndex] = items[i];
-            }
-
-            Array.Copy(array, arrayIndex, items, 0, Count);
+            Array.Copy(items, 0, array, arrayIndex, Count);
         }
 
         public bool Contains(T? item)
