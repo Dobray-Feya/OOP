@@ -270,7 +270,7 @@ namespace Arkashova.ArayListTask
             {
                 if (modCount != initialModCount)
                 {
-                    throw new InvalidOperationException("Проход итератором по списку не возможен, потому что с момента начала обхода список был изменен.");
+                    throw new InvalidOperationException("Проход итератором по списку невозможен, потому что с момента начала обхода список был изменен.");
                 }
 
                 yield return items[i]!;
