@@ -35,9 +35,7 @@ namespace Arkashova.ListTask
 
                 ListItem<T>? desiredItem = Skip(index);
 
-                T? oldData = desiredItem!.Data;
-
-                desiredItem.Data = value;
+                desiredItem!.Data = value;
             }
         }
 
