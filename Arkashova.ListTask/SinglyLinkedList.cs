@@ -4,255 +4,171 @@ namespace Arkashova.ListTask
 {
     public class SinglyLinkedList<T>
     {
-        private ListItem<T> head;
+        private ListItem<T>? head;
 
-        private int count = 0;
+        public int Count { get; private set; }
 
-        public SinglyLinkedList(ListItem<T> head)
+        public SinglyLinkedList(T? data)
         {
-            if (head is null)
-            {
-                throw new ArgumentNullException(nameof(head), "Невозможно создать список. В качестве головы списка передано значение null.");
-            }
+            head = new ListItem<T>(data);
 
-            this.head = head;
-
-            count = 1;
+            Count = 1;
         }
 
-        public T this[int index]
+        public SinglyLinkedList()
+        {
+            head = null;
+        }
+
+        public T? this[int index]
         {
             get
             {
-                return GetData(index);
+                CheckIndex(index);
+
+                return Skip(index)!.Data;
             }
 
             set
             {
-                SetData(index, value);
+                CheckIndex(index);
+
+                ListItem<T>? desiredItem = Skip(index);
+
+                T? oldData = desiredItem!.Data;
+
+                desiredItem.Data = value;
             }
         }
 
-        public int GetCount()
+        public T? GetFirst()
         {
-            return count;
+            if (Count == 0)
+            {
+                throw new InvalidOperationException("Нельзя получить первый элемент списка, т.к. список пуст.");
+            }
+
+            return head!.Data;
         }
 
-        public T GetHeadData()
+        public void Insert(int index, T? data)
         {
-            return head.Data;
-        }
-
-        public void Insert(int index, T data)
-        {
-            if (index < 0 || index > count)
+            if (index < 0 || index > Count)
             {
                 throw new IndexOutOfRangeException($"Невозможно вставить элемент в список по индексу {index}. " +
-                                                   $"Индекс элемента должен быть от 0 до {count}.");
+                                                   $"Индекс элемента должен быть от 0 до {Count}.");
             }
 
             if (index == 0)
             {
-                InsertHead(data);
+                InsertFirst(data);
 
                 return;
             }
 
-            if (index == count)
-            {
-                InsertTail(data);
-
-                return;
-            }
-
-            InsertMiddle(index, data);
-        }
-
-        public void InsertHead(T newHeadData)
-        {
-            ListItem<T> newHead = new ListItem<T>(newHeadData);
-
-            newHead.Next = head;
-
-            head = newHead;
-
-            count++;
-        }
-
-        public void InsertTail(T data)
-        {
-            ListItem<T> p = head;
-
-            while (p.Next != null)
-            {
-                p = p.Next;
-            }
-
+            ListItem<T>? previousItem = Skip(index - 1);
+            ListItem<T>? nextItem = previousItem!.Next;
             ListItem<T> insertedItem = new ListItem<T>(data);
 
-            p.Next = insertedItem;
+            previousItem.Next = insertedItem;
+            insertedItem.Next = nextItem;
 
-            count++;
+            Count++;
         }
 
-        private void InsertMiddle(int index, T data)  // Из Insert передается index: 0 < index < count
+        public void InsertFirst(T? data)
         {
-            int curentIndex = 1;
+            head = new ListItem<T>(data, head);
 
-            for (ListItem<T>? p = head.Next, prev = head; p != null; prev = p, p = p.Next)
+            Count++;
+        }
+
+        private ListItem<T>? Skip(int index)
+        {
+            int i = 0;
+
+            ListItem<T>? item;
+
+            for (item = head; item != null; item = item.Next)
             {
-                if (curentIndex == index)
+                if (i == index)
                 {
-                    ListItem<T> insertedItem = new ListItem<T>(data);
-
-                    prev.Next = insertedItem;
-
-                    insertedItem.Next = p;
-
-                    count++;
-
                     break;
                 }
 
-                curentIndex++;
-            }
-        }
-
-        public T GetData(int index)
-        {
-            ThrowIfIndexOutOfRange(this, index);
-
-            int curentIndex = 0;
-
-            T desiredData = head.Data;
-
-            for (ListItem<T>? p = head; p != null; p = p.Next)
-            {
-                if (curentIndex == index)
-                {
-                    desiredData = p.Data;
-
-                    break;
-                }
-
-                curentIndex++;
+                i++;
             }
 
-            return desiredData;
+            return item;
         }
 
-        public T SetData(int index, T value)
+        public T? RemoveAt(int index)
         {
-            ThrowIfIndexOutOfRange(this, index);
+            CheckIndex(index);
 
-            int curentIndex = 0;
-
-            T oldValue = head.Data;
-
-            for (ListItem<T>? p = head; p != null; p = p.Next)
-            {
-                if (curentIndex == index)
-                {
-                    oldValue = p.Data;
-
-                    p.Data = value;
-
-                    break;
-                }
-
-                curentIndex++;
-            }
-
-            return oldValue;
-        }
-
-        public T RemoveAt(int index)
-        {
-            ThrowIfIndexOutOfRange(this, index);
-            TrowIfDeleteItemWhenCountIsOne(this);
-
-            T removedItemValue = head.Data;
+            T? removedData = head!.Data;
 
             if (index == 0)
             {
-                head = head.Next!;
+                head = head!.Next;
 
-                count--;
+                Count--;
 
-                return removedItemValue;
+                return removedData;
             }
 
-            int curentIndex = 1;
+            ListItem<T>? previousItem = Skip(index - 1);
+            ListItem<T>? removedItem = previousItem!.Next;
 
-            for (ListItem<T>? p = head.Next, prev = head; p != null; prev = p, p = p.Next)
-            {
-                if (curentIndex == index)
-                {
-                    removedItemValue = p.Data;
+            previousItem.Next = removedItem!.Next;
 
-                    prev.Next = p.Next;
+            Count--;
 
-                    count--;
-
-                    break;
-                }
-
-                curentIndex++;
-            }
-
-            return removedItemValue;
+            return removedItem.Data;
         }
 
-        private static void ThrowIfIndexOutOfRange(SinglyLinkedList<T> list, int index)
+        private void CheckIndex(int index)
         {
-            if (index < 0 || index >= list.count)
+            if (Count == 0)
+            {
+                throw new NullReferenceException("Невозможно получить доступ к элементу списка по индексу. Список пуст.");
+            }
+
+            if (index < 0 || index >= Count)
             {
                 throw new IndexOutOfRangeException($"Невозможно получить доступ к элементу списка по индексу {index}. " +
-                                                   $"Индекс элемента должен быть от 0 до {list.count - 1}.");
+                                                   $"Индекс элемента должен быть от 0 до {Count - 1}.");
             }
         }
 
-        private static void TrowIfDeleteItemWhenCountIsOne(SinglyLinkedList<T> list)
+        public T? RemoveFirst()
         {
-            if (list.count == 1)
-            {
-                throw new ArgumentException(" Нельзя удалить элемент из списка. Список состоит всего из одного элемента.", nameof(count));
-            }
-        }
-
-        public T RemoveHead()
-        {
-            TrowIfDeleteItemWhenCountIsOne(this);
-
-            T removedItemValue = head.Data;
-
-            head = head.Next!;
-
-            count--;
-
-            return removedItemValue;
+            return RemoveAt(0);
         }
 
         public bool Remove(T data)
         {
-            TrowIfDeleteItemWhenCountIsOne(this);
-
-            if (head.Data!.Equals(data))
+            if (Count == 0)
             {
-                head = head.Next!;
+                throw new InvalidOperationException("Невозможно удалить элемент списка. Список пуст.");
+            }
 
-                count--;
+            if (Equals(head!.Data, data))
+            {
+                head = head.Next;
+
+                Count--;
 
                 return true;
             }
 
-            for (ListItem<T>? p = head.Next, prev = head; p != null; prev = p, p = p.Next)
+            for (ListItem<T>? item = head!.Next, previousItem = head; item != null; previousItem = item, item = item.Next)
             {
-                if (p.Data!.Equals(data))
+                if (Equals(item.Data, data))
                 {
-                    prev.Next = p.Next;
+                    previousItem!.Next = item.Next;
 
-                    count--;
+                    Count--;
 
                     return true;
                 }
@@ -263,54 +179,80 @@ namespace Arkashova.ListTask
 
         public void Reverse()
         {
-            ListItem<T> reversedListHead = new ListItem<T>(head.Data);
-
-            SinglyLinkedList<T> reversedList = new SinglyLinkedList<T>(reversedListHead);
-
-            for (ListItem<T>? p = head.Next; p != null; p = p.Next)
+            if (Count == 0 || Count == 1)
             {
-                reversedList.InsertHead(p.Data);
+                return;
             }
 
-            head = reversedList.head;
+            if (Count == 2)
+            {
+                ListItem<T>? oldHead = head;
+
+                head = head!.Next;
+                oldHead!.Next = null;
+                head!.Next = oldHead;
+
+                return;
+            }
+
+            ListItem<T>? previousItem = head;
+            ListItem<T>? item = head!.Next;
+            ListItem<T>? nextItem = item!.Next;
+
+            head.Next = null;
+
+            for (; nextItem != null; previousItem = item, item = nextItem, nextItem = nextItem.Next)
+            {
+                item.Next = previousItem;
+            }
+
+            item.Next = previousItem;
+
+            head = item;
         }
 
         public SinglyLinkedList<T> GetCopy()
         {
-            ListItem<T> copyListHead = new ListItem<T>(head.Data);
-
-            ListItem<T> previousCopyListItem = copyListHead;
-
-            for (ListItem<T>? p = head.Next; p != null; p = p.Next)
+            if (Count == 0)
             {
-                ListItem<T> copyListItem = new ListItem<T>(p.Data);
+                return new SinglyLinkedList<T>();
+            }
+
+            SinglyLinkedList<T> copyList = new SinglyLinkedList<T>(head!.Data);
+
+            ListItem<T> previousCopyListItem = copyList.head!;
+
+            for (ListItem<T>? item = head.Next; item != null; item = item.Next)
+            {
+                ListItem<T> copyListItem = new ListItem<T>(item.Data);
                 previousCopyListItem.Next = copyListItem;
                 previousCopyListItem = copyListItem;
             }
 
-            SinglyLinkedList<T> copyList = new SinglyLinkedList<T>(copyListHead);
-
-            copyList.count = count;
+            copyList.Count = Count;
 
             return copyList;
         }
 
         public override string ToString()
         {
-            if (count == 0)
+            if (Count == 0)
             {
-                return "";
+                return "[]";
             }
 
             StringBuilder stringBuilder = new StringBuilder();
 
-            for (ListItem<T>? p = head; p != null; p = p.Next)
+            stringBuilder.Append('[');
+
+            for (ListItem<T>? item = head; item != null; item = item.Next)
             {
-                stringBuilder.Append(p.Data)
-                             .Append(", ");
+                stringBuilder.Append(item.Data)
+                             .Append("; ");
             }
 
             stringBuilder.Remove(stringBuilder.Length - 2, 2);
+            stringBuilder.Append(']');
 
             return stringBuilder.ToString();
         }
