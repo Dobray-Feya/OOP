@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Reflection.PortableExecutable;
-
-namespace Arkashova.IOTask
+﻿namespace Arkashova.IOTask
 {
     internal class IO
     {
