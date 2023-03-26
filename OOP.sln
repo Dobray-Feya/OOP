@@ -29,7 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arkashova.ListTask", "Arkas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arkashova.LambdaTask1", "Arkashova.LambdaTask1\Arkashova.LambdaTask1.csproj", "{6DFA465A-4701-436D-B6ED-7DF11ADE9B86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arkashova.LambdaTask2", "Arkashova.LambdaTask2\Arkashova.LambdaTask2.csproj", "{E6835340-8814-4A44-A58B-2D76FABDACD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arkashova.LambdaTask2", "Arkashova.LambdaTask2\Arkashova.LambdaTask2.csproj", "{E6835340-8814-4A44-A58B-2D76FABDACD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arkashova.IOTask", "Arkashova.IOTask\Arkashova.IOTask.csproj", "{6249BEA3-1540-41CA-A824-1CA905D02716}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +91,10 @@ Global
 		{E6835340-8814-4A44-A58B-2D76FABDACD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6835340-8814-4A44-A58B-2D76FABDACD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6835340-8814-4A44-A58B-2D76FABDACD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6249BEA3-1540-41CA-A824-1CA905D02716}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6249BEA3-1540-41CA-A824-1CA905D02716}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6249BEA3-1540-41CA-A824-1CA905D02716}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6249BEA3-1540-41CA-A824-1CA905D02716}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
