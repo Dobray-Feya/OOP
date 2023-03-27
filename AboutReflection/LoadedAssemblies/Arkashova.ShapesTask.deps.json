@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "Arkashova.ShapesTask/1.0.0": {
+        "runtime": {
+          "Arkashova.ShapesTask.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Arkashova.ShapesTask/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
