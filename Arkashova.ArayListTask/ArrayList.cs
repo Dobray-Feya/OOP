@@ -5,7 +5,7 @@ namespace Arkashova.ArayListTask
 {
     public class ArrayList<T> : IList<T>
     {
-        private const int DefaultCapacity = 4;
+        private const int DefaultCapacity = 0;
 
         private int modCount;
 
@@ -22,19 +22,10 @@ namespace Arkashova.ArayListTask
         /// <exception>ArgumentOutOfRangeException</exception>
         public int Capacity
         {
-            get
-            {
-                return items.Length;
-            }
+            get => items.Length;
 
             set
             {
-                if (value < 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value), $"Нельзя сделать вместимость списка равной {value}. " +
-                                                                         "Вместимость списка должна быть больше или равна 0.");
-                }
-
                 if (value < Count)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value), $"Нельзя сделать вместимость списка равной {value}, " +
@@ -65,7 +56,6 @@ namespace Arkashova.ArayListTask
 
         public T this[int index]
         {
-
             get
             {
                 CheckIndex(index);
@@ -87,7 +77,7 @@ namespace Arkashova.ArayListTask
         {
             if (Count == 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(Count) + nameof(index), "Нельзя получить элемент списка. Список не содержит элементов.");
+                throw new ArgumentOutOfRangeException(nameof(index), "Нельзя получить элемент списка. Список не содержит элементов.");
             }
 
             if (index < 0 || index >= Count)
@@ -128,23 +118,12 @@ namespace Arkashova.ArayListTask
 
         private void IncreaseCapacity()
         {
-            Capacity *= 2;
-
-            if (Capacity == 0)
-            {
-                Capacity = 1;
-            }
-
-            Array.Resize(ref items, Capacity);
+            Capacity = 2 * Capacity + 1;
         }
 
         public void RemoveAt(int index)
         {
-            if (index < 0 || index >= Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), $"Нельзя удалить элемент списка по индексу {index}. " +
-                                                                     $"Индекс элемента должен быть от 0 до {Count - 1}.");
-            }
+            CheckIndex(index);
 
             if (index < Count - 1)
             {
@@ -178,7 +157,7 @@ namespace Arkashova.ArayListTask
                 return;
             }
 
-            Array.Clear(items);
+            Array.Clear(items, 0, Count);
 
             Count = 0;
             modCount++;
@@ -191,16 +170,16 @@ namespace Arkashova.ArayListTask
                 throw new ArgumentNullException(nameof(array), "Вставка списка в массив невозможна. Целевой массив равен null.");
             }
 
-            if (array.Length == 0)
+            if (arrayIndex < 0)
             {
-                throw new ArgumentOutOfRangeException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
-                                                      "Вставка списка в массив невозможна. Целевой массив пуст.");
+                throw new ArgumentOutOfRangeException($"{nameof(arrayIndex)}", $"Вставка списка в массив по индексу {arrayIndex} невозможна. " +
+                                                      "Индекс должен быть больше или равен 0.");
             }
 
-            if (arrayIndex + Count > array.Length)
+            if (arrayIndex + Count > array.Length || array.Length == 0)
             {
-                throw new ArgumentOutOfRangeException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
-                                                      $"Превышен размер маcсива {array.Length}. Список длины {Count} не может быть вставлен в массив по индексу {arrayIndex}.");
+                throw new ArgumentException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
+                                            $"Превышен размер маcсива {array.Length}. Список длины {Count} не может быть вставлен в массив по индексу {arrayIndex}.");
             }
 
             Array.Copy(items, 0, array, arrayIndex, Count);
@@ -208,12 +187,7 @@ namespace Arkashova.ArayListTask
 
         public bool Contains(T? item)
         {
-            if (IndexOf(item) == -1)
-            {
-                return false;
-            }
-
-            return true;
+            return !(IndexOf(item) == -1);
         }
 
         public int IndexOf(T? item)
