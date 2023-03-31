@@ -4,29 +4,29 @@
     {
         static void Main(string[] args)
         {
-            var squares = GetSquares();
+            var roots = GetRoots();
 
-            int squaresCount = GetNumberFromConsole("Введите число корней:", 1);
+            var squaresCount = GetNumberFromConsole("Введите число корней:", 1);
 
             Console.WriteLine($"Первые {squaresCount} корней целых чисел:");
-            Console.WriteLine(string.Join(", ", squares.Skip(1).Take(squaresCount).ToList()));
+            Console.WriteLine(string.Join(", ", roots.Take(squaresCount)));
             Console.WriteLine();
 
             var fibonacciNumbers = GetFibonacciNumbers();
 
-            int fibonacciNumbersCount = GetNumberFromConsole("Введите количество чисел Фибоначчи:", 1);
+            var fibonacciNumbersCount = GetNumberFromConsole("Введите количество чисел Фибоначчи:", 1);
 
-            Console.WriteLine($"Первые {fibonacciNumbersCount} чисел Фибоначчи:"); 
-            Console.WriteLine(string.Join(", ", fibonacciNumbers.Take(fibonacciNumbersCount).ToList()));
+            Console.WriteLine($"Первые {fibonacciNumbersCount} чисел Фибоначчи:");
+            Console.WriteLine(string.Join(", ", fibonacciNumbers.Take(fibonacciNumbersCount)));
         }
 
-        private static IEnumerable<int> GetSquares()
+        private static IEnumerable<double> GetRoots()
         {
-            int i = 0;
+            var i = 0;
 
             while (true)
             {
-                yield return i * i;
+                yield return Math.Sqrt(i);
 
                 i++;
             }
@@ -34,54 +34,55 @@
 
         private static IEnumerable<int> GetFibonacciNumbers()
         {
-            int i = 0;
+            var i = 0;
 
-            while (true)
+            if (i == 0)
             {
-                yield return GetFibonacciNumberByIndex(i);
+                yield return 0;
 
                 i++;
             }
-        }
 
-        private static int GetFibonacciNumberByIndex(int index)
-        {
-            if (index == 0)
+            if (i == 1)
             {
-                return 0;
+                yield return 1;
+
+                i++;
             }
 
-            if (index == 1)
-            {
-                return 1;
-            }
-            
-            int fibonacciNumber = 1;
+            var beforePreviousFibonacciNumber = 0;
+            var previousFibonacciNumber = 1;
 
-            int previousFibonacciNumber = 0;
-
-            for (int i = 2; i <= index; i++)
+            while (true)
             {
-                int nextFibonacciNumber = previousFibonacciNumber + fibonacciNumber;
+                var fibonacciNumber = beforePreviousFibonacciNumber + previousFibonacciNumber;
+
+                yield return fibonacciNumber;
+
+                i++;
+
+                beforePreviousFibonacciNumber = previousFibonacciNumber;
                 previousFibonacciNumber = fibonacciNumber;
-                fibonacciNumber = nextFibonacciNumber;
             }
-
-            return fibonacciNumber;
         }
 
         private static int GetNumberFromConsole(string question, int minValue)
         {
             int number;
 
-            do
+            while (true)
             {
                 Console.WriteLine(question);
+
+                if (!int.TryParse(Console.ReadLine(), out number) || number < minValue)
+                {
+                    Console.WriteLine($"Введено не верно значение. Значение должно быть целым, большим или равным {minValue}.");
+                }
+                else
+                {
+                    return number;
+                }
             }
-
-            while (!int.TryParse(Console.ReadLine(), out number) || number < minValue);
-
-            return number;
         }
     }
 }
