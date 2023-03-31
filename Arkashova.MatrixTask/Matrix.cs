@@ -15,7 +15,7 @@ namespace Arkashova.MatrixTask
         {
             if (rowsCount <= 0 || columnsCount <= 0)
             {
-                throw new ArgumentException($"Ошибка: Размеры матрицы должны быть больше нуля. Передана матрица с {rowsCount} строками и {columnsCount} столбцами.",
+                throw new ArgumentException($"Размеры матрицы должны быть больше нуля. Передана матрица с {rowsCount} строками и {columnsCount} столбцами.",
                                             $"{nameof(rowsCount)}, {nameof(columnsCount)}");
             }
 
@@ -247,7 +247,7 @@ namespace Arkashova.MatrixTask
 
         public void Add(Matrix matrix)
         {
-            CheckSizesEquation(this, matrix);
+            CheckSizesEquality(this, matrix);
 
             for (int i = 0; i < RowsCount; i++)
             {
@@ -257,7 +257,7 @@ namespace Arkashova.MatrixTask
 
         public void Subtract(Matrix matrix)
         {
-            CheckSizesEquation(this, matrix);
+            CheckSizesEquality(this, matrix);
 
             for (int i = 0; i < RowsCount; i++)
             {
@@ -265,7 +265,7 @@ namespace Arkashova.MatrixTask
             }
         }
 
-        private static void CheckSizesEquation(Matrix matrix1, Matrix matrix2)
+        private static void CheckSizesEquality(Matrix matrix1, Matrix matrix2)
         {
             if (matrix1.RowsCount != matrix2.RowsCount || matrix1.ColumnsCount != matrix2.ColumnsCount)
             {
@@ -296,6 +296,8 @@ namespace Arkashova.MatrixTask
 
         public static Matrix GetSum(Matrix matrix1, Matrix matrix2)
         {
+            CheckSizesEquality(matrix1, matrix2);
+
             Matrix resultMatrix = new Matrix(matrix1);
 
             resultMatrix.Add(matrix2);
@@ -305,6 +307,8 @@ namespace Arkashova.MatrixTask
 
         public static Matrix GetDifference(Matrix matrix1, Matrix matrix2)
         {
+            CheckSizesEquality(matrix1, matrix2);
+
             Matrix resultMatrix = new Matrix(matrix1);
 
             resultMatrix.Subtract(matrix2);
