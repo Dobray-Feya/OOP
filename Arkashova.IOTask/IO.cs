@@ -1,6 +1,6 @@
 ﻿namespace Arkashova.IOTask
 {
-    internal class IO
+    public class IO
     {
         static void Main(string[] args)
         {
@@ -42,7 +42,7 @@
                         iterationsCount++;
 
                         writer.Write(bytes, 0, bytesReadAtOneIteration);
-                        
+
                         Array.Clear(bytes);
                     }
                     while (bytesReadAtOneIteration > 0);
