@@ -179,7 +179,7 @@ namespace Arkashova.ArayListTask
             if (arrayIndex + Count > array.Length || array.Length == 0)
             {
                 throw new ArgumentException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
-                                            $"Превышен размер маcсива {array.Length}. Список длины {Count} не может быть вставлен в массив по индексу {arrayIndex}.");
+                                            $"Превышен размер массива {array.Length}. Список длины {Count} не может быть вставлен в массив по индексу {arrayIndex}.");
             }
 
             Array.Copy(items, 0, array, arrayIndex, Count);
