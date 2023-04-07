@@ -1,31 +1,42 @@
 ﻿using System.Collections;
 using System.Text;
-using Arkashova.ArayListTask;
 
 namespace Arkashova.HashTableTask
 {
     public class HashTable<T> : ICollection<T>
     {
-        private ArrayList<T>[] lists; //Заметка для себя: здесь можно любой список, например, стандартный List, но я взяла свой ArrayList 
+        private const int DefaultSize = 20;
+
+        private readonly List<T>[] lists;
+
+        private int modCount;
 
         public int Count { get; private set; }
 
-        int modCount;
+        public bool IsReadOnly => false;
 
         public HashTable(int size)
         {
-            lists = new ArrayList<T>[size];
+            if (size < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(size), $"Невозможно создать хэш-таблицу размера {size}. Размер должен быть не меньше нуля.");
+            }
+
+            lists = new List<T>[size];
         }
 
-        public bool IsReadOnly => false;
+        public HashTable()
+        {
+            lists = new List<T>[DefaultSize];
+        }
 
         public void Add(T item)
         {
-            int index = GetItemIndex(item);
+            int index = GetIndex(item);
 
             if (lists[index] is null)
             {
-                lists[index] = new ArrayList<T>();
+                lists[index] = new List<T>();
             }
 
             lists[index].Add(item);
@@ -34,28 +45,34 @@ namespace Arkashova.HashTableTask
             modCount++;
         }
 
-        // Считаю, что в хэш-таблице могут быть элементы null и для них зарезервирован 0-й элемент массива.
-        private int GetItemIndex(T item)
+        private int GetIndex(T item)
         {
-            return item is null ? 0 : 1 + Math.Abs(item.GetHashCode() % (lists.Length - 1));
+            return item is null ? 0 : Math.Abs(item.GetHashCode() % lists.Length);
         }
 
         public bool Remove(T item)
         {
-            bool IsRemoved = lists[GetItemIndex(item)].Remove(item);
+            int index = GetIndex(item);
 
-            if (IsRemoved)
+            if (lists[index] is null)
+            {
+                return false;
+            }
+
+            if (lists[GetIndex(item)].Remove(item))
             {
                 Count--;
                 modCount++;
+
+                return true;
             }
 
-            return IsRemoved;
+            return false;
         }
 
         public void Clear()
         {
-            if (lists.Length == 0)
+            if (Count == 0)
             {
                 return;
             }
@@ -68,38 +85,44 @@ namespace Arkashova.HashTableTask
 
         public bool Contains(T item)
         {
-            return lists[GetItemIndex(item)].Contains(item);
+            int index = GetIndex(item);
+
+            if (lists[index] is null)
+            {
+                return false;
+            }
+
+            return lists[index].Contains(item);
         }
 
-        public void CopyTo(T?[] array, int arrayIndex)
+        public void CopyTo(T[] array, int arrayIndex)
         {
             if (array is null)
             {
                 throw new ArgumentNullException(nameof(array), "Вставка хэш-таблицы в массив невозможна. Целевой массив равен null.");
             }
 
-            if (array.Length == 0)
+            if (arrayIndex < 0)
             {
-                throw new ArgumentOutOfRangeException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
-                                                      "Вставка хэш-таблицы в массив невозможна. Целевой массив пуст.");
+                throw new ArgumentOutOfRangeException($"{nameof(arrayIndex)}", $"Вставка хэш-таблицы в массив по индексу {arrayIndex} невозможна. " +
+                                                      "Индекс должен быть больше или равен 0.");
             }
 
-            if (arrayIndex + Count > array.Length)
+            if (arrayIndex + Count > array.Length || array.Length == 0)
             {
-                throw new ArgumentOutOfRangeException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
-                                                      $"Превышен размер маcсива {array.Length}. Хэш-таблица размера {Count} " +
-                                                      $"не может быть вставлена в массив по индексу {arrayIndex}.");
+                throw new ArgumentException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
+                                            $"Превышен размер массива {array.Length}. Хэш-таблица с числом элементов {Count} не может быть вставлена в массив по индексу {arrayIndex}.");
             }
 
-            int insertedItemsCount = arrayIndex;
+            int i = arrayIndex;
 
-            foreach (ArrayList<T> list in lists)
+            foreach (List<T> list in lists)
             {
                 if (list is not null)
                 {
-                    list.CopyTo(array, insertedItemsCount);
+                    list.CopyTo(array, i);
 
-                    insertedItemsCount += list.Count;
+                    i += list.Count;
                 }
             }
         }
@@ -113,30 +136,36 @@ namespace Arkashova.HashTableTask
 
             StringBuilder stringBuilder = new StringBuilder();
 
-            for (int i = 0; i < lists.Length; i++)
+            foreach (List<T> list in lists)
             {
-                stringBuilder.Append("[");
-
-                if (lists[i] is not null)
+                if (list is null)
                 {
-                    for (int j = 0; j < lists[i].Count; j++)
+                    stringBuilder.Append("null");
+                    stringBuilder.Append(Environment.NewLine);
+                }
+                else
+                {
+                    stringBuilder.Append('[');
+
+                    foreach (T item in list)
                     {
-                        if (lists[i][j] is null)
+                        if (item is null)
                         {
                             stringBuilder.Append("null");
                         }
                         else
                         {
-                            stringBuilder.Append(lists[i][j]!.ToString());
+                            stringBuilder.Append(item);
                         }
 
                         stringBuilder.Append("; ");
                     }
 
                     stringBuilder.Remove(stringBuilder.Length - 2, 2);
-                }
 
-                stringBuilder.Append("]\n\r");
+                    stringBuilder.Append(']');
+                    stringBuilder.Append(Environment.NewLine);
+                }
             }
 
             return stringBuilder.ToString();
@@ -146,20 +175,18 @@ namespace Arkashova.HashTableTask
         {
             int initialModCount = modCount;
 
-            for (int i = 0; i < lists.Length; i++)
+            foreach (List<T> list in lists)
             {
-                ArrayList<T> currentList = lists[i];
-
-                if (currentList is not null)
+                if (list is not null)
                 {
-                    for (int j = 0; j < currentList.Count; j++)
+                    foreach (T item in list)
                     {
                         if (modCount != initialModCount)
                         {
                             throw new InvalidOperationException("Проход итератором по хэш-таблице невозможен, потому что с момента начала обхода хэш-таблица была изменена.");
                         }
 
-                        yield return currentList[j];
+                        yield return item;
                     }
                 }
             }
