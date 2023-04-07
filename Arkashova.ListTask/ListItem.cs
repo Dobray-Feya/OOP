@@ -2,18 +2,17 @@
 {
     internal class ListItem<T>
     {
-        internal T? Data { get; set; }
+        public T? Data { get; set; }
 
-        internal ListItem<T>? Next { get; set; }
+        public ListItem<T>? Next { get; set; }
 
-        internal ListItem(T? data, ListItem<T>? next)
+        public ListItem(T? data, ListItem<T>? next)
         {
             Data = data;
-
             Next = next;
         }
 
-        internal ListItem(T? data)
+        public ListItem(T? data)
         {
             Data = data;
         }

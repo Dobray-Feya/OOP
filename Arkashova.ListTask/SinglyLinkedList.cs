@@ -17,7 +17,6 @@ namespace Arkashova.ListTask
 
         public SinglyLinkedList()
         {
-            head = null;
         }
 
         public T? this[int index]
@@ -26,27 +25,41 @@ namespace Arkashova.ListTask
             {
                 CheckIndex(index);
 
-                return Skip(index)!.Data;
+                return GetItem(index).Data;
             }
 
             set
             {
                 CheckIndex(index);
 
-                ListItem<T>? desiredItem = Skip(index);
+                ListItem<T> desiredItem = GetItem(index);
 
-                desiredItem!.Data = value;
+                desiredItem.Data = value;
+            }
+        }
+
+        private void CheckIndex(int index)
+        {
+            if (Count == 0)
+            {
+                throw new IndexOutOfRangeException($"Невозможно получить доступ к элементу списка по индексу {index}. Список пуст.");
+            }
+
+            if (index < 0 || index >= Count)
+            {
+                throw new IndexOutOfRangeException($"Невозможно получить доступ к элементу списка по индексу {index}. " +
+                                                   $"Индекс элемента должен быть от 0 до {Count - 1}.");
             }
         }
 
         public T? GetFirst()
         {
-            if (Count == 0)
+            if (head is null)
             {
                 throw new InvalidOperationException("Нельзя получить первый элемент списка, т.к. список пуст.");
             }
 
-            return head!.Data;
+            return head.Data;
         }
 
         public void Insert(int index, T? data)
@@ -64,12 +77,9 @@ namespace Arkashova.ListTask
                 return;
             }
 
-            ListItem<T>? previousItem = Skip(index - 1);
-            ListItem<T>? nextItem = previousItem!.Next;
-            ListItem<T> insertedItem = new ListItem<T>(data);
-
+            ListItem<T> previousItem = GetItem(index - 1);
+            ListItem<T> insertedItem = new ListItem<T>(data, previousItem.Next);
             previousItem.Next = insertedItem;
-            insertedItem.Next = nextItem;
 
             Count++;
         }
@@ -81,18 +91,15 @@ namespace Arkashova.ListTask
             Count++;
         }
 
-        private ListItem<T>? Skip(int index)
+        private ListItem<T> GetItem(int index) // Считаю, что в этот метод передан индекс, уже проверенный на корректность 
         {
+            ListItem<T> item = head!;
+
             int i = 0;
 
-            ListItem<T>? item;
-
-            for (item = head; item != null; item = item.Next)
+            while (i < index)
             {
-                if (i == index)
-                {
-                    break;
-                }
+                item = item.Next!;
 
                 i++;
             }
@@ -102,56 +109,48 @@ namespace Arkashova.ListTask
 
         public T? RemoveAt(int index)
         {
-            CheckIndex(index);
-
-            T? removedData = head!.Data;
-
             if (index == 0)
             {
-                head = head!.Next;
-
-                Count--;
-
-                return removedData;
+                return RemoveFirst();
             }
 
-            ListItem<T>? previousItem = Skip(index - 1);
-            ListItem<T>? removedItem = previousItem!.Next;
+            CheckIndex(index);
 
-            previousItem.Next = removedItem!.Next;
+            ListItem<T> previousItem = GetItem(index - 1);
+            ListItem<T> removedItem = previousItem.Next!;
+
+            previousItem.Next = removedItem.Next;
 
             Count--;
 
             return removedItem.Data;
         }
 
-        private void CheckIndex(int index)
-        {
-            if (Count == 0)
-            {
-                throw new NullReferenceException("Невозможно получить доступ к элементу списка по индексу. Список пуст.");
-            }
-
-            if (index < 0 || index >= Count)
-            {
-                throw new IndexOutOfRangeException($"Невозможно получить доступ к элементу списка по индексу {index}. " +
-                                                   $"Индекс элемента должен быть от 0 до {Count - 1}.");
-            }
-        }
-
         public T? RemoveFirst()
         {
-            return RemoveAt(0);
-        }
-
-        public bool Remove(T data)
-        {
-            if (Count == 0)
+            if (head is null)
             {
-                throw new InvalidOperationException("Невозможно удалить элемент списка. Список пуст.");
+                throw new IndexOutOfRangeException("Невозможно удалить первый элемент списка. Список пуст.");
             }
 
-            if (Equals(head!.Data, data))
+            T? removedData = head.Data;
+
+            head = head.Next;
+
+            Count--;
+
+            return removedData;
+
+        }
+
+        public bool Remove(T? data)
+        {
+            if (head is null)
+            {
+                return false;
+            }
+
+            if (Equals(head.Data, data))
             {
                 head = head.Next;
 
@@ -160,11 +159,11 @@ namespace Arkashova.ListTask
                 return true;
             }
 
-            for (ListItem<T>? item = head!.Next, previousItem = head; item != null; previousItem = item, item = item.Next)
+            for (ListItem<T>? item = head.Next, previousItem = head; item != null; previousItem = item, item = item.Next)
             {
                 if (Equals(item.Data, data))
                 {
-                    previousItem!.Next = item.Next;
+                    previousItem.Next = item.Next;
 
                     Count--;
 
@@ -177,31 +176,24 @@ namespace Arkashova.ListTask
 
         public void Reverse()
         {
-            if (Count == 0 || Count == 1)
+            if (head is null || head.Next is null)
             {
                 return;
             }
 
-            if (Count == 2)
-            {
-                ListItem<T>? oldHead = head;
-
-                head = head!.Next;
-                oldHead!.Next = null;
-                head!.Next = oldHead;
-
-                return;
-            }
-
-            ListItem<T>? previousItem = head;
-            ListItem<T>? item = head!.Next;
-            ListItem<T>? nextItem = item!.Next;
+            ListItem<T> previousItem = head;
+            ListItem<T> item = head.Next;
+            ListItem<T>? nextItem = item.Next;
 
             head.Next = null;
 
-            for (; nextItem != null; previousItem = item, item = nextItem, nextItem = nextItem.Next)
+            while (nextItem != null)
             {
                 item.Next = previousItem;
+
+                previousItem = item;
+                item = nextItem;
+                nextItem = nextItem.Next;
             }
 
             item.Next = previousItem;
@@ -211,12 +203,12 @@ namespace Arkashova.ListTask
 
         public SinglyLinkedList<T> GetCopy()
         {
-            if (Count == 0)
+            if (head is null)
             {
                 return new SinglyLinkedList<T>();
             }
 
-            SinglyLinkedList<T> copyList = new SinglyLinkedList<T>(head!.Data);
+            SinglyLinkedList<T> copyList = new SinglyLinkedList<T>(head.Data);
 
             ListItem<T> previousCopyListItem = copyList.head!;
 
@@ -245,6 +237,11 @@ namespace Arkashova.ListTask
 
             for (ListItem<T>? item = head; item != null; item = item.Next)
             {
+                if (item.Data is null)
+                {
+                    stringBuilder.Append("{null}");
+                }
+
                 stringBuilder.Append(item.Data)
                              .Append("; ");
             }
