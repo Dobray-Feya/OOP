@@ -163,7 +163,7 @@ namespace Arkashova.ArayListTask
             modCount++;
         }
 
-        public void CopyTo(T?[] array, int arrayIndex)
+        public void CopyTo(T[] array, int arrayIndex)
         {
             if (array is null)
             {
