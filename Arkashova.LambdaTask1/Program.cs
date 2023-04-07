@@ -42,14 +42,14 @@
 
             var youngPersons = persons.Where(p => p.Age < 18);
 
-            var youngPersonsNamesAndAges = youngPersons.Select(p => p.Name + " (" + p.Age + ")");
-
-            if (youngPersons.ToList().Count == 0)
+            if (youngPersons.Count() == 0)
             {
                 Console.WriteLine("Людей младше 18 лет нет.");
             }
             else
             {
+                var youngPersonsNamesAndAges = youngPersons.Select(p => p.Name + " (" + p.Age + ")");
+                
                 Console.WriteLine("Люди младше 18 лет:");
                 Console.WriteLine(string.Join(", ", youngPersonsNamesAndAges));
 
@@ -71,14 +71,14 @@
 
             // Д) получить людей, возраст которых от 20 до 45, вывести в консоль их имена в порядке убывания возраста
 
-            var personsFrom20To45Ages = persons
+            var personsFrom20To45AgesNames = persons
                 .Where(p => (p.Age >= 20) && (p.Age <= 45))
                 .OrderByDescending(p => p.Age)
                 .Select(p => p.Name)
                 .ToList();
 
             Console.WriteLine("Имена людей в возрасте от 20 до 45 лет (в порядке убывания возраста):");
-            Console.WriteLine(string.Join(", ", personsFrom20To45Ages));
+            Console.WriteLine(string.Join(", ", personsFrom20To45AgesNames));
         }
     }
 }
