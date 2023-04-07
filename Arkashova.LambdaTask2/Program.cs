@@ -6,10 +6,10 @@
         {
             var roots = GetRoots();
 
-            var squaresCount = GetNumberFromConsole("Введите число корней:", 1);
+            var rootsCount = GetNumberFromConsole("Введите число корней:", 1);
 
-            Console.WriteLine($"Первые {squaresCount} корней целых чисел:");
-            Console.WriteLine(string.Join(", ", roots.Take(squaresCount)));
+            Console.WriteLine($"Первые {rootsCount} корней целых чисел:");
+            Console.WriteLine(string.Join(", ", roots.Take(rootsCount)));
             Console.WriteLine();
 
             var fibonacciNumbers = GetFibonacciNumbers();
@@ -34,21 +34,9 @@
 
         private static IEnumerable<int> GetFibonacciNumbers()
         {
-            var i = 0;
+            yield return 0;
 
-            if (i == 0)
-            {
-                yield return 0;
-
-                i++;
-            }
-
-            if (i == 1)
-            {
-                yield return 1;
-
-                i++;
-            }
+            yield return 1;
 
             var beforePreviousFibonacciNumber = 0;
             var previousFibonacciNumber = 1;
@@ -59,8 +47,6 @@
 
                 yield return fibonacciNumber;
 
-                i++;
-
                 beforePreviousFibonacciNumber = previousFibonacciNumber;
                 previousFibonacciNumber = fibonacciNumber;
             }
@@ -68,20 +54,16 @@
 
         private static int GetNumberFromConsole(string question, int minValue)
         {
-            int number;
-
             while (true)
             {
                 Console.WriteLine(question);
 
-                if (!int.TryParse(Console.ReadLine(), out number) || number < minValue)
-                {
-                    Console.WriteLine($"Введено не верно значение. Значение должно быть целым, большим или равным {minValue}.");
-                }
-                else
+                if (int.TryParse(Console.ReadLine(), out int number) && number >= minValue)
                 {
                     return number;
                 }
+
+                Console.WriteLine($"Введено неверное значение. Значение должно быть целым числом, большим или равным {minValue}.");
             }
         }
     }
