@@ -78,7 +78,14 @@
 
             foreach (double? item in hashTable3)
             {
-                Console.Write(item + " | ");
+                if (item is null)
+                {
+                    Console.Write("{null} | ");
+                }
+                else
+                {
+                    Console.Write(item + " | ");
+                }
             }
 
             Console.WriteLine();
@@ -100,13 +107,24 @@
 
                     iteration++;
 
-                    Console.WriteLine(iterator.Current);
+                    if (iterator.Current is null)
+                    {
+                        Console.Write("{null} | ");
+                    }
+                    else
+                    {
+                        Console.Write(iterator.Current + " | ");
+                    }
                 }
             }
             catch (InvalidOperationException e)
             {
                 Console.WriteLine(e.Message);
             }
+
+            Console.WriteLine();
+            HashTable<string?> hashTable4 = new HashTable<string?>(4) { null, "null", "zero" };
+            Console.WriteLine(hashTable4);
         }
     }
 }

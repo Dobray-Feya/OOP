@@ -108,10 +108,10 @@ namespace Arkashova.HashTableTask
                                                       "Индекс должен быть больше или равен 0.");
             }
 
-            if (arrayIndex + Count > array.Length || array.Length == 0)
+            if (arrayIndex + Count > array.Length)
             {
-                throw new ArgumentException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
-                                            $"Превышен размер массива {array.Length}. Хэш-таблица с числом элементов {Count} не может быть вставлена в массив по индексу {arrayIndex}.");
+                throw new ArgumentException($"Превышен размер массива {array.Length}. Хэш-таблица с числом элементов {Count} не может быть вставлена в массив по индексу {arrayIndex}.",
+                                            $"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}");
             }
 
             int i = arrayIndex;
@@ -151,7 +151,7 @@ namespace Arkashova.HashTableTask
                     {
                         if (item is null)
                         {
-                            stringBuilder.Append("null");
+                            stringBuilder.Append("{null}");
                         }
                         else
                         {
