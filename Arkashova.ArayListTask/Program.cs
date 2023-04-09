@@ -6,25 +6,19 @@
         {
             ArrayList<int> integersList = new ArrayList<int>();
             Console.WriteLine($"Пустой список: Count -> {integersList.Count}, Capacity -> {integersList.Capacity}");
+            integersList.Capacity = 0;
+            Console.WriteLine($"Capacity = 0: Count -> {integersList.Count}, Capacity -> {integersList.Capacity}");
 
-            integersList.Add(1);
-            Console.WriteLine($"Add(1): Count -> {integersList.Count}, Capacity -> {integersList.Capacity}");
-            integersList.Add(2);
-            Console.WriteLine($"Add(2): Count -> {integersList.Count}, Capacity -> {integersList.Capacity}");
-            integersList.Add(1);
-            Console.WriteLine($"Add(1): Count -> {integersList.Count}, Capacity -> {integersList.Capacity}");
-            integersList.Add(3);
-            Console.WriteLine($"Add(3): Count -> {integersList.Count}, Capacity -> {integersList.Capacity}");
-            integersList.Add(4);
-            integersList.Add(5);
+            for (int i = 1; i <= 6; i++)
+            {
+                integersList.Add(i);
+                Console.WriteLine($"Add({i}): Count -> {integersList.Count}, Capacity -> {integersList.Capacity}");
+            }
 
-            Console.WriteLine($"Исходный список: {integersList}");
-            Console.WriteLine();
-
+            Console.WriteLine(); 
+            Console.WriteLine($"Получился список: {integersList}");
             integersList.RemoveAt(1);
             Console.WriteLine($"RemoveAt(1) -> {integersList}");
-            Console.WriteLine();
-
             Console.WriteLine($"IndexOf(1) = {integersList.IndexOf(1)}");
             Console.WriteLine($"IndexOf(2) = {integersList.IndexOf(2)}");
             Console.WriteLine();
@@ -57,8 +51,8 @@
             integersList.Add(105);
 
             Console.WriteLine($"{integersList}: Count = {integersList.Count}, Capacity = {integersList.Capacity}");
-            integersList.Capacity = 10;
-            Console.WriteLine("Capacity = 10");
+            integersList.Capacity = 12;
+            Console.WriteLine("Capacity = 12");
             integersList.TrimExcess();
             Console.WriteLine($"TrimExcess() -> Count = {integersList.Count}, Capacity = {integersList.Capacity}");
 
@@ -94,18 +88,21 @@
             Console.WriteLine(string.Join(", ", stringsArray));
             Console.WriteLine();
 
-            ArrayList<string> linesList2 = new ArrayList<string>();
-            linesList2.Add("one");
-            Console.WriteLine($"{linesList2} -> Count = {linesList2.Count}, Capacity = {linesList2.Capacity}");
-            Console.WriteLine();
-
             Console.WriteLine("Проход по списку с помощью foreach:");
 
             foreach (string line in linesList)
             {
-                Console.WriteLine(line);
+                if (line is null)
+                {
+                    Console.Write("{null} | ");
+                }
+                else
+                {
+                    Console.Write(line + " | ");
+                }
             }
             
+            Console.WriteLine();
             Console.WriteLine();
             Console.WriteLine("Проход по списку с помощью итератора:");
 
@@ -119,18 +116,27 @@
                 {
                     if (index == 2)
                     {
-                        linesList.Remove("0");
+                        linesList.RemoveAt(0);
                     }
                     
                     index++;
 
-                    Console.WriteLine(iterator.Current);
+                    if (iterator.Current is null)
+                    {
+                        Console.Write("{null} | ");
+                    }
+                    else
+                    {
+                        Console.Write(iterator.Current + " | ");
+                    }
                 }
             }
             catch (InvalidOperationException e)
             {
                 Console.WriteLine(e.Message);
             }
+
+            Console.WriteLine();
         }
     }
 }

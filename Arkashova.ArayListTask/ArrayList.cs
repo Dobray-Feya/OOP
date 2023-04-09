@@ -5,7 +5,7 @@ namespace Arkashova.ArayListTask
 {
     public class ArrayList<T> : IList<T>
     {
-        private const int DefaultCapacity = 0;
+        private const int DefaultCapacity = 4;
 
         private int modCount;
 
@@ -118,7 +118,14 @@ namespace Arkashova.ArayListTask
 
         private void IncreaseCapacity()
         {
-            Capacity = 2 * Capacity + 1;
+            if (Capacity == 0)
+            {
+                Capacity = DefaultCapacity;
+            }
+            else
+            {
+                Capacity = 2 * Capacity;
+            }
         }
 
         public void RemoveAt(int index)
@@ -176,10 +183,10 @@ namespace Arkashova.ArayListTask
                                                       "Индекс должен быть больше или равен 0.");
             }
 
-            if (arrayIndex + Count > array.Length || array.Length == 0)
+            if (arrayIndex + Count > array.Length)
             {
-                throw new ArgumentException($"{nameof(array.Length)}, {nameof(Count)}, {nameof(arrayIndex)}",
-                                            $"Превышен размер массива {array.Length}. Список длины {Count} не может быть вставлен в массив по индексу {arrayIndex}.");
+                throw new ArgumentException($"Превышен размер массива {array.Length}. Список длины {Count} не может быть вставлен в массив по индексу {arrayIndex}.",
+                                            $"{nameof(arrayIndex)},  {nameof(Count)}, {nameof(array.Length)}");
             }
 
             Array.Copy(items, 0, array, arrayIndex, Count);
@@ -187,7 +194,7 @@ namespace Arkashova.ArayListTask
 
         public bool Contains(T? item)
         {
-            return !(IndexOf(item) == -1);
+            return IndexOf(item) != -1;
         }
 
         public int IndexOf(T? item)
@@ -215,8 +222,16 @@ namespace Arkashova.ArayListTask
 
             foreach (T? item in this)
             {
-                stringBuilder.Append(item)
-                             .Append(", ");
+                if (item is null)
+                {
+                    stringBuilder.Append("{null}");
+                }
+                else
+                {
+                    stringBuilder.Append(item);
+                }
+
+                stringBuilder.Append(", ");
             }
 
             stringBuilder.Remove(stringBuilder.Length - 2, 2);
