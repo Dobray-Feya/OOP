@@ -241,9 +241,12 @@ namespace Arkashova.ListTask
                 {
                     stringBuilder.Append("{null}");
                 }
-
-                stringBuilder.Append(item.Data)
-                             .Append("; ");
+                else
+                {
+                    stringBuilder.Append(item.Data);
+                }
+                
+                stringBuilder.Append("; ");
             }
 
             stringBuilder.Remove(stringBuilder.Length - 2, 2);
