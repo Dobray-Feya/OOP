@@ -58,7 +58,7 @@
             {
                 Console.WriteLine(question);
 
-                if (int.TryParse(Console.ReadLine(), out int number) && number >= minValue)
+                if (int.TryParse(Console.ReadLine(), out var number) && number >= minValue)
                 {
                     return number;
                 }
