@@ -40,20 +40,20 @@
 
             // В) получить список людей младше 18, посчитать для них средний возраст
 
-            if (persons.Any(p => p.Age < 18))
+            var youngPersons = persons
+                    .Where(p => p.Age < 18) // Заметка для себя: на этом шаге коллекция "ленивая". Она еще не вычислена.
+                    .ToList();              // А на этом шаге уже вычислена, поэтому ни в каких последующих вхождениях она уже не будет вычисляться.
+
+            if (youngPersons.Count == 0)
             {
-                var youngPersons = persons.Where(p => p.Age < 18);
-
-                Console.WriteLine("Люди младше 18 лет:"); 
-                var youngPersonsNamesAndAges = youngPersons.Select(p => p.Name + " (" + p.Age + ")");
-                Console.WriteLine(string.Join(", ", youngPersonsNamesAndAges));
-
-                var youngPersonsAverageAge = youngPersons.Average(p => p.Age);
-                Console.WriteLine("Средний возраст людей младше 18 лет = " + youngPersonsAverageAge);
+                Console.WriteLine("Людей младше 18 лет нет.");
             }
             else
             {
-                Console.WriteLine("Людей младше 18 лет нет.");
+                Console.WriteLine("Люди младше 18 лет:");
+                Console.WriteLine(string.Join(", ", youngPersons.Select(p => p.Name + " (" + p.Age + ")")));
+
+                Console.WriteLine("Средний возраст людей младше 18 лет = " + youngPersons.Average(p => p.Age));
             }
 
             Console.WriteLine();
