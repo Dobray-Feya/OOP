@@ -1,4 +1,4 @@
-﻿namespace TemperatureTask
+﻿namespace Arkashova.TemperatureTask
 {
     partial class View
     {
@@ -184,7 +184,6 @@
             this.temperatureToGroup.ResumeLayout(false);
             this.temperatureToGroup.PerformLayout();
             this.ResumeLayout(false);
-
         }
 
         #endregion

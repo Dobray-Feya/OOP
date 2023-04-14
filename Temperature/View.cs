@@ -1,15 +1,23 @@
-namespace TemperatureTask
-{
-    public partial class View : Form
-    {
-        private readonly Controller controller;
+using Arkashova.TemperatureTask.Scales;
+using Arkashova.TemperatureTask.Interfaces;
 
-        public View(Controller controller)
+namespace Arkashova.TemperatureTask
+{
+    internal partial class View : Form
+    {
+        private readonly ITemperatureConverter _temperatureModel;
+
+        internal View(ITemperatureConverter temperatureModel)
         {
-            this.controller = controller;
+            _temperatureModel = temperatureModel;
 
             InitializeComponent();
 
+            SetDefaultValues();
+        }
+
+        private void SetDefaultValues()
+        {
             temperatureFromField.Text = "0";
             temperatureFromInCelsius.Checked = true;
             temperatureToInCelsius.Checked = true;
@@ -17,53 +25,19 @@ namespace TemperatureTask
 
         private void convertButton_Click(object sender, EventArgs e)
         {
-            TemperatureScale temperatureFromScale;
-            TemperatureScale temperatureToScale;
-
-            if (temperatureFromInCelsius.Checked)
-            {
-                temperatureFromScale = TemperatureScale.Celsius;
-            }
-            else if (temperatureFromInFahrenheit.Checked)
-            {
-                temperatureFromScale = TemperatureScale.Fahrenheit;
-            }
-            else if (temperatureFromInKelvin.Checked)
-            {
-                temperatureFromScale = TemperatureScale.Kelvin;
-            }
-            else
-            {
-                ShowError("Не задана исходная шкала измерения температуры.");
-                return;
-            }
-
-            if (temperatureToInCelsius.Checked)
-            {
-                temperatureToScale = TemperatureScale.Celsius;
-            }
-            else if (temperatureToInFahrenheit.Checked)
-            {
-                temperatureToScale = TemperatureScale.Fahrenheit;
-            }
-            else if (temperatureToInKelvin.Checked)
-            {
-                temperatureToScale = TemperatureScale.Kelvin;
-            }
-            else
-            {
-                ShowError("Не задана целевая шкала измерения температуры.");
-                return;
-            }
-
             try
             {
-                controller.ConvertTemperature(temperatureFromField.Text, temperatureFromScale, temperatureToScale);
+                var resultTemperature = _temperatureModel.ConvertTemperature(GetSourceScale(), GetSourceTemperature(), GetResultScale());
+
+                UpdateTemperature(resultTemperature);
             }
-            catch (ArgumentNullException er)
+            catch (FormatException)
             {
-                View view = (View)sender;
-                view.ShowError(er.Message);
+                ShowError("В качестве температуры нужно ввести число.");
+            }
+            catch (Exception error)
+            {
+                ShowError(error.Message);
             }
         }
 
@@ -75,6 +49,51 @@ namespace TemperatureTask
         internal void ShowError(string message)
         {
             MessageBox.Show(message, "Ошибка");
+        }
+
+        private IScales GetSourceScale()
+        {
+            if (temperatureFromInCelsius.Checked)
+            {
+                return new CelsiusScale();
+            }
+
+            if (temperatureFromInFahrenheit.Checked)
+            {
+                return new FahrenheitScale();
+            }
+
+            if (temperatureFromInKelvin.Checked)
+            {
+                return new KelvinScale();
+            }
+
+            throw new InvalidOperationException("Не задана исходная шкала измерения температуры.");
+        }
+
+        private double GetSourceTemperature()
+        {
+            return Convert.ToDouble(temperatureFromField.Text);
+        }
+
+        private IScales GetResultScale()
+        {
+            if (temperatureToInCelsius.Checked)
+            {
+                return new CelsiusScale();
+            }
+
+            if (temperatureToInFahrenheit.Checked)
+            {
+                return new FahrenheitScale();
+            }
+
+            if (temperatureToInKelvin.Checked)
+            {
+                return new KelvinScale();
+            }
+
+            throw new InvalidOperationException("Не задана целевая шкала измерения температуры.");
         }
     }
 }

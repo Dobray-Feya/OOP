@@ -1,7 +1,7 @@
 // Заметка для себя: этот файл редко нужно править. Только если хотим передать аргументы в конструктор формы
 // В файле автоматически создается метод для работы с UI потоком
 
-namespace TemperatureTask
+namespace Arkashova.TemperatureTask
 {
     internal static class Program
     {
@@ -13,13 +13,9 @@ namespace TemperatureTask
         {
             ApplicationConfiguration.Initialize();
 
-            TemperatureModel temperatuteModel = new TemperatureModel();
+            var temperatureModel = new TemperatureModel();
 
-            Controller controller = new Controller(temperatuteModel);
-
-            View view = new View(controller);
-
-            controller.SetView(view);
+            var view = new View(temperatureModel);
 
             Application.Run(view);
         }
