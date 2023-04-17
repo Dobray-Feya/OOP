@@ -7,7 +7,7 @@ namespace Arkashova.HashTableTask
     {
         private const int DefaultSize = 20;
 
-        private readonly List<T>[] lists;
+        private readonly List<T>?[] lists;
 
         private int modCount;
 
@@ -17,9 +17,9 @@ namespace Arkashova.HashTableTask
 
         public HashTable(int size)
         {
-            if (size < 0)
+            if (size <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(size), $"Невозможно создать хэш-таблицу размера {size}. Размер должен быть не меньше нуля.");
+                throw new ArgumentOutOfRangeException(nameof(size), $"Невозможно создать хэш-таблицу размера {size}. Размер должен быть больше нуля.");
             }
 
             lists = new List<T>[size];
@@ -39,7 +39,7 @@ namespace Arkashova.HashTableTask
                 lists[index] = new List<T>();
             }
 
-            lists[index].Add(item);
+            lists[index]!.Add(item);
 
             Count++;
             modCount++;
@@ -54,12 +54,7 @@ namespace Arkashova.HashTableTask
         {
             int index = GetIndex(item);
 
-            if (lists[index] is null)
-            {
-                return false;
-            }
-
-            if (lists[GetIndex(item)].Remove(item))
+            if (lists[index] is not null && lists[index]!.Remove(item))
             {
                 Count--;
                 modCount++;
@@ -77,7 +72,7 @@ namespace Arkashova.HashTableTask
                 return;
             }
 
-            Array.Clear(lists, 0, lists.Length);
+            Array.Clear(lists);
 
             Count = 0;
             modCount++;
@@ -87,12 +82,7 @@ namespace Arkashova.HashTableTask
         {
             int index = GetIndex(item);
 
-            if (lists[index] is null)
-            {
-                return false;
-            }
-
-            return lists[index].Contains(item);
+            return (lists[index] is not null) && lists[index]!.Contains(item);
         }
 
         public void CopyTo(T[] array, int arrayIndex)
@@ -116,7 +106,7 @@ namespace Arkashova.HashTableTask
 
             int i = arrayIndex;
 
-            foreach (List<T> list in lists)
+            foreach (List<T>? list in lists)
             {
                 if (list is not null)
                 {
@@ -129,43 +119,35 @@ namespace Arkashova.HashTableTask
 
         public override string ToString()
         {
-            if (Count == 0)
-            {
-                return "[]";
-            }
-
             StringBuilder stringBuilder = new StringBuilder();
 
-            foreach (List<T> list in lists)
+            foreach (List<T>? list in lists)
             {
                 if (list is null)
                 {
                     stringBuilder.Append("null");
                     stringBuilder.Append(Environment.NewLine);
+                    continue;
                 }
-                else
+
+                stringBuilder.Append('[');
+
+                foreach (T item in list)
                 {
-                    stringBuilder.Append('[');
-
-                    foreach (T item in list)
+                    if (item is null)
                     {
-                        if (item is null)
-                        {
-                            stringBuilder.Append("{null}");
-                        }
-                        else
-                        {
-                            stringBuilder.Append(item);
-                        }
-
-                        stringBuilder.Append("; ");
+                        stringBuilder.Append("null; ");
                     }
-
-                    stringBuilder.Remove(stringBuilder.Length - 2, 2);
-
-                    stringBuilder.Append(']');
-                    stringBuilder.Append(Environment.NewLine);
+                    else
+                    {
+                        stringBuilder.Append(item).Append("; ");
+                    }
                 }
+
+                stringBuilder.Remove(stringBuilder.Length - 2, 2);
+
+                stringBuilder.Append(']');
+                stringBuilder.Append(Environment.NewLine);
             }
 
             return stringBuilder.ToString();
@@ -175,7 +157,7 @@ namespace Arkashova.HashTableTask
         {
             int initialModCount = modCount;
 
-            foreach (List<T> list in lists)
+            foreach (List<T>? list in lists)
             {
                 if (list is not null)
                 {
