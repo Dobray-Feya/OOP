@@ -78,8 +78,7 @@ namespace Arkashova.ListTask
             }
 
             ListItem<T> previousItem = GetItem(index - 1);
-            ListItem<T> insertedItem = new ListItem<T>(data, previousItem.Next);
-            previousItem.Next = insertedItem;
+            previousItem.Next = new ListItem<T>(data, previousItem.Next);
 
             Count++;
         }
@@ -95,13 +94,9 @@ namespace Arkashova.ListTask
         {
             ListItem<T> item = head!;
 
-            int i = 0;
-
-            while (i < index)
+            for (int i = 0; i < index; i++)
             {
                 item = item.Next!;
-
-                i++;
             }
 
             return item;
@@ -109,12 +104,12 @@ namespace Arkashova.ListTask
 
         public T? RemoveAt(int index)
         {
+            CheckIndex(index);
+
             if (index == 0)
             {
                 return RemoveFirst();
             }
-
-            CheckIndex(index);
 
             ListItem<T> previousItem = GetItem(index - 1);
             ListItem<T> removedItem = previousItem.Next!;
@@ -130,7 +125,7 @@ namespace Arkashova.ListTask
         {
             if (head is null)
             {
-                throw new IndexOutOfRangeException("Невозможно удалить первый элемент списка. Список пуст.");
+                throw new InvalidOperationException("Невозможно удалить первый элемент списка. Список пуст.");
             }
 
             T? removedData = head.Data;
@@ -176,13 +171,13 @@ namespace Arkashova.ListTask
 
         public void Reverse()
         {
-            if (head is null || head.Next is null)
+            if (Count <= 1)
             {
                 return;
             }
 
-            ListItem<T> previousItem = head;
-            ListItem<T> item = head.Next;
+            ListItem<T> previousItem = head!;
+            ListItem<T> item = head!.Next!;
             ListItem<T>? nextItem = item.Next;
 
             head.Next = null;
@@ -239,14 +234,12 @@ namespace Arkashova.ListTask
             {
                 if (item.Data is null)
                 {
-                    stringBuilder.Append("{null}");
+                    stringBuilder.Append("null, ");
                 }
                 else
                 {
-                    stringBuilder.Append(item.Data);
+                    stringBuilder.Append(item.Data).Append(", ");
                 }
-                
-                stringBuilder.Append("; ");
             }
 
             stringBuilder.Remove(stringBuilder.Length - 2, 2);
