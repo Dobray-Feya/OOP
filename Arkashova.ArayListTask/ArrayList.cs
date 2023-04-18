@@ -77,7 +77,7 @@ namespace Arkashova.ArayListTask
         {
             if (Count == 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), "Нельзя получить элемент списка. Список не содержит элементов.");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Нельзя получить элемент списка по индексу {index}. Список не содержит элементов.");
             }
 
             if (index < 0 || index >= Count)
@@ -87,12 +87,12 @@ namespace Arkashova.ArayListTask
             }
         }
 
-        public void Add(T? item)
+        public void Add(T item)
         {
             Insert(Count, item);
         }
 
-        public void Insert(int index, T? item)
+        public void Insert(int index, T item)
         {
             if (index < 0 || index > Count)
             {
@@ -124,7 +124,7 @@ namespace Arkashova.ArayListTask
             }
             else
             {
-                Capacity = 2 * Capacity;
+                Capacity *= 2;
             }
         }
 
@@ -143,7 +143,7 @@ namespace Arkashova.ArayListTask
             modCount++;
         }
 
-        public bool Remove(T? item)
+        public bool Remove(T item)
         {
             int index = IndexOf(item);
 
@@ -192,12 +192,12 @@ namespace Arkashova.ArayListTask
             Array.Copy(items, 0, array, arrayIndex, Count);
         }
 
-        public bool Contains(T? item)
+        public bool Contains(T item)
         {
             return IndexOf(item) != -1;
         }
 
-        public int IndexOf(T? item)
+        public int IndexOf(T item)
         {
             for (int i = 0; i < Count; i++)
             {
