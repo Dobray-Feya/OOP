@@ -97,7 +97,7 @@
             threadA.Join();  // Здесь приостановлен основной поток. Иначе он следующие две команды раньше времени выводит
             threadB.Join();
 
-            Console.WriteLine("Получился список: " + String.Join(", ", list1));
+            Console.WriteLine("Получился список: " + string.Join(", ", list1));
             Console.WriteLine("В нем элементов: " + list1.Count);
 
             Console.WriteLine();
@@ -138,7 +138,7 @@
             threadC.Join();
             threadD.Join();
 
-            Console.WriteLine("Получился список: " + String.Join(", ", list2));
+            Console.WriteLine("Получился список: " + string.Join(", ", list2));
             Console.WriteLine("В нем элементов: " + list2.Count);
         }
     }
