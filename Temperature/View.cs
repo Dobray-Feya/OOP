@@ -1,5 +1,5 @@
-using Arkashova.TemperatureTask.Scales;
-using Arkashova.TemperatureTask.Interfaces;
+using Arkashova.TemperatureTask.Model.Scales;
+using Arkashova.TemperatureTask.Model;
 
 namespace Arkashova.TemperatureTask
 {
@@ -19,8 +19,22 @@ namespace Arkashova.TemperatureTask
         private void SetDefaultValues()
         {
             temperatureFromField.Text = "0";
-            temperatureFromInCelsius.Checked = true;
-            temperatureToInCelsius.Checked = true;
+
+            var scalesList = _temperatureModel.ScalesList;
+
+            if (scalesList is null)
+            {
+                throw new ArgumentNullException(nameof(scalesList), "Температурная модель не содержит шкал.");
+            }
+
+            for (int i = 0; i < scalesList.Count; i++)
+            {
+                sourceScalesListBox.Items.Add(scalesList[i].GetUnit());
+                resultScalesListBox.Items.Add(scalesList[i].GetUnit());
+            }
+
+            sourceScalesListBox.SetSelected(0, true);
+            resultScalesListBox.SetSelected(0, true);
         }
 
         private void convertButton_Click(object sender, EventArgs e)
@@ -46,29 +60,21 @@ namespace Arkashova.TemperatureTask
             temperatuteToField.Text = Math.Round(temperatureTo, 3, MidpointRounding.AwayFromZero).ToString();
         }
 
-        internal void ShowError(string message)
+        private static void ShowError(string message)
         {
             MessageBox.Show(message, "Ошибка");
         }
 
-        private IScales GetSourceScale()
+        private IScale GetSourceScale()
         {
-            if (temperatureFromInCelsius.Checked)
+            var scaleIndex = sourceScalesListBox.SelectedIndex; 
+            
+            if (scaleIndex == -1)
             {
-                return new CelsiusScale();
+                throw new InvalidOperationException("Не задана исходная шкала измерения температуры.");
             }
 
-            if (temperatureFromInFahrenheit.Checked)
-            {
-                return new FahrenheitScale();
-            }
-
-            if (temperatureFromInKelvin.Checked)
-            {
-                return new KelvinScale();
-            }
-
-            throw new InvalidOperationException("Не задана исходная шкала измерения температуры.");
+            return _temperatureModel.ScalesList![scaleIndex];
         }
 
         private double GetSourceTemperature()
@@ -76,24 +82,16 @@ namespace Arkashova.TemperatureTask
             return Convert.ToDouble(temperatureFromField.Text);
         }
 
-        private IScales GetResultScale()
+        private IScale GetResultScale()
         {
-            if (temperatureToInCelsius.Checked)
+            var scaleIndex = resultScalesListBox.SelectedIndex;
+
+            if (scaleIndex == -1)
             {
-                return new CelsiusScale();
+                throw new InvalidOperationException("Не задана целевая шкала измерения температуры.");
             }
 
-            if (temperatureToInFahrenheit.Checked)
-            {
-                return new FahrenheitScale();
-            }
-
-            if (temperatureToInKelvin.Checked)
-            {
-                return new KelvinScale();
-            }
-
-            throw new InvalidOperationException("Не задана целевая шкала измерения температуры.");
+            return _temperatureModel.ScalesList![scaleIndex];
         }
     }
 }

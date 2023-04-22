@@ -1,6 +1,6 @@
-﻿namespace Arkashova.TemperatureTask.Scales
+﻿namespace Arkashova.TemperatureTask.Model.Scales
 {
-    internal class FahrenheitScale: IScales
+    internal class FahrenheitScale : IScale
     {
         public double ConvertFromCelsius(double temperature)
         {
@@ -20,6 +20,11 @@
         public char GetUnit()
         {
             return 'F';
+        }
+
+        public override string ToString()
+        {
+            return "°F";
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace Arkashova.TemperatureTask.Scales
+﻿namespace Arkashova.TemperatureTask.Model.Scales
 {
-    internal class KelvinScale : IScales
+    internal class KelvinScale : IScale
     {
         public double ConvertFromCelsius(double temperature)
         {
@@ -20,6 +20,11 @@
         public char GetUnit()
         {
             return 'K';
+        }
+
+        public override string ToString()
+        {
+            return "K";  //Заметка для себя: в случае единиц Кельвина знак градуса не пишут
         }
     }
 }

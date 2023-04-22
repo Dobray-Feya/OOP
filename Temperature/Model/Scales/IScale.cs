@@ -1,6 +1,6 @@
-﻿namespace Arkashova.TemperatureTask.Scales
+﻿namespace Arkashova.TemperatureTask.Model.Scales
 {
-    internal interface IScales
+    internal interface IScale
     {
         double ConvertFromCelsius(double temperatire);
         
@@ -9,5 +9,7 @@
         double GetAbsoluteZero();
 
         char GetUnit();
+
+        string ToString();
     }
 }
