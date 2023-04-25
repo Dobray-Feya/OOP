@@ -121,18 +121,19 @@ namespace Arkashova.HashTableTask
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            foreach (List<T>? list in lists)
+            foreach (List<T>? list in lists) // Здесь не упадет, т.к. lists не null (конструкторы не позволяют создать lists равный null)
             {
                 if (list is null)
                 {
                     stringBuilder.Append("null");
                     stringBuilder.Append(Environment.NewLine);
+
                     continue;
                 }
 
                 stringBuilder.Append('[');
 
-                foreach (T item in list)
+                foreach (T? item in list)  // Добавила тут ? после T, на случай если в хэш-таблицу передали null, но тип данных хэш-таблицы не принимает null.
                 {
                     if (item is null)
                     {
