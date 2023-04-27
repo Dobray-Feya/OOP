@@ -125,6 +125,12 @@
             Console.WriteLine();
             HashTable<string?> hashTable4 = new HashTable<string?>(4) { null, "null", "zero" };
             Console.WriteLine(hashTable4);
+
+            HashTable<double> hashTable5 = new HashTable<double>(1) { 1 };
+            hashTable5.Remove(1);
+            Console.WriteLine(hashTable5);
+            Console.WriteLine($"Count = {hashTable5.Count}");
+            Console.WriteLine();
         }
     }
 }
