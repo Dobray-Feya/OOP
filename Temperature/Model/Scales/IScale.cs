@@ -2,13 +2,13 @@
 {
     internal interface IScale
     {
-        double ConvertFromCelsius(double temperatire);
-        
-        double ConvertToCelsius(double temperatire);
+        double GetAbsoluteZero { get; }
 
-        double GetAbsoluteZero();
+        char GetUnit { get; }
 
-        char GetUnit();
+        double ConvertFromCelsius(double temperature);
+
+        double ConvertToCelsius(double temperature);
 
         string ToString();
     }

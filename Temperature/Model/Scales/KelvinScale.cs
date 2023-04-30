@@ -2,6 +2,10 @@
 {
     internal class KelvinScale : IScale
     {
+        public double GetAbsoluteZero => 0;
+
+        public char GetUnit => 'K';
+        
         public double ConvertFromCelsius(double temperature)
         {
             return temperature + 273.15;
@@ -10,16 +14,6 @@
         public double ConvertToCelsius(double temperature)
         {
             return temperature - 273.15;
-        }
-
-        public double GetAbsoluteZero()
-        {
-            return 0;
-        }
-
-        public char GetUnit()
-        {
-            return 'K';
         }
 
         public override string ToString()

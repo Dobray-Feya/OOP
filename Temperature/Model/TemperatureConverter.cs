@@ -2,19 +2,18 @@
 
 namespace Arkashova.TemperatureTask.Model
 {
-    internal class TemperatureModel : ITemperatureConverter
+    internal class TemperatureConverter : ITemperatureConverter
     {
-        public List<IScale>? ScalesList { get; }
+        public List<IScale> ScalesList { get; }
 
-        public TemperatureModel(List<IScale> scalesList)
+        public TemperatureConverter(List<IScale> scalesList)
         {
-            ScalesList = scalesList;
+            ScalesList = scalesList ?? throw new ArgumentNullException(nameof(scalesList), "Передан список шкал, равный null.");
         }
 
         public double ConvertTemperature(IScale sourceScale, double sourceTemperature, IScale resultScale)
         {
-            var sourceScaleAbsoluteZero = sourceScale.GetAbsoluteZero();
-            var sourceScaleUnit = sourceScale.GetUnit();
+            var sourceScaleAbsoluteZero = sourceScale.GetAbsoluteZero;
 
             if (sourceTemperature < sourceScaleAbsoluteZero)
             {

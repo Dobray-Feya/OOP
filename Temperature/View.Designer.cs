@@ -34,15 +34,15 @@
             this.sourceScalesListBox = new System.Windows.Forms.ListBox();
             this.temperatureFromField = new System.Windows.Forms.TextBox();
             this.temperatureToGroup = new System.Windows.Forms.GroupBox();
-            this.temperatuteToField = new System.Windows.Forms.TextBox();
             this.resultScalesListBox = new System.Windows.Forms.ListBox();
+            this.temperatuteToField = new System.Windows.Forms.TextBox();
             this.temperatureFromGroup.SuspendLayout();
             this.temperatureToGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // convertButton
             // 
-            this.convertButton.Location = new System.Drawing.Point(130, 65);
+            this.convertButton.Location = new System.Drawing.Point(130, 30);
             this.convertButton.Name = "convertButton";
             this.convertButton.Size = new System.Drawing.Size(80, 49);
             this.convertButton.TabIndex = 1;
@@ -54,7 +54,7 @@
             // 
             this.temperatureFromGroup.Controls.Add(this.sourceScalesListBox);
             this.temperatureFromGroup.Controls.Add(this.temperatureFromField);
-            this.temperatureFromGroup.Location = new System.Drawing.Point(20, 56);
+            this.temperatureFromGroup.Location = new System.Drawing.Point(20, 20);
             this.temperatureFromGroup.Name = "temperatureFromGroup";
             this.temperatureFromGroup.Size = new System.Drawing.Size(100, 160);
             this.temperatureFromGroup.TabIndex = 10;
@@ -82,21 +82,12 @@
             // 
             this.temperatureToGroup.Controls.Add(this.resultScalesListBox);
             this.temperatureToGroup.Controls.Add(this.temperatuteToField);
-            this.temperatureToGroup.Location = new System.Drawing.Point(220, 56);
+            this.temperatureToGroup.Location = new System.Drawing.Point(220, 20);
             this.temperatureToGroup.Name = "temperatureToGroup";
             this.temperatureToGroup.Size = new System.Drawing.Size(100, 160);
             this.temperatureToGroup.TabIndex = 11;
             this.temperatureToGroup.TabStop = false;
             this.temperatureToGroup.Text = "В:";
-            // 
-            // temperatuteToField
-            // 
-            this.temperatuteToField.Enabled = false;
-            this.temperatuteToField.Location = new System.Drawing.Point(10, 25);
-            this.temperatuteToField.Name = "temperatuteToField";
-            this.temperatuteToField.Size = new System.Drawing.Size(75, 23);
-            this.temperatuteToField.TabIndex = 11;
-            this.temperatuteToField.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // resultScalesListBox
             // 
@@ -107,19 +98,28 @@
             this.resultScalesListBox.Size = new System.Drawing.Size(75, 79);
             this.resultScalesListBox.TabIndex = 12;
             // 
+            // temperatuteToField
+            // 
+            this.temperatuteToField.Enabled = false;
+            this.temperatuteToField.Location = new System.Drawing.Point(10, 25);
+            this.temperatuteToField.Name = "temperatuteToField";
+            this.temperatuteToField.Size = new System.Drawing.Size(75, 23);
+            this.temperatuteToField.TabIndex = 11;
+            this.temperatuteToField.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // View
             // 
             this.AcceptButton = this.convertButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(344, 281);
+            this.ClientSize = new System.Drawing.Size(344, 201);
             this.Controls.Add(this.temperatureToGroup);
             this.Controls.Add(this.temperatureFromGroup);
             this.Controls.Add(this.convertButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(360, 320);
+            this.MinimumSize = new System.Drawing.Size(360, 240);
             this.Name = "View";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Перевод температур";

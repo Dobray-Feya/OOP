@@ -16,16 +16,16 @@ namespace Arkashova.TemperatureTask
         {
             ApplicationConfiguration.Initialize();
 
-            var scalesList = new List<IScale>()
+            var scalesList = new List<IScale>
             {
                 new CelsiusScale(),
                 new KelvinScale(),
                 new FahrenheitScale()
             };
 
-            var temperatureModel = new TemperatureModel(scalesList);
+            var temperatureConverter = new TemperatureConverter(scalesList);
 
-            var view = new View(temperatureModel);
+            var view = new View(temperatureConverter);
 
             Application.Run(view);
         }

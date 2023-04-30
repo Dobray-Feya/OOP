@@ -2,6 +2,10 @@
 {
     internal class CelsiusScale : IScale
     {
+        public double GetAbsoluteZero => -273.15;
+
+        public char GetUnit => 'C';
+
         public double ConvertFromCelsius(double temperature)
         {
             return temperature;
@@ -10,16 +14,6 @@
         public double ConvertToCelsius(double temperature)
         {
             return temperature;
-        }
-
-        public double GetAbsoluteZero()
-        {
-            return -273.15;
-        }
-
-        public char GetUnit()
-        {
-            return 'C';
         }
 
         public override string ToString()

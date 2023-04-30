@@ -5,11 +5,11 @@ namespace Arkashova.TemperatureTask
 {
     internal partial class View : Form
     {
-        private readonly ITemperatureConverter _temperatureModel;
+        private readonly ITemperatureConverter _temperatureConverter;
 
-        internal View(ITemperatureConverter temperatureModel)
+        internal View(ITemperatureConverter temperatureConverter)
         {
-            _temperatureModel = temperatureModel;
+            _temperatureConverter = temperatureConverter ?? throw new ArgumentNullException(nameof(temperatureConverter));
 
             InitializeComponent();
 
@@ -20,17 +20,17 @@ namespace Arkashova.TemperatureTask
         {
             temperatureFromField.Text = "0";
 
-            var scalesList = _temperatureModel.ScalesList;
+            var scalesList = _temperatureConverter.ScalesList;
 
             if (scalesList is null)
             {
                 throw new ArgumentNullException(nameof(scalesList), "Температурная модель не содержит шкал.");
             }
 
-            for (int i = 0; i < scalesList.Count; i++)
+            foreach (var scale in scalesList)
             {
-                sourceScalesListBox.Items.Add(scalesList[i].GetUnit());
-                resultScalesListBox.Items.Add(scalesList[i].GetUnit());
+                sourceScalesListBox.Items.Add(scale.GetUnit);
+                resultScalesListBox.Items.Add(scale.GetUnit);
             }
 
             sourceScalesListBox.SetSelected(0, true);
@@ -41,7 +41,7 @@ namespace Arkashova.TemperatureTask
         {
             try
             {
-                var resultTemperature = _temperatureModel.ConvertTemperature(GetSourceScale(), GetSourceTemperature(), GetResultScale());
+                var resultTemperature = _temperatureConverter.ConvertTemperature(GetSourceScale(), GetSourceTemperature(), GetResultScale());
 
                 UpdateTemperature(resultTemperature);
             }
@@ -62,19 +62,19 @@ namespace Arkashova.TemperatureTask
 
         private static void ShowError(string message)
         {
-            MessageBox.Show(message, "Ошибка");
+            MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private IScale GetSourceScale()
         {
-            var scaleIndex = sourceScalesListBox.SelectedIndex; 
-            
+            var scaleIndex = sourceScalesListBox.SelectedIndex;
+
             if (scaleIndex == -1)
             {
                 throw new InvalidOperationException("Не задана исходная шкала измерения температуры.");
             }
 
-            return _temperatureModel.ScalesList![scaleIndex];
+            return _temperatureConverter.ScalesList[scaleIndex];
         }
 
         private double GetSourceTemperature()
@@ -91,7 +91,7 @@ namespace Arkashova.TemperatureTask
                 throw new InvalidOperationException("Не задана целевая шкала измерения температуры.");
             }
 
-            return _temperatureModel.ScalesList![scaleIndex];
+            return _temperatureConverter.ScalesList[scaleIndex];
         }
     }
 }
