@@ -1,4 +1,5 @@
 using Arkashova.Minesweeper.Logic;
+using Arkashova.Minesweeper.Logic.GameModes;
 
 namespace Arkashova.Minesweeper
 {
@@ -10,10 +11,25 @@ namespace Arkashova.Minesweeper
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+
+            var gameModesList = new List<GameMode>
+            {
+                new BeginnerMode(),
+                new IntermediateMode(),
+                new ExpertMode(),
+                new SpecialMode(),
+            };
+
+            var model = new MinesweeperModel(gameModesList, 0);
+
+            var controller = new Controller(model);
+
+            var view = new MainWindow(controller);
+
+            controller.SetView(view);
+
+            Application.Run(view);
         }
     }
 }

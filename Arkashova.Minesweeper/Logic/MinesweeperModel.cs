@@ -1,21 +1,39 @@
-﻿using Arkashova.Minesweeper.Controller;
-using System.Security.Cryptography.X509Certificates;
+﻿using Arkashova.Minesweeper.Logic.GameModes;
 
 namespace Arkashova.Minesweeper.Logic
 {
     public class MinesweeperModel : IModel
     {
-        public int[,] Table { get; set; }
+        private int[,] _table;
 
-        public GameMode GameMode { get; set; }
+        public List<GameMode> GameModes { get; set; }
 
-        private const int BOMB = 9;
+        public int CurrentGameModeIndex { get; private set; }
 
-        public MinesweeperModel(GameMode mode)
+        private const int MINE = 9;
+
+        public MinesweeperModel(List<GameMode> gameModes, int gameModeIndex)
         {
-            GameMode = mode;
+            GameModes = gameModes ?? throw new ArgumentNullException(nameof(gameModes));
 
-            Table = new int[GameMode.FieldWidth, GameMode.FieldHeight];
+            StartNewGame(gameModeIndex);
+        }
+
+        private void CheckGameModeIndex(int value)
+        {
+            if (value < 0 || value >= GameModes.Count)
+            {
+                throw new IndexOutOfRangeException($"Индекс режима должен быть не меньше 0 и не больше {GameModes.Count - 1}. Передан индекс {value}");
+            }
+        }
+
+        public void StartNewGame(int gameModeIndex)
+        {
+            CheckGameModeIndex(gameModeIndex);
+
+            CurrentGameModeIndex = gameModeIndex;
+
+            _table = new int[GameModes[gameModeIndex].FieldWidth, GameModes[gameModeIndex].FieldHeight];
 
             FillTable();
         }
@@ -24,11 +42,14 @@ namespace Arkashova.Minesweeper.Logic
         {
             var randomNumbers = new List<int>();
 
-            Random random = new Random();
+            Random random = new Random(DateTime.UtcNow.Millisecond);
 
-            var maxNumber = GameMode.FieldWidth * GameMode.FieldHeight + 1;
+            var fieldWidth = GameModes[CurrentGameModeIndex].FieldWidth;
+            var fieldHeight = GameModes[CurrentGameModeIndex].FieldHeight;
 
-            while (randomNumbers.Count < GameMode.MinesCount)
+            var maxNumber = fieldWidth * fieldHeight + 1;
+
+            while (randomNumbers.Count < GameModes[CurrentGameModeIndex].MinesCount)
             {
                 var number = random.Next(1, maxNumber);
 
@@ -36,45 +57,81 @@ namespace Arkashova.Minesweeper.Logic
                 {
                     randomNumbers.Add(number);
 
-                    var y = (int)Math.Ceiling((double)number / GameMode.FieldHeight) - 1;
+                    var y = (int)Math.Ceiling((double)number / fieldWidth) - 1;
 
-                    var x = number - y * GameMode.FieldWidth - 1;
+                    var x = number - y * fieldWidth - 1;
 
-                    Table[x, y] = BOMB;
+                    _table[x, y] = MINE;
                 }
             }
 
-            for (int i = 0; i < GameMode.FieldWidth; i++)
+            for (int i = 0; i < fieldWidth; i++)
             {
-                for (int j = 0; j < GameMode.FieldHeight; j++)
+                for (int j = 0; j < fieldHeight; j++)
                 {
-                    if (Table[i, j] != BOMB)
+                    if (_table[i, j] != MINE)
                     {
                         var sum = 0;
 
-                        sum += GetValue(i - 1, j - 1);
-                        sum += GetValue(i - 1, j);
-                        sum += GetValue(i - 1, j + 1);
-                        sum += GetValue(i, j - 1);
-                        sum += GetValue(i, j + 1);
-                        sum += GetValue(i + 1, j - 1);
-                        sum += GetValue(i + 1, j);
-                        sum += GetValue(i + 1, j + 1);
+                        sum += AddOneIfItIsMine(i - 1, j - 1);
+                        sum += AddOneIfItIsMine(i - 1, j);
+                        sum += AddOneIfItIsMine(i - 1, j + 1);
+                        sum += AddOneIfItIsMine(i, j - 1);
+                        sum += AddOneIfItIsMine(i, j + 1);
+                        sum += AddOneIfItIsMine(i + 1, j - 1);
+                        sum += AddOneIfItIsMine(i + 1, j);
+                        sum += AddOneIfItIsMine(i + 1, j + 1);
 
-                        Table[i, j] = sum;
+                        _table[i, j] = sum;
                     }
                 }
             }
         }
 
-        private int GetValue(int x, int y)
+        private int AddOneIfItIsMine(int column, int row)
         {
-            if (x== -1 || x == GameMode.FieldWidth || y == -1 || y == GameMode.FieldHeight || Table[x, y] != BOMB) //!! redo
+            if (column == -1 || column == GameModes[CurrentGameModeIndex].FieldWidth || row == -1 || row == GameModes[CurrentGameModeIndex].FieldHeight || _table[column, row] != MINE) //!! redo
             {
                 return 0;
             }
 
             return 1;
+        }
+
+        public bool IsMine(int column, int row)
+        {
+            CheckColumnIndex(column);
+            CheckRowIndex(row);
+
+            return _table[column, row] == MINE;
+        }
+
+        public int GetValue(int column, int row)
+        {
+            CheckColumnIndex(column);
+            CheckRowIndex(row);
+
+            return _table[column, row];
+        }
+
+        private void CheckRowIndex(int value)
+        {
+            var maxValue = GameModes[CurrentGameModeIndex].FieldHeight;
+
+            if (value < 0 || value >= maxValue)
+            {
+                throw new IndexOutOfRangeException($"Индекс строки должен быть от 0 до {maxValue - 1}. Передан индекс {value}");
+            }
+        }
+
+        private void CheckColumnIndex(int value)
+        {
+            var maxValue = GameModes[CurrentGameModeIndex].FieldWidth;
+
+            if (value < 0 || value >= maxValue)
+            {
+                throw new IndexOutOfRangeException($"Индекс столбца должен быть от 0 до {maxValue - 1}. Передан индекс {value}");
+            }
         }
     }
 }
