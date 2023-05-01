@@ -6,19 +6,19 @@ namespace Arkashova.Minesweeper
     {
         public Controller Controller { get; set; }
 
-        public Image MineImage => Image.FromFile("..\\..\\..\\Vew\\Icons\\mine.png");
+        public Image MineImage => Image.FromFile("..\\..\\..\\View\\Icons\\mine.png");
 
-        public Image OpenedMineImage => Image.FromFile("..\\..\\..\\Vew\\Icons\\openedMine.png");
+        public Image OpenedMineImage => Image.FromFile("..\\..\\..\\View\\Icons\\openedMine.png");
 
-        public Image FlagImage => Image.FromFile("..\\..\\..\\Vew\\Icons\\flag.png");
+        public Image FlagImage => Image.FromFile("..\\..\\..\\View\\Icons\\flag.png");
 
-        public Image WrongFlagImage => Image.FromFile("..\\..\\..\\Vew\\Icons\\wrongFlag.png");
+        public Image WrongFlagImage => Image.FromFile("..\\..\\..\\View\\Icons\\wrongFlag.png");
 
-        private Image _newGameImage = Image.FromFile("..\\..\\..\\Vew\\Icons\\newGame.png");
+        private Image _newGameImage = Image.FromFile("..\\..\\..\\View\\Icons\\newGame.png");
 
-        private Image _winGameImage = Image.FromFile("..\\..\\..\\Vew\\Icons\\winGame.png");
+        private Image _winGameImage = Image.FromFile("..\\..\\..\\View\\Icons\\winGame.png");
 
-        private Image _failGameImage = Image.FromFile("..\\..\\..\\Vew\\Icons\\failGame.png");
+        private Image _failGameImage = Image.FromFile("..\\..\\..\\View\\Icons\\failGame.png");
 
         public MainWindow(Controller controller)
         {
