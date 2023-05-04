@@ -196,6 +196,7 @@
             this.aboutButton.TabIndex = 6;
             this.aboutButton.Text = "О программе";
             this.aboutButton.UseVisualStyleBackColor = true;
+            this.aboutButton.Click += new System.EventHandler(this.aboutButton_Click);
             // 
             // minesCountTextBox
             // 

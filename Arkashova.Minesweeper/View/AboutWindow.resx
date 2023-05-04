@@ -57,4 +57,36 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="textBox3.Text" xml:space="preserve">
+    <value>Всё, как в классическом Сапёре. 
+Нужно открыть все ячейки, не наткнувшись на мину.
+Если вы уверены, что ячейка содержит мину, пометьте ее флажком, щелкнув по ячейке правой кнопкой мыши.
+
+Приятной игры! :)</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA
+        AADGxsb/xsbG/8bGxv/FxcX/xsbG/8XFxf/MzMz/lZWV/56env/Nzc3/xcXF/8bGxv/FxcX/xsbG/8bG
+        xv/Gxsb/xsbG/8bGxv/Hx8f/x8fH/8PDw//BwcH/1NTU/05OTv9hYWH/1tbW/8DAwP/ExMT/yMjI/8bG
+        xv/Gxsb/xsbG/8bGxv/Hx8f/wsLC/8HBwf/S0tL/zs7O/9jY2P9KSkr/XFxc/9vb2//Ozs7/0dHR/8DA
+        wP/ExMT/xsbG/8bGxv/FxcX/ysrK/7Ozs/8wMDD/jIyM/4GBgf8xMTH/CAgI/wsLC/83Nzf/ioqK/4CA
+        gP81NTX/u7u7/8nJyf/FxcX/xsbG/8PDw//R0dH/b29v/wAAAP8DAwP/AAAA/wAAAP8AAAD/AAAA/wIC
+        Av8AAAD/enp6/9DQ0P/ExMT/xsbG/8XFxf/AwMD/z8/P/3R0dP8AAAD/AwMD/wEBAf8AAAD/AQEB/wMD
+        A/8DAwP/AAAA/4ODg//Pz8//wMDA/8XFxf/Nzc3/2dnZ/8zMzP8eHh7/AAAA/wMDA/8PExD/DREO/wAB
+        Af8AAAD/AgIC/wAAAP8uLi7/1tbW/9fX1//Nzc3/kpKS/19fX/9UVFT/BAMD/wABAP85Pzr/goeC/3yB
+        ff8sMi7/AAAA/wEBAf8AAAD/CQkJ/1lZWf9fX1//nZ2d/46Ojv9MTEz/Q0ND/wAAAP8RFRL/gYaC/+7t
+        7//s7Oz/b3Rw/wkLCf8AAAD/AAAA/wUFBf9GRkb/S0tL/5OTk//MzMz/2tra/8XFxf8SERH/Cw8N/3+F
+        gP/d3d7/2dnZ/2txbP8HCgj/AQAA/wAAAP8hISH/zs7O/9fX1//Ly8v/xcXF/8HBwf/Ozs7/Wlpa/wAA
+        AP82PDf/dHl1/2xybf8mKyj/AAAA/wUFBf8AAAD/ampq/87Ozv/BwcH/xcXF/8bGxv/Dw8P/09PT/29v
+        b/8AAAD/AgIC/wgKCP8JDAr/AAAA/wAAAP8CAgL/AAAA/4qKiv/T09P/w8PD/8bGxv/FxcX/ycnJ/7i4
+        uP8lJSX/Y2Nj/1NTU/8ICAj/AAAA/wEBAf8NDQ3/XFxc/2xtbP8vLy//v7+//8jIyP/FxcX/xsbG/8fH
+        x//BwcH/tLS0/9PT0//Ozs7/ubm5/yUlJf8uLi7/vb29/8/Pz//T09P/sbGx/8HBwf/Hx8f/xsbG/8bG
+        xv/Gxsb/x8fH/8rKyv/Dw8P/wsLC/9ra2v9OTk7/Y2Nj/9vb2//BwcH/w8PD/8vLy//Hx8f/xsbG/8bG
+        xv/Gxsb/xsbG/8bGxv/FxcX/xsbG/8XFxf/MzMz/iIiI/5WVlf/Nzc3/xMTE/8bGxv/FxcX/xsbG/8bG
+        xv/Gxsb/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAA==
+</value>
+  </data>
 </root>

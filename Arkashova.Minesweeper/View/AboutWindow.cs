@@ -16,5 +16,10 @@ namespace Arkashova.Minesweeper.View
         {
             InitializeComponent();
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://academ-it-school.ru");
+        }
     }
 }

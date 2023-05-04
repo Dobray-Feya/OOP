@@ -299,5 +299,12 @@ namespace Arkashova.Minesweeper
         {
             Application.Exit();
         }
+
+        private void aboutButton_Click(object sender, EventArgs e)
+        {
+            var aboutWindow = new AboutWindow();
+
+            aboutWindow.Show();
+        }
     }
 }
