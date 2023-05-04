@@ -96,9 +96,20 @@ namespace Arkashova.Minesweeper
             }
             else
             {
-                _view.OpenCell(column, row, _model.GetValue(column, row).ToString());
+                var cellValue = _model.GetValue(column, row);
 
-                _openedCellsCount++;
+                if (cellValue ==  0)
+                {
+                    _view.OpenCell(column, row, "");
+                    _openedCellsCount++;
+
+                    OpenZeroNeigbours(column, row);
+                }
+                else
+                {
+                    _view.OpenCell(column, row, cellValue.ToString());
+                    _openedCellsCount++;
+                }
 
                 if (_сellsCountToOpen == _openedCellsCount)
                 {
@@ -107,21 +118,62 @@ namespace Arkashova.Minesweeper
             }
         }
 
+        private void OpenZeroNeigbours(int column, int row)
+        {
+            OpenNeigbour(column - 1, row - 1);
+            OpenNeigbour(column - 1, row);
+            OpenNeigbour(column - 1, row + 1);
+            OpenNeigbour(column, row - 1);
+            OpenNeigbour(column, row + 1);
+            OpenNeigbour(column + 1, row - 1);
+            OpenNeigbour(column + 1, row);
+            OpenNeigbour(column + 1, row + 1);
+        }
+
+        private void OpenNeigbour(int column, int row)
+        {
+            try 
+            {
+                if (!_view.IsCellClosed(column, row))
+                {
+                    return;
+                }
+                
+                var neigbourValue = _model.GetValue(column, row);
+
+                if (neigbourValue == 0)
+                {
+                    _view.OpenCell(column, row, "");
+                    _openedCellsCount++;
+
+                    OpenZeroNeigbours(column, row);
+                }
+                else
+                {
+                    _view.OpenCell(column, row, neigbourValue.ToString());
+                    _openedCellsCount++;
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
         public void FailGame()
         {
-            OpenAllCells(_view.MineImage);
+            OpenMines(_view.MineImage);
 
             _view.FailGame();
         }
 
         public void SuccessfullyCompleteGame()
         {
-            OpenAllCells(_view.FlagImage);
+            OpenMines(_view.FlagImage);
 
             _view.SuccessfullyCompleteGame();
         }
 
-        private void OpenAllCells(Image image)
+        private void OpenMines(Image image)
         {
             var currentIndex = GetCurrentGameModeIndex();
 
@@ -132,10 +184,6 @@ namespace Arkashova.Minesweeper
                     if (_model.IsMine(i, j))
                     {
                         _view.OpenCell(i, j, image);
-                    }
-                    else
-                    {
-                        _view.OpenCell(i, j, _model.GetValue(i, j).ToString());
                     }
                 }
             }

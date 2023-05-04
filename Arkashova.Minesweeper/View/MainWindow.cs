@@ -1,4 +1,5 @@
 using Arkashova.Minesweeper.View;
+using System.Data.Common;
 
 namespace Arkashova.Minesweeper
 {
@@ -19,6 +20,8 @@ namespace Arkashova.Minesweeper
         private Image _winGameImage = Image.FromFile("..\\..\\..\\View\\Icons\\winGame.png");
 
         private Image _failGameImage = Image.FromFile("..\\..\\..\\View\\Icons\\failGame.png");
+
+        private Image _closedCellImage = Image.FromFile("..\\..\\..\\View\\Icons\\closedCell.png");
 
         public MainWindow(Controller controller)
         {
@@ -103,6 +106,7 @@ namespace Arkashova.Minesweeper
                                                       $"Переданы значения: число строк {rowCount} и число столбцов {columnCount}.");
             }
 
+            gameTable.Enabled = true;
             gameTable.Controls.Clear();
 
             gameTable.RowCount = rowCount;
@@ -110,10 +114,17 @@ namespace Arkashova.Minesweeper
 
             var cellSize = 40;
 
-            gameTable.Size = new Size(cellSize * columnCount, cellSize * rowCount);
+            var tableWidth = cellSize * columnCount;
+            var tableHeight = cellSize * rowCount;
 
-            borderPanel.Size = gameTable.Size;
+            gameTable.Size = new Size(tableWidth, tableHeight);
+
+            borderPanel.Width = tableWidth + 2;
+            borderPanel.Height = tableHeight + 2;
             borderPanel.Visible = true;
+
+            Width = tableWidth + 2 * 100;
+            Height = tableHeight + 2 * 100 + 100;
 
             gameTable.RowStyles.Clear();
 
@@ -134,7 +145,9 @@ namespace Arkashova.Minesweeper
                 for (int j = 0; j < rowCount; j++)
                 {
                     var button = new Button();
+
                     button.Name = GetButtonName(i, j);
+
                     ApplyClosedButtonStyle(button);
 
                     button.Click += new EventHandler(this.cell_Click!);
@@ -144,6 +157,9 @@ namespace Arkashova.Minesweeper
             }
 
             startGameButton.Image = _newGameImage;
+
+            var button1 = FindButton(2, 2);
+            button1.Image = _closedCellImage;
         }
 
         private string GetButtonName(int column, int row)
@@ -159,6 +175,7 @@ namespace Arkashova.Minesweeper
         private int GetButtonRow(string name)
         {
             var commaIndex = name.IndexOf(',');
+
             return Convert.ToInt32(name.Substring(commaIndex + 1, name.Length - 1 - commaIndex));
         }
 
@@ -169,30 +186,32 @@ namespace Arkashova.Minesweeper
 
         private void ApplyClosedButtonStyle(Button button)
         {
-            button.Margin = new Padding(0, 0, 0, 0);
+            button.Margin = new Padding(1, 1, 1, 1);
             button.Dock = DockStyle.Fill;
             button.TabStop = false;
-            button.FlatStyle = FlatStyle.Standard;
-        }
+            button.FlatAppearance.BorderSize = 1;
+            button.FlatAppearance.BorderColor = Color.DarkGray;
+            button.FlatStyle = FlatStyle.Flat;
+            button.Image = _closedCellImage;
+         }
 
         private void ApplyOpenedButtonStyle(Button button)
         {
-            button.FlatStyle = FlatStyle.Flat;
-            button.FlatAppearance.BorderSize = 1;
-            button.FlatAppearance.BorderColor = Color.DarkGray;
+            button.FlatStyle = FlatStyle.Standard;
+            button.Image = null;
         }
 
-        private bool IsCellClosed(Button button)
+        public bool IsCellClosed(int column, int row)
         {
-            return button.FlatStyle is FlatStyle.Standard; // считаю, что кнопка не была нажата, если у нее стиль остался Standard, как задано в InitializeGameTable.
+            return FindButton(column, row).FlatStyle is FlatStyle.Flat; // считаю, что кнопка не была нажата, если у нее стиль остался Flat, как задано в ApplyClosedButtonStyle.
         }
 
         public void OpenCell(int column, int row, string text)
         {
-            var button = FindButton(column, row);
-
-            if (IsCellClosed(button))
+            if (IsCellClosed(column, row))
             {
+                var button = FindButton(column, row); 
+                
                 ApplyOpenedButtonStyle(button);
 
                 button.Text = text;
@@ -201,10 +220,10 @@ namespace Arkashova.Minesweeper
 
         public void OpenCell(int column, int row, Image image)
         {
-            var button = FindButton(column, row);
-
-            if (IsCellClosed(button))
+            if (IsCellClosed(column, row))
             {
+                var button = FindButton(column, row); 
+                
                 ApplyOpenedButtonStyle(button);
 
                 button.Image = image;
@@ -224,6 +243,16 @@ namespace Arkashova.Minesweeper
         public void FailGame()
         {
             startGameButton.Image = _failGameImage;
+
+            for (int i = 0; i < gameTable.ColumnCount; i++)
+            {
+                for (int j = 0; j < gameTable.RowCount; j++)
+                {
+                    var button = FindButton(i, j);
+
+                    button.Click -= new EventHandler(this.cell_Click!);
+                }
+            }
         }
 
         private void widthTextBox_TextChanged(object sender, EventArgs e)
@@ -252,15 +281,23 @@ namespace Arkashova.Minesweeper
         {
             var button = (Button)sender;
 
-            if (IsCellClosed(button))
+            var column = GetButtonColumn(button.Name);
+            var raw = GetButtonRow(button.Name);
+
+            if (IsCellClosed(column, raw))
             {
-                Controller.OpenCell(GetButtonColumn(button.Name), GetButtonRow(button.Name));
+                Controller.OpenCell(column, raw);
             }
         }
 
         private void modesListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             InitializeTextFields();
+        }
+
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

@@ -28,6 +28,8 @@
 
         void OpenCell(int x, int y, Image image);
 
+        bool IsCellClosed(int column, int row);
+
         void ShowError(string message);
 
         void SuccessfullyCompleteGame();
