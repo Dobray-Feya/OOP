@@ -126,10 +126,14 @@
             HashTable<string?> hashTable4 = new HashTable<string?>(4) { null, "null", "zero" };
             Console.WriteLine(hashTable4);
 
-            HashTable<double> hashTable5 = new HashTable<double>(1) { 1 };
-            hashTable5.Remove(1);
+            HashTable<double> hashTable5 = new HashTable<double>(3) { 1, 2, 3 };
             Console.WriteLine(hashTable5);
-            Console.WriteLine($"Count = {hashTable5.Count}");
+            Console.Write($"Count = {hashTable5.Count}");
+            Console.WriteLine(); 
+            hashTable5.Remove(1);
+            hashTable5.Remove(2);
+            Console.WriteLine(hashTable5);
+            Console.Write($"Count = {hashTable5.Count}");
             Console.WriteLine();
         }
     }

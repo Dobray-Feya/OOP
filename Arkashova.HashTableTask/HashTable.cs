@@ -123,7 +123,15 @@ namespace Arkashova.HashTableTask
 
             foreach (List<T>? list in lists)
             {
-                if (list is null || list.Count == 0)
+                if (list is null)
+                {
+                    stringBuilder.Append("null");
+                    stringBuilder.Append(Environment.NewLine);
+
+                    continue;
+                }
+
+                if (list.Count == 0)
                 {
                     stringBuilder.Append("[]");
                     stringBuilder.Append(Environment.NewLine);
