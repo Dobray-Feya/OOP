@@ -10,8 +10,6 @@
 
         public override int MinesCount => 99;
 
-        public ExpertMode()
-        {
-        }
+        public override string HighScoresFileName => "..\\..\\..\\Logic\\GameModes\\HighScores\\ExpertModeHighScores.txt";
     }
 }

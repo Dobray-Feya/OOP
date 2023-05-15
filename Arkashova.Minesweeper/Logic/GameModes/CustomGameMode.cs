@@ -67,10 +67,10 @@
             }
         }
 
-        public CustomGameMode(int width, int height, int minesCount)
+        public CustomGameMode(int height, int width, int minesCount)
         {
+            FieldHeight = height; 
             FieldWidth = width;
-            FieldHeight = height;
             MinesCount = minesCount;
         }
 

@@ -91,7 +91,7 @@ namespace Arkashova.Minesweeper.Logic.GameModes
 
             var formatter = new BinaryFormatter();
 
-            using (Stream stream = new FileStream(HighScoresFileName, FileMode.Create, FileAccess.Write))
+            using (Stream stream = new FileStream(HighScoresFileName, FileMode.OpenOrCreate, FileAccess.Write))
             {
 #pragma warning disable SYSLIB0011
 

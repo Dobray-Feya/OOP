@@ -1,5 +1,6 @@
 ﻿using Arkashova.Minesweeper.Logic;
 using Arkashova.Minesweeper.View;
+using System.Data.Common;
 
 namespace Arkashova.Minesweeper
 {
@@ -53,13 +54,13 @@ namespace Arkashova.Minesweeper
 
             _model.StartNewGame();
 
-            var columnCount = _model.GameModes[selectedIndex].FieldWidth;
             var rowCount = _model.GameModes[selectedIndex].FieldHeight;
+            var columnCount = _model.GameModes[selectedIndex].FieldWidth;
             var minesCount = _model.GameModes[selectedIndex].MinesCount;
 
-            _view.InitializeGameField(columnCount, rowCount, minesCount);
+            _view.InitializeGameField(rowCount, columnCount, minesCount);
 
-            _сellsCountToOpen = columnCount * rowCount - minesCount;
+            _сellsCountToOpen = rowCount * columnCount - minesCount;
             _openedCellsCount = 0;
             _userFlagsCount = 0;
         }
@@ -72,8 +73,8 @@ namespace Arkashova.Minesweeper
             {
                 try
                 {
-                    _model.GameModes[selectedIndex].FieldWidth = _view.GetSelectedFieldWidth();
                     _model.GameModes[selectedIndex].FieldHeight = _view.GetSelectedFieldHeight();
+                    _model.GameModes[selectedIndex].FieldWidth = _view.GetSelectedFieldWidth();
                     _model.GameModes[selectedIndex].MinesCount = _view.GetSelectedMinesCount();
                 }
                 catch (Exception e)
@@ -87,34 +88,34 @@ namespace Arkashova.Minesweeper
             StartNewGame();
         }
 
-        public void OpenCell(int column, int row)
+        public void OpenCell(int row, int column)
         {
-            if (_view.HasFlag(column, row))
+            if (_view.HasFlag(row, column))
             {
                 return;
             }
 
-            if (_model.IsMine(column, row))
+            if (_model.IsMine(row, column))
             {
-                _view.OpenCell(column, row, _view.OpenedMineImage);
+                _view.OpenCell(row, column, _view.OpenedMineImage);
 
                 FailGame();
 
                 return;
             }
 
-            var cellValue = _model.GetValue(column, row);
+            var cellValue = _model.GetValue(row, column);
 
             if (cellValue == 0)
             {
-                _view.OpenCell(column, row, "");
+                _view.OpenCell(row, column, "");
                 _openedCellsCount++;
 
-                OpenZeroNeigbours(column, row);
+                OpenZeroNeigbours(row, column);
             }
             else
             {
-                _view.OpenCell(column, row, cellValue.ToString());
+                _view.OpenCell(row, column, cellValue.ToString());
                 _openedCellsCount++;
             }
 
@@ -122,58 +123,57 @@ namespace Arkashova.Minesweeper
             {
                 SuccessfullyCompleteGame();
             }
-
         }
 
-        public void SetFlag(int column, int row)
+        public void SetFlag(int row, int column)
         {
-            if (_view.HasFlag(column, row))
+            if (_view.HasFlag(row, column))
             {
-                _view.RemoveFlag(column, row);
+                _view.RemoveFlag(row, column);
 
                 _userFlagsCount--;
             }
             else
             {
-                _view.SetFlag(column, row);
+                _view.SetFlag(row, column);
 
                 _userFlagsCount++;
             }
         }
 
-        private void OpenZeroNeigbours(int column, int row)
+        private void OpenZeroNeigbours(int row, int column)
         {
-            OpenNeigbour(column - 1, row - 1);
-            OpenNeigbour(column - 1, row);
-            OpenNeigbour(column - 1, row + 1);
-            OpenNeigbour(column, row - 1);
-            OpenNeigbour(column, row + 1);
-            OpenNeigbour(column + 1, row - 1);
-            OpenNeigbour(column + 1, row);
-            OpenNeigbour(column + 1, row + 1);
+            OpenNeigbour(row - 1, column - 1);
+            OpenNeigbour(row - 1, column);
+            OpenNeigbour(row - 1, column + 1);
+            OpenNeigbour(row, column - 1);
+            OpenNeigbour(row, column + 1);
+            OpenNeigbour(row + 1, column - 1);
+            OpenNeigbour(row + 1, column);
+            OpenNeigbour(row + 1, column + 1);
         }
 
-        private void OpenNeigbour(int column, int row)
+        private void OpenNeigbour(int row, int column)
         {
             try
             {
-                if (!_view.IsCellClosed(column, row) || _view.HasFlag(column, row))
+                if (!_view.IsCellClosed(row, column) || _view.HasFlag(row, column))
                 {
                     return;
                 }
 
-                var neigbourValue = _model.GetValue(column, row);
+                var neigbourValue = _model.GetValue(row, column);
 
                 if (neigbourValue == 0)
                 {
-                    _view.OpenCell(column, row, "");
+                    _view.OpenCell(row, column, "");
                     _openedCellsCount++;
 
-                    OpenZeroNeigbours(column, row);
+                    OpenZeroNeigbours(row, column);
                 }
                 else
                 {
-                    _view.OpenCell(column, row, neigbourValue.ToString());
+                    _view.OpenCell(row, column, neigbourValue.ToString());
                     _openedCellsCount++;
                 }
             }
@@ -182,29 +182,29 @@ namespace Arkashova.Minesweeper
             }
         }
 
-        public List<(int, int)> GetNeighbouringClosedCells(int column, int row)
+        public List<(int, int)> GetNeighbouringClosedCells(int row, int column)
         {
             var list = new List<(int, int)>();
 
-            AddToList(list, column - 1, row - 1);
-            AddToList(list, column - 1, row);
-            AddToList(list, column - 1, row + 1);
-            AddToList(list, column, row - 1);
-            AddToList(list, column, row + 1);
-            AddToList(list, column + 1, row - 1);
-            AddToList(list, column + 1, row);
-            AddToList(list, column + 1, row + 1);
+            AddToList(list, row - 1, column - 1);
+            AddToList(list, row - 1, column);
+            AddToList(list, row - 1, column + 1);
+            AddToList(list, row, column - 1);
+            AddToList(list, row, column + 1);
+            AddToList(list, row + 1, column - 1);
+            AddToList(list, row + 1, column);
+            AddToList(list, row + 1, column + 1);
 
             return list;
         }
 
-        private void AddToList (List<(int, int)> list, int column, int row)
+        private void AddToList (List<(int, int)> list, int row, int column)
         {
             try
             {
-                if (_view.IsCellClosed(column, row) && !_view.HasFlag(column, row))
+                if (_view.IsCellClosed(row, column) && !_view.HasFlag(row, column))
                 {
-                    list.Add((column, row));
+                    list.Add((row, column));
                 }
             }
             catch (Exception)
@@ -244,9 +244,9 @@ namespace Arkashova.Minesweeper
         {
             var currentIndex = GetCurrentGameModeIndex();
 
-            for (int i = 0; i < _model.GameModes[currentIndex].FieldWidth; i++)
+            for (int i = 0; i < _model.GameModes[currentIndex].FieldHeight; i++)
             {
-                for (int j = 0; j < _model.GameModes[currentIndex].FieldHeight; j++)
+                for (int j = 0; j < _model.GameModes[currentIndex].FieldWidth; j++)
                 {
                     if (_model.IsMine(i, j) && !_view.HasFlag(i, j)) //если мина помечена флажком, то оставляем для ячейки картинку-флажок
                     {
@@ -261,9 +261,9 @@ namespace Arkashova.Minesweeper
         {
             var currentIndex = GetCurrentGameModeIndex(); 
             
-            for (int i = 0; i < _model.GameModes[currentIndex].FieldWidth; i++)
+            for (int i = 0; i < _model.GameModes[currentIndex].FieldHeight; i++)
             {
-                for (int j = 0; j < _model.GameModes[currentIndex].FieldHeight; j++)
+                for (int j = 0; j < _model.GameModes[currentIndex].FieldWidth; j++)
                 {
                     if (_view.HasFlag(i, j) && !_model.IsMine(i, j))
                     {

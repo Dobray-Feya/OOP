@@ -29,7 +29,7 @@ namespace Arkashova.Minesweeper.Logic
 
         public void StartNewGame()
         {
-            _table = new int[GameModes[CurrentGameModeIndex].FieldWidth, GameModes[CurrentGameModeIndex].FieldHeight];
+            _table = new int[GameModes[CurrentGameModeIndex].FieldHeight, GameModes[CurrentGameModeIndex].FieldWidth];
 
             FillTable();
         }
@@ -53,17 +53,23 @@ namespace Arkashova.Minesweeper.Logic
                 {
                     randomNumbers.Add(number);
 
-                    var y = (int)Math.Ceiling((double)number / fieldWidth) - 1;
+                    /*var x = (int)Math.Ceiling((double)number / fieldHeight) - 1;
 
-                    var x = number - y * fieldWidth - 1;
+                    var y = number - x * fieldHeight - 1;
 
-                    _table[x, y] = MINE;
+                    _table[x, y] = MINE;*/
+
+                    var row = (int)Math.Ceiling((double)number / fieldWidth) - 1;
+
+                    var column = number - row * fieldWidth - 1;
+
+                    _table[row, column] = MINE;
                 }
             }
 
-            for (int i = 0; i < fieldWidth; i++)
+            for (int i = 0; i < fieldHeight; i++)
             {
-                for (int j = 0; j < fieldHeight; j++)
+                for (int j = 0; j < fieldWidth; j++)
                 {
                     if (_table[i, j] != MINE)
                     {
@@ -84,9 +90,11 @@ namespace Arkashova.Minesweeper.Logic
             }
         }
 
-        private int GetOneIfIsMine(int column, int row)
+        private int GetOneIfIsMine(int row, int column)
         {
-            if (column == -1 || column == GameModes[CurrentGameModeIndex].FieldWidth || row == -1 || row == GameModes[CurrentGameModeIndex].FieldHeight || _table[column, row] != MINE) //!! redo
+            if (row == -1 || row == GameModes[CurrentGameModeIndex].FieldHeight
+                || column == -1 || column == GameModes[CurrentGameModeIndex].FieldWidth
+                || _table[row, column] != MINE)
             {
                 return 0;
             }
@@ -94,20 +102,20 @@ namespace Arkashova.Minesweeper.Logic
             return 1;
         }
 
-        public bool IsMine(int column, int row)
+        public bool IsMine(int row, int column)
         {
+            CheckRowIndex(row); 
             CheckColumnIndex(column);
-            CheckRowIndex(row);
 
-            return _table[column, row] == MINE;
+            return _table[row, column] == MINE;
         }
 
-        public int GetValue(int column, int row)
+        public int GetValue(int row, int column)
         {
+            CheckRowIndex(row); 
             CheckColumnIndex(column);
-            CheckRowIndex(row);
 
-            return _table[column, row];
+            return _table[row, column];
         }
 
         private void CheckRowIndex(int value)

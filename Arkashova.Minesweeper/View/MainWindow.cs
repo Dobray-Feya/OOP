@@ -35,11 +35,11 @@ namespace Arkashova.Minesweeper
             Controller = controller ?? throw new ArgumentNullException(nameof(controller));
         }
 
-        public void InitializeGameField(int columnCount, int rowCount, int minesCount)
+        public void InitializeGameField(int rowCount, int columnCount, int minesCount)
         {
-            InitializeTextFields(columnCount, rowCount, minesCount);
+            InitializeTextFields(rowCount, columnCount, minesCount);
 
-            InitializeGameTable(columnCount, rowCount);
+            InitializeGameTable(rowCount, columnCount);
 
             InitializeTimer();
 
@@ -65,44 +65,44 @@ namespace Arkashova.Minesweeper
             gameModesListBox.SelectedIndex = currentIndex;
         }
 
-        private void InitializeTextFields(int columnCount, int rowCount, int minesCount)
+        private void InitializeTextFields(int rowCount, int columnCount, int minesCount)
         {
-            widthTextBox.Text = columnCount.ToString();
             heightTextBox.Text = rowCount.ToString();
+            widthTextBox.Text = columnCount.ToString();
             minesCountTextBox.Text = minesCount.ToString();
 
             if (Controller.IsCustomGameMode(Controller.GetCurrentGameModeIndex()))
             {
-                widthTextBox.Enabled = true;
                 heightTextBox.Enabled = true;
+                widthTextBox.Enabled = true;
                 minesCountTextBox.Enabled = true;
             }
             else
             {
-                widthTextBox.Enabled = false;
                 heightTextBox.Enabled = false;
+                widthTextBox.Enabled = false;
                 minesCountTextBox.Enabled = false;
             }
         }
         
-        private void InitializeGameTable(int columnCount, int rowCount)
+        private void InitializeGameTable(int rowCount, int columnCount)
         {
-            if (columnCount < 1 || rowCount < 1)
+            if (rowCount < 1 || columnCount < 1)
             {
-                throw new ArgumentOutOfRangeException(nameof(columnCount) + nameof(rowCount), "Число строк и столбцов в таблице должно быть больше 1." +
+                throw new ArgumentOutOfRangeException(nameof(rowCount) + nameof(columnCount), "Число строк и столбцов в таблице должно быть больше 1." +
                                                       $"Переданы значения: число строк {rowCount} и число столбцов {columnCount}.");
             }
 
             gameTable.Enabled = true;
             gameTable.Controls.Clear();
-
-            gameTable.ColumnCount = columnCount;
+            
             gameTable.RowCount = rowCount;
+            gameTable.ColumnCount = columnCount;
 
             var cellSize = 40;
-
-            var tableWidth = cellSize * columnCount;
+            
             var tableHeight = cellSize * rowCount;
+            var tableWidth = cellSize * columnCount;
 
             gameTable.Size = new Size(tableWidth, tableHeight);
 
@@ -127,9 +127,9 @@ namespace Arkashova.Minesweeper
                 gameTable.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, cellSize));
             }
 
-            for (int i = 0; i < columnCount; i++)
+            for (int i = 0; i < rowCount; i++) // ???????????? i/j
             {
-                for (int j = 0; j < rowCount; j++)
+                for (int j = 0; j < columnCount; j++)
                 {
                     var button = new Button();
 
@@ -140,14 +140,11 @@ namespace Arkashova.Minesweeper
 
                     button.MouseDown += new MouseEventHandler(this.cell_Click!);
 
-                    gameTable.Controls.Add(button, i, j);
+                    gameTable.Controls.Add(button, j, i);
                 }
             }
 
             startGameButton.Image = _newGameImage;
-
-            var button1 = FindButton(2, 2);
-            button1.Image = _closedCellImage;
         }
 
         private void InitializeTimer()
@@ -155,7 +152,7 @@ namespace Arkashova.Minesweeper
             timeTextBox.Text = "0";
 
             timer.Interval = 1000;
-            timer.Enabled = false; // false? true on firs click 
+            timer.Enabled = false; // false? true on first click 
         }
 
         public void StopTimer()
@@ -184,19 +181,19 @@ namespace Arkashova.Minesweeper
         }
 
         // Кодирую в имени кнопки ее координаты и признак есть/нет флажок
-        private string GetButtonName(int column, int row, bool hasFlag)
+        private string GetButtonName(int row, int column, bool hasFlag)
         {
             var flag = hasFlag ? "1" : "0";
 
-            return $"{column},{row},{flag}";
+            return $"{row}, {column}, {flag}";
         }
 
-        private static int GetButtonColumn(string name)
+        private static int GetButtonRow(string name)
         {
             return Convert.ToInt32(name.Substring(0, name.IndexOf(',')));
         }
 
-        private static int GetButtonRow(string name)
+        private static int GetButtonColumn(string name)
         {
             var firstCommaIndex = name.IndexOf(',');
             var secondCommaIndex = name.IndexOf(',', firstCommaIndex + 1);
@@ -204,29 +201,29 @@ namespace Arkashova.Minesweeper
             return Convert.ToInt32(name.Substring(firstCommaIndex + 1, secondCommaIndex - firstCommaIndex - 1));
         }
 
-        public bool IsCellClosed(int column, int row)
+        public bool IsCellClosed(int row, int column)
         {
-            var button = FindButton(column, row);
+            var button = FindButton(row, column);
 
             return Equals(button.BackColor, _closedCellColor); // ???? works???
         }
 
-        public bool HasFlag(int column, int row)
+        public bool HasFlag(int row, int column)
         {
-            var button = FindButton(column, row);
+            var button = FindButton(row, column);
 
             var flag = button.Name[^1] == '1' ? true : false;
 
             return flag;
         }
 
-        private Button FindButton(int column, int row)
+        private Button FindButton(int row, int column)
         {
-            var controlsArray = Controls.Find(GetButtonName(column, row, false), true);
+            var controlsArray = Controls.Find(GetButtonName(row, column, false), true);
 
             if (controlsArray.Length == 0)
             {
-                controlsArray = Controls.Find(GetButtonName(column, row, true), true);
+                controlsArray = Controls.Find(GetButtonName(row, column, true), true);
             }
 
             return (Button)controlsArray[0];
@@ -250,16 +247,15 @@ namespace Arkashova.Minesweeper
 
         private void ApplyOpenedButtonStyle(Button button)
         {
-            //button.FlatStyle = FlatStyle.Standard;
             button.Image = null;
             button.BackColor = _openedCellColor; // Этот цвет кодирует то, что ячейка открыта
         }
 
-        public void OpenCell(int column, int row, string text)
+        public void OpenCell(int row, int column, string text)
         {
-            if (IsCellClosed(column, row))
+            if (IsCellClosed(row, column))
             {
-                var button = FindButton(column, row);
+                var button = FindButton(row, column);
 
                 ApplyOpenedButtonStyle(button);
 
@@ -267,11 +263,11 @@ namespace Arkashova.Minesweeper
             }
         }
 
-        public void OpenCell(int column, int row, Image image)
+        public void OpenCell(int row, int column, Image image)
         {
-            if (IsCellClosed(column, row))
+            if (IsCellClosed(row, column))
             {
-                var button = FindButton(column, row);
+                var button = FindButton(row, column);
 
                 ApplyOpenedButtonStyle(button);
 
@@ -279,9 +275,9 @@ namespace Arkashova.Minesweeper
             }
         }
 
-        public void SetFlag(int column, int row)
+        public void SetFlag(int row, int column)
         {
-            var button = FindButton(column, row);
+            var button = FindButton(row, column);
 
             var name = button.Name;
 
@@ -290,9 +286,9 @@ namespace Arkashova.Minesweeper
             button.Name = name.Substring(0, name.Length - 1) + "1";
         }
 
-        public void RemoveFlag(int column, int row)
+        public void RemoveFlag(int row, int column)
         {
-            var button = FindButton(column, row);
+            var button = FindButton(row, column);
 
             var name = button.Name;
 
@@ -315,13 +311,12 @@ namespace Arkashova.Minesweeper
         {
             startGameButton.Image = _failGameImage;
 
-            for (int i = 0; i < gameTable.ColumnCount; i++)
+            for (int i = 0; i < gameTable.RowCount; i++)  // i/j????
             {
-                for (int j = 0; j < gameTable.RowCount; j++)
+                for (int j = 0; j < gameTable.ColumnCount; j++)
                 {
                     var button = FindButton(i, j);
 
-                    //button.MouseUp -= new MouseEventHandler(this.cell_Click!);
                     button.MouseDown -= new MouseEventHandler(this.cell_Click!);
                 }
             }
@@ -365,25 +360,25 @@ namespace Arkashova.Minesweeper
             
             var button = (Button)sender;
 
-            var column = GetButtonColumn(button.Name);
             var row = GetButtonRow(button.Name);
+            var column = GetButtonColumn(button.Name);
 
-            if (IsCellClosed(column, row))
+            if (IsCellClosed(row, column))
             {
                 if (e.Button == MouseButtons.Right)
                 {
-                    Controller.SetFlag(column, row);
+                    Controller.SetFlag(row, column);
 
                     //minesCountTextBox.Text = Controller.GetTableWidth(GetSelectedGameModeIndex()).ToString();
                 }
                 else
                 {
-                    Controller.OpenCell(column, row);
+                    Controller.OpenCell(row, column);
                 }
             }
             else
             {
-                BlinkNeigbouringCells(column, row);
+                BlinkNeigbouringCells(row, column);
             }
         }
 
@@ -391,9 +386,9 @@ namespace Arkashova.Minesweeper
         // Для этого кнопки сначала рисуются, как открытые, и через 0,1 секунды - снова как закрытые.
         // Т.к. Thread.Sleep тут не работает, подсмотрела на stackoverflow, что можно сделать метод асинхронным:
         // https://ru.stackoverflow.com/questions/1399773/%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83-thread-sleep-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-%D0%B2-%D0%BD%D0%B0%D1%87%D0%B0%D0%BB%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8
-        private async void BlinkNeigbouringCells(int column, int row) 
+        private async void BlinkNeigbouringCells(int row, int column) 
         {
-            var neigbouringClosedCells = Controller.GetNeighbouringClosedCells(column, row);
+            var neigbouringClosedCells = Controller.GetNeighbouringClosedCells(row, column);
 
             if (neigbouringClosedCells is null || neigbouringClosedCells.Count == 0)
             {

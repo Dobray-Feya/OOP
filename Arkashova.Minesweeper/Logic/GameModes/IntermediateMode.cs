@@ -10,8 +10,6 @@
 
         public override int MinesCount => 40;
 
-        public IntermediateMode()
-        {
-        }
+        public override string HighScoresFileName => "..\\..\\..\\Logic\\GameModes\\HighScores\\IntermediateModeHighScores.txt";
     }
 }

@@ -10,10 +10,6 @@
 
         public override int MinesCount => 10;
 
-        public override string HighScoresFileName => "HighScores\\BeginnerModeHighScores.txt";
-
-        public BeginnerMode()
-        {
-        }
+        public override string HighScoresFileName => "..\\..\\..\\Logic\\GameModes\\HighScores\\BeginnerModeHighScores.txt";
     }
 }

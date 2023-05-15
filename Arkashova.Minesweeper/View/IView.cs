@@ -12,7 +12,7 @@
 
         Image WrongFlagImage { get; }
 
-        void InitializeGameField(int columnCount, int rowCount, int minesCount);
+        void InitializeGameField(int rowCount, int columnCount, int minesCount);
 
         int GetSelectedGameModeIndex();
 
@@ -22,17 +22,17 @@
 
         int GetSelectedMinesCount();
 
-        void OpenCell(int x, int y, string text);
+        void OpenCell(int rowCount, int columnCount, string text);
 
-        void OpenCell(int column, int row, Image image);
+        void OpenCell(int rowCount, int columnCount, Image image);
 
-        bool IsCellClosed(int column, int row);
+        bool IsCellClosed(int rowCount, int columnCount);
 
-        bool HasFlag(int column, int row);
+        bool HasFlag(int rowCount, int columnCount);
 
-        void SetFlag(int column, int row);
+        void SetFlag(int rowCount, int columnCount);
 
-        void RemoveFlag(int column, int row);
+        void RemoveFlag(int rowCount, int columnCount);
 
         void ShowError(string message);
 

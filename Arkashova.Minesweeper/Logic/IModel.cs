@@ -10,8 +10,8 @@ namespace Arkashova.Minesweeper.Logic
 
         public void StartNewGame();
 
-        public bool IsMine(int column, int row);
+        public bool IsMine(int row, int column);
 
-        public int GetValue(int column, int row);
+        public int GetValue(int row, int column);
     }
 }

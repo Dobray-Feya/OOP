@@ -12,9 +12,9 @@
 
         public override int GetMinMinesCount() => 1;
 
-        public override string HighScoresFileName => "..\\..\\..\\Logic\\GameModes\\HighScores\\sp.txt";
+        public override string HighScoresFileName => "..\\..\\..\\Logic\\GameModes\\HighScores\\SpecialModeHighScores.txt";
 
-        public SpecialMode(int width, int height, int minesCount) : base(width, height, minesCount)
+        public SpecialMode(int width, int height, int minesCount) : base(height, width, minesCount)
         {
         }
 
