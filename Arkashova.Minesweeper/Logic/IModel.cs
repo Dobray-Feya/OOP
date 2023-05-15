@@ -6,9 +6,9 @@ namespace Arkashova.Minesweeper.Logic
     {
         public List<GameMode> GameModes { get; set; }
 
-        public int CurrentGameModeIndex { get; }
+        public int CurrentGameModeIndex { get; set; }
 
-        public void StartNewGame(int gameModeIndex);
+        public void StartNewGame();
 
         public bool IsMine(int column, int row);
 

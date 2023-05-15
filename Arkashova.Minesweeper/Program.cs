@@ -19,6 +19,7 @@ namespace Arkashova.Minesweeper
                 new IntermediateMode(),
                 new ExpertMode(),
                 new SpecialMode(),
+                new SpecialMode(8,8,2) // убрать, и запятую выше тоже
             };
 
             var model = new MinesweeperModel(gameModesList, 0);

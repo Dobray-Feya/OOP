@@ -12,6 +12,8 @@
 
         public override int GetMinMinesCount() => 1;
 
+        public override string HighScoresFileName => "..\\..\\..\\Logic\\GameModes\\HighScores\\sp.txt";
+
         public SpecialMode(int width, int height, int minesCount) : base(width, height, minesCount)
         {
         }

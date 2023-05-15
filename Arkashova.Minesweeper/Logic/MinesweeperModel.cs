@@ -4,19 +4,19 @@ namespace Arkashova.Minesweeper.Logic
 {
     public class MinesweeperModel : IModel
     {
+        private const int MINE = 9; 
+        
         private int[,] _table;
 
         public List<GameMode> GameModes { get; set; }
 
-        public int CurrentGameModeIndex { get; private set; }
-
-        private const int MINE = 9;
+        public int CurrentGameModeIndex { get; set; }
 
         public MinesweeperModel(List<GameMode> gameModes, int gameModeIndex)
         {
             GameModes = gameModes ?? throw new ArgumentNullException(nameof(gameModes));
 
-            StartNewGame(gameModeIndex);
+            StartNewGame();
         }
 
         private void CheckGameModeIndex(int value)
@@ -27,13 +27,9 @@ namespace Arkashova.Minesweeper.Logic
             }
         }
 
-        public void StartNewGame(int gameModeIndex)
+        public void StartNewGame()
         {
-            CheckGameModeIndex(gameModeIndex);
-
-            CurrentGameModeIndex = gameModeIndex;
-
-            _table = new int[GameModes[gameModeIndex].FieldWidth, GameModes[gameModeIndex].FieldHeight];
+            _table = new int[GameModes[CurrentGameModeIndex].FieldWidth, GameModes[CurrentGameModeIndex].FieldHeight];
 
             FillTable();
         }
@@ -42,7 +38,7 @@ namespace Arkashova.Minesweeper.Logic
         {
             var randomNumbers = new List<int>();
 
-            Random random = new Random(DateTime.UtcNow.Millisecond);
+            var random = new Random(DateTime.UtcNow.Millisecond);
 
             var fieldWidth = GameModes[CurrentGameModeIndex].FieldWidth;
             var fieldHeight = GameModes[CurrentGameModeIndex].FieldHeight;
@@ -73,14 +69,14 @@ namespace Arkashova.Minesweeper.Logic
                     {
                         var sum = 0;
 
-                        sum += AddOneIfItIsMine(i - 1, j - 1);
-                        sum += AddOneIfItIsMine(i - 1, j);
-                        sum += AddOneIfItIsMine(i - 1, j + 1);
-                        sum += AddOneIfItIsMine(i, j - 1);
-                        sum += AddOneIfItIsMine(i, j + 1);
-                        sum += AddOneIfItIsMine(i + 1, j - 1);
-                        sum += AddOneIfItIsMine(i + 1, j);
-                        sum += AddOneIfItIsMine(i + 1, j + 1);
+                        sum += GetOneIfIsMine(i - 1, j - 1);
+                        sum += GetOneIfIsMine(i - 1, j);
+                        sum += GetOneIfIsMine(i - 1, j + 1);
+                        sum += GetOneIfIsMine(i, j - 1);
+                        sum += GetOneIfIsMine(i, j + 1);
+                        sum += GetOneIfIsMine(i + 1, j - 1);
+                        sum += GetOneIfIsMine(i + 1, j);
+                        sum += GetOneIfIsMine(i + 1, j + 1);
 
                         _table[i, j] = sum;
                     }
@@ -88,7 +84,7 @@ namespace Arkashova.Minesweeper.Logic
             }
         }
 
-        private int AddOneIfItIsMine(int column, int row)
+        private int GetOneIfIsMine(int column, int row)
         {
             if (column == -1 || column == GameModes[CurrentGameModeIndex].FieldWidth || row == -1 || row == GameModes[CurrentGameModeIndex].FieldHeight || _table[column, row] != MINE) //!! redo
             {

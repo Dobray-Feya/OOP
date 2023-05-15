@@ -1,5 +1,4 @@
 using Arkashova.Minesweeper.View;
-using System.Data.Common;
 
 namespace Arkashova.Minesweeper
 {
@@ -23,6 +22,12 @@ namespace Arkashova.Minesweeper
 
         private Image _closedCellImage = Image.FromFile("..\\..\\..\\View\\Icons\\closedCell.png");
 
+        private readonly Color _closedCellColor = Color.AliceBlue; // Этот и следующий цвет выбраны наугад. Главное, чтобы они отличались
+
+        private readonly Color _openedCellColor = Color.AntiqueWhite;
+
+        private bool _isFirstClickWaited;
+
         public MainWindow(Controller controller)
         {
             InitializeComponent();
@@ -30,11 +35,15 @@ namespace Arkashova.Minesweeper
             Controller = controller ?? throw new ArgumentNullException(nameof(controller));
         }
 
-        public void InitializeGameModeSelector()
+        public void InitializeGameField(int columnCount, int rowCount, int minesCount)
         {
-            InitializeGameModesListBox();
+            InitializeTextFields(columnCount, rowCount, minesCount);
 
-            InitializeTextFields();
+            InitializeGameTable(columnCount, rowCount);
+
+            InitializeTimer();
+
+            _isFirstClickWaited = true;
         }
 
         private void InitializeGameModesListBox()
@@ -56,15 +65,13 @@ namespace Arkashova.Minesweeper
             gameModesListBox.SelectedIndex = currentIndex;
         }
 
-        private void InitializeTextFields()
+        private void InitializeTextFields(int columnCount, int rowCount, int minesCount)
         {
-            var selectedIndex = GetSelectedGameModeIndex();
+            widthTextBox.Text = columnCount.ToString();
+            heightTextBox.Text = rowCount.ToString();
+            minesCountTextBox.Text = minesCount.ToString();
 
-            widthTextBox.Text = Controller.GetTableWidth(selectedIndex).ToString();
-            heightTextBox.Text = Controller.GetTableHeight(selectedIndex).ToString();
-            minesCountTextBox.Text = Controller.GetMinesCount(selectedIndex).ToString();
-
-            if (Controller.IsCustomGameMode(selectedIndex))
+            if (Controller.IsCustomGameMode(Controller.GetCurrentGameModeIndex()))
             {
                 widthTextBox.Enabled = true;
                 heightTextBox.Enabled = true;
@@ -77,28 +84,8 @@ namespace Arkashova.Minesweeper
                 minesCountTextBox.Enabled = false;
             }
         }
-
-        public int GetSelectedGameModeIndex()
-        {
-            return gameModesListBox.SelectedIndex;
-        }
-
-        public int GetSelectedFieldWidth()
-        {
-            return Convert.ToInt32(widthTextBox.Text);
-        }
-
-        public int GetSelectedFieldHeight()
-        {
-            return Convert.ToInt32(heightTextBox.Text);
-        }
-
-        public int GetSelectedMinesCount()
-        {
-            return Convert.ToInt32(minesCountTextBox.Text);
-        }
-
-        public void InitializeGameTable(int columnCount, int rowCount)
+        
+        private void InitializeGameTable(int columnCount, int rowCount)
         {
             if (columnCount < 1 || rowCount < 1)
             {
@@ -109,8 +96,8 @@ namespace Arkashova.Minesweeper
             gameTable.Enabled = true;
             gameTable.Controls.Clear();
 
-            gameTable.RowCount = rowCount;
             gameTable.ColumnCount = columnCount;
+            gameTable.RowCount = rowCount;
 
             var cellSize = 40;
 
@@ -146,11 +133,12 @@ namespace Arkashova.Minesweeper
                 {
                     var button = new Button();
 
-                    button.Name = GetButtonName(i, j);
+                    button.Name = GetButtonName(i, j, false);
 
+                    ApplyCommonButtonStyle(button);
                     ApplyClosedButtonStyle(button);
 
-                    button.Click += new EventHandler(this.cell_Click!);
+                    button.MouseDown += new MouseEventHandler(this.cell_Click!);
 
                     gameTable.Controls.Add(button, i, j);
                 }
@@ -162,29 +150,89 @@ namespace Arkashova.Minesweeper
             button1.Image = _closedCellImage;
         }
 
-        private string GetButtonName(int column, int row)
+        private void InitializeTimer()
         {
-            return column.ToString() + "," + row.ToString();
+            timeTextBox.Text = "0";
+
+            timer.Interval = 1000;
+            timer.Enabled = false; // false? true on firs click 
         }
 
-        private int GetButtonColumn(string name)
+        public void StopTimer()
+        {
+            timer.Stop();
+        }
+
+        public int GetSelectedGameModeIndex()
+        {
+            return gameModesListBox.SelectedIndex;
+        }
+
+        public int GetSelectedFieldWidth()
+        {
+            return Convert.ToInt32(widthTextBox.Text);
+        }
+
+        public int GetSelectedFieldHeight()
+        {
+            return Convert.ToInt32(heightTextBox.Text);
+        }
+
+        public int GetSelectedMinesCount()
+        {
+            return Convert.ToInt32(minesCountTextBox.Text);
+        }
+
+        // Кодирую в имени кнопки ее координаты и признак есть/нет флажок
+        private string GetButtonName(int column, int row, bool hasFlag)
+        {
+            var flag = hasFlag ? "1" : "0";
+
+            return $"{column},{row},{flag}";
+        }
+
+        private static int GetButtonColumn(string name)
         {
             return Convert.ToInt32(name.Substring(0, name.IndexOf(',')));
         }
 
-        private int GetButtonRow(string name)
+        private static int GetButtonRow(string name)
         {
-            var commaIndex = name.IndexOf(',');
+            var firstCommaIndex = name.IndexOf(',');
+            var secondCommaIndex = name.IndexOf(',', firstCommaIndex + 1);
 
-            return Convert.ToInt32(name.Substring(commaIndex + 1, name.Length - 1 - commaIndex));
+            return Convert.ToInt32(name.Substring(firstCommaIndex + 1, secondCommaIndex - firstCommaIndex - 1));
+        }
+
+        public bool IsCellClosed(int column, int row)
+        {
+            var button = FindButton(column, row);
+
+            return Equals(button.BackColor, _closedCellColor); // ???? works???
+        }
+
+        public bool HasFlag(int column, int row)
+        {
+            var button = FindButton(column, row);
+
+            var flag = button.Name[^1] == '1' ? true : false;
+
+            return flag;
         }
 
         private Button FindButton(int column, int row)
         {
-            return (Button)Controls.Find(GetButtonName(column, row), true)[0];
+            var controlsArray = Controls.Find(GetButtonName(column, row, false), true);
+
+            if (controlsArray.Length == 0)
+            {
+                controlsArray = Controls.Find(GetButtonName(column, row, true), true);
+            }
+
+            return (Button)controlsArray[0];
         }
 
-        private void ApplyClosedButtonStyle(Button button)
+        private void ApplyCommonButtonStyle(Button button)
         {
             button.Margin = new Padding(1, 1, 1, 1);
             button.Dock = DockStyle.Fill;
@@ -192,26 +240,27 @@ namespace Arkashova.Minesweeper
             button.FlatAppearance.BorderSize = 1;
             button.FlatAppearance.BorderColor = Color.DarkGray;
             button.FlatStyle = FlatStyle.Flat;
+        }
+
+        private void ApplyClosedButtonStyle(Button button)
+        {
             button.Image = _closedCellImage;
-         }
+            button.BackColor = _closedCellColor; // Этот цвет кодирует то, что ячейка закрыта
+        }
 
         private void ApplyOpenedButtonStyle(Button button)
         {
-            button.FlatStyle = FlatStyle.Standard;
+            //button.FlatStyle = FlatStyle.Standard;
             button.Image = null;
-        }
-
-        public bool IsCellClosed(int column, int row)
-        {
-            return FindButton(column, row).FlatStyle is FlatStyle.Flat; // считаю, что кнопка не была нажата, если у нее стиль остался Flat, как задано в ApplyClosedButtonStyle.
+            button.BackColor = _openedCellColor; // Этот цвет кодирует то, что ячейка открыта
         }
 
         public void OpenCell(int column, int row, string text)
         {
             if (IsCellClosed(column, row))
             {
-                var button = FindButton(column, row); 
-                
+                var button = FindButton(column, row);
+
                 ApplyOpenedButtonStyle(button);
 
                 button.Text = text;
@@ -222,12 +271,34 @@ namespace Arkashova.Minesweeper
         {
             if (IsCellClosed(column, row))
             {
-                var button = FindButton(column, row); 
-                
+                var button = FindButton(column, row);
+
                 ApplyOpenedButtonStyle(button);
 
                 button.Image = image;
             }
+        }
+
+        public void SetFlag(int column, int row)
+        {
+            var button = FindButton(column, row);
+
+            var name = button.Name;
+
+            button.Image = FlagImage;
+
+            button.Name = name.Substring(0, name.Length - 1) + "1";
+        }
+
+        public void RemoveFlag(int column, int row)
+        {
+            var button = FindButton(column, row);
+
+            var name = button.Name;
+
+            button.Image = _closedCellImage;
+
+            button.Name = name.Substring(0, name.Length - 1) + "0";
         }
 
         public void ShowError(string message)
@@ -250,49 +321,107 @@ namespace Arkashova.Minesweeper
                 {
                     var button = FindButton(i, j);
 
-                    button.Click -= new EventHandler(this.cell_Click!);
+                    //button.MouseUp -= new MouseEventHandler(this.cell_Click!);
+                    button.MouseDown -= new MouseEventHandler(this.cell_Click!);
                 }
             }
         }
 
-        private void widthTextBox_TextChanged(object sender, EventArgs e)
+        public int GetGameTime()
+        {
+            return Convert.ToInt32(timeTextBox.Text);
+        }
+
+        private void textBox_TextChanged(object sender, EventArgs e)
         {
             var textBox = (TextBox)sender;
 
             if (!int.TryParse(textBox.Text, out var result))
             {
                 ShowError("Нужно ввести число.");
-
-                textBox.Text = Controller.GetTableWidth(GetSelectedGameModeIndex()).ToString();
             }
         }
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            InitializeGameModesListBox();
+
             Controller.StartNewGame();
         }
 
         private void startGameButton_Click(object sender, EventArgs e)
         {
-            Controller.StartNewGame();
+            Controller.UpdateGameParameters();
         }
 
-        private void cell_Click(object sender, EventArgs e)
+        private void cell_Click(object sender, MouseEventArgs e)
         {
+            if (_isFirstClickWaited)
+            {
+                timer.Start();
+
+                _isFirstClickWaited = false;
+            }
+            
             var button = (Button)sender;
 
             var column = GetButtonColumn(button.Name);
-            var raw = GetButtonRow(button.Name);
+            var row = GetButtonRow(button.Name);
 
-            if (IsCellClosed(column, raw))
+            if (IsCellClosed(column, row))
             {
-                Controller.OpenCell(column, raw);
+                if (e.Button == MouseButtons.Right)
+                {
+                    Controller.SetFlag(column, row);
+
+                    //minesCountTextBox.Text = Controller.GetTableWidth(GetSelectedGameModeIndex()).ToString();
+                }
+                else
+                {
+                    Controller.OpenCell(column, row);
+                }
+            }
+            else
+            {
+                BlinkNeigbouringCells(column, row);
+            }
+        }
+
+        // Этот метод заставляет мигать ячейки, соседние с заданной.
+        // Для этого кнопки сначала рисуются, как открытые, и через 0,1 секунды - снова как закрытые.
+        // Т.к. Thread.Sleep тут не работает, подсмотрела на stackoverflow, что можно сделать метод асинхронным:
+        // https://ru.stackoverflow.com/questions/1399773/%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83-thread-sleep-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-%D0%B2-%D0%BD%D0%B0%D1%87%D0%B0%D0%BB%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8
+        private async void BlinkNeigbouringCells(int column, int row) 
+        {
+            var neigbouringClosedCells = Controller.GetNeighbouringClosedCells(column, row);
+
+            if (neigbouringClosedCells is null || neigbouringClosedCells.Count == 0)
+            {
+                return;
+            }
+
+            var neigbouringButtons = new List<Button>();
+
+            foreach (var cell in neigbouringClosedCells)
+            {
+                var button = FindButton(cell.Item1, cell.Item2);
+
+                ApplyOpenedButtonStyle(button);
+
+                neigbouringButtons.Add(button);
+            }
+
+            await Task.Delay(100);
+
+            foreach (var button in neigbouringButtons)
+            {
+                ApplyClosedButtonStyle(button);
             }
         }
 
         private void modesListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            InitializeTextFields();
+            Controller.StartNewGame();
         }
 
         private void exitButton_Click(object sender, EventArgs e)
@@ -302,9 +431,46 @@ namespace Arkashova.Minesweeper
 
         private void aboutButton_Click(object sender, EventArgs e)
         {
-            var aboutWindow = new AboutWindow();
+            var window = new AboutWindow();
 
-            aboutWindow.Show();
+            window.Show();
+        }
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            var seconds = Convert.ToInt32(timeTextBox.Text);
+
+            seconds++;
+
+            timeTextBox.Text = seconds.ToString();
+
+            if (seconds >= 999)
+            {
+                timer.Stop();
+            }
+        }
+
+        public string? GetWinnerName()
+        {
+            var window = new WinnerWindow();
+
+            if (window.ShowDialog(this) == DialogResult.OK)
+            {
+                return window.winnerNameTextBox.Text;
+            }
+
+            return null;
+        }
+
+        private void highScoresButton_Click(object sender, EventArgs e)
+        {
+            var highScores = Controller.GetHighScores();
+
+            var gameModeName = Controller.GetGameModesNames()[Controller.GetCurrentGameModeIndex()];
+
+            var highScoresWindow = new HighScoresWindow(gameModeName, highScores);
+
+            highScoresWindow.Show();
         }
     }
 }

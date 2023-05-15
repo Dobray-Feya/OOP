@@ -12,9 +12,7 @@
 
         Image WrongFlagImage { get; }
 
-        void InitializeGameModeSelector();
-
-        void InitializeGameTable(int columnCount, int rowCount);
+        void InitializeGameField(int columnCount, int rowCount, int minesCount);
 
         int GetSelectedGameModeIndex();
 
@@ -26,14 +24,26 @@
 
         void OpenCell(int x, int y, string text);
 
-        void OpenCell(int x, int y, Image image);
+        void OpenCell(int column, int row, Image image);
 
         bool IsCellClosed(int column, int row);
+
+        bool HasFlag(int column, int row);
+
+        void SetFlag(int column, int row);
+
+        void RemoveFlag(int column, int row);
 
         void ShowError(string message);
 
         void SuccessfullyCompleteGame();
 
         void FailGame();
+
+        int GetGameTime();
+
+        void StopTimer();
+
+        string? GetWinnerName();
     }
 }

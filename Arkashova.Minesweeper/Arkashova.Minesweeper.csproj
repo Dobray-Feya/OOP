@@ -23,4 +23,8 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logic\GameModes\HighScores\" />
+  </ItemGroup>
+
 </Project>

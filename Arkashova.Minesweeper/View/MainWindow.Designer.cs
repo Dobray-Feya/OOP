@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.gameTable = new System.Windows.Forms.TableLayoutPanel();
             this.startGameButton = new System.Windows.Forms.Button();
@@ -37,6 +38,7 @@
             this.widthLabel = new System.Windows.Forms.Label();
             this.heightLabel = new System.Windows.Forms.Label();
             this.toolsPanel = new System.Windows.Forms.Panel();
+            this.timeTextBox = new System.Windows.Forms.TextBox();
             this.startLabel = new System.Windows.Forms.Label();
             this.gameModeLabel = new System.Windows.Forms.Label();
             this.exitButton = new System.Windows.Forms.Button();
@@ -45,6 +47,7 @@
             this.aboutButton = new System.Windows.Forms.Button();
             this.minesCountTextBox = new System.Windows.Forms.TextBox();
             this.MinesCountlabel = new System.Windows.Forms.Label();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             this.borderPanel.SuspendLayout();
             this.toolsPanel.SuspendLayout();
             this.SuspendLayout();
@@ -67,9 +70,9 @@
             // 
             this.startGameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.startGameButton.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.startGameButton.Location = new System.Drawing.Point(260, 47);
+            this.startGameButton.Location = new System.Drawing.Point(260, 32);
             this.startGameButton.Name = "startGameButton";
-            this.startGameButton.Size = new System.Drawing.Size(60, 60);
+            this.startGameButton.Size = new System.Drawing.Size(50, 50);
             this.startGameButton.TabIndex = 4;
             this.startGameButton.UseVisualStyleBackColor = true;
             this.startGameButton.Click += new System.EventHandler(this.startGameButton_Click);
@@ -102,6 +105,7 @@
             this.heightTextBox.Name = "heightTextBox";
             this.heightTextBox.Size = new System.Drawing.Size(40, 23);
             this.heightTextBox.TabIndex = 2;
+            this.heightTextBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
             // 
             // widthLabel
             // 
@@ -124,6 +128,7 @@
             // toolsPanel
             // 
             this.toolsPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.toolsPanel.Controls.Add(this.timeTextBox);
             this.toolsPanel.Controls.Add(this.startLabel);
             this.toolsPanel.Controls.Add(this.gameModeLabel);
             this.toolsPanel.Controls.Add(this.exitButton);
@@ -142,11 +147,19 @@
             this.toolsPanel.Size = new System.Drawing.Size(480, 120);
             this.toolsPanel.TabIndex = 8;
             // 
+            // timeTextBox
+            // 
+            this.timeTextBox.Location = new System.Drawing.Point(266, 84);
+            this.timeTextBox.Name = "timeTextBox";
+            this.timeTextBox.Size = new System.Drawing.Size(40, 23);
+            this.timeTextBox.TabIndex = 14;
+            this.timeTextBox.Text = "0";
+            // 
             // startLabel
             // 
             this.startLabel.AutoSize = true;
             this.startLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.startLabel.Location = new System.Drawing.Point(266, 24);
+            this.startLabel.Location = new System.Drawing.Point(258, 9);
             this.startLabel.Name = "startLabel";
             this.startLabel.Size = new System.Drawing.Size(52, 19);
             this.startLabel.TabIndex = 13;
@@ -179,6 +192,7 @@
             this.highScoresButton.TabIndex = 5;
             this.highScoresButton.Text = "Победители";
             this.highScoresButton.UseVisualStyleBackColor = true;
+            this.highScoresButton.Click += new System.EventHandler(this.highScoresButton_Click);
             // 
             // widthTextBox
             // 
@@ -186,7 +200,7 @@
             this.widthTextBox.Name = "widthTextBox";
             this.widthTextBox.Size = new System.Drawing.Size(40, 23);
             this.widthTextBox.TabIndex = 1;
-            this.widthTextBox.TextChanged += new System.EventHandler(this.widthTextBox_TextChanged);
+            this.widthTextBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
             // 
             // aboutButton
             // 
@@ -204,6 +218,7 @@
             this.minesCountTextBox.Name = "minesCountTextBox";
             this.minesCountTextBox.Size = new System.Drawing.Size(40, 23);
             this.minesCountTextBox.TabIndex = 3;
+            this.minesCountTextBox.TextChanged += new System.EventHandler(this.textBox_TextChanged);
             // 
             // MinesCountlabel
             // 
@@ -213,6 +228,11 @@
             this.MinesCountlabel.Size = new System.Drawing.Size(44, 15);
             this.MinesCountlabel.TabIndex = 8;
             this.MinesCountlabel.Text = "Мины:";
+            // 
+            // timer
+            // 
+            this.timer.Interval = 1000;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // MainWindow
             // 
@@ -251,5 +271,7 @@
         private Button highScoresButton;
         private Button aboutButton;
         private Label startLabel;
+        private TextBox timeTextBox;
+        private System.Windows.Forms.Timer timer;
     }
 }
