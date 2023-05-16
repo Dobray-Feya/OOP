@@ -449,12 +449,16 @@ namespace Arkashova.Minesweeper
         {
             var window = new WinnerWindow();
 
-            if (window.ShowDialog(this) == DialogResult.OK)
+            /*if (window.ShowDialog(this) == DialogResult.OK)
             {
-                return window.winnerNameTextBox.Text;
-            }
+                return window.WinnerName;
+            }*/
 
-            return null;
+            window.ShowDialog(this);
+
+            return window.WinnerName;
+
+           // return null;
         }
 
         private void highScoresButton_Click(object sender, EventArgs e)

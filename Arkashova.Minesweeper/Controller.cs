@@ -277,7 +277,7 @@ namespace Arkashova.Minesweeper
         {
             var userName = _view.GetWinnerName();
 
-            if (userName == null)
+            if (userName == null || userName.Length == 0)
             {
                 return;
             }

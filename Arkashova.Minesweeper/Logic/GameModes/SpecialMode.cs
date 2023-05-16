@@ -18,7 +18,7 @@
         {
         }
 
-        public SpecialMode() : base()
+        public SpecialMode()
         {
         }
     }

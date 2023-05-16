@@ -34,6 +34,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.SubmitButton = new System.Windows.Forms.Button();
+            this.cancelButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -49,8 +50,9 @@
             // winnerNameTextBox
             // 
             this.winnerNameTextBox.Location = new System.Drawing.Point(147, 118);
+            this.winnerNameTextBox.MaxLength = 15;
             this.winnerNameTextBox.Name = "winnerNameTextBox";
-            this.winnerNameTextBox.Size = new System.Drawing.Size(236, 23);
+            this.winnerNameTextBox.Size = new System.Drawing.Size(120, 23);
             this.winnerNameTextBox.TabIndex = 1;
             // 
             // label2
@@ -58,9 +60,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(76, 86);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(315, 15);
+            this.label2.Size = new System.Drawing.Size(316, 15);
             this.label2.TabIndex = 2;
-            this.label2.Text = "Введите свое имя, чтобы попасть в списке победителей";
+            this.label2.Text = "Введите свое имя, чтобы попасть в список победителей";
             // 
             // label3
             // 
@@ -73,8 +75,8 @@
             // 
             // SubmitButton
             // 
-            this.SubmitButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.SubmitButton.Location = new System.Drawing.Point(300, 195);
+            this.SubmitButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.SubmitButton.Location = new System.Drawing.Point(305, 195);
             this.SubmitButton.Name = "SubmitButton";
             this.SubmitButton.Size = new System.Drawing.Size(83, 23);
             this.SubmitButton.TabIndex = 3;
@@ -82,11 +84,23 @@
             this.SubmitButton.UseVisualStyleBackColor = true;
             this.SubmitButton.Click += new System.EventHandler(this.SubmitButton_Click);
             // 
+            // cancelButton
+            // 
+            this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.cancelButton.Location = new System.Drawing.Point(204, 195);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(83, 23);
+            this.cancelButton.TabIndex = 4;
+            this.cancelButton.Text = "Не хочу";
+            this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            // 
             // WinnerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(491, 258);
+            this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.SubmitButton);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -94,6 +108,7 @@
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "WinnerWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Поздравляем!";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -107,5 +122,6 @@
         private Label label3;
         private Button SubmitButton;
         internal TextBox winnerNameTextBox;
+        private Button cancelButton;
     }
 }

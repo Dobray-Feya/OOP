@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HighScoresWindow));
             this.label1 = new System.Windows.Forms.Label();
             this.gameModeLabel = new System.Windows.Forms.Label();
             this.highScoresTable = new System.Windows.Forms.TableLayoutPanel();
@@ -74,6 +75,7 @@
             this.Controls.Add(this.highScoresTable);
             this.Controls.Add(this.gameModeLabel);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "HighScoresWindow";
             this.Text = "Победители";

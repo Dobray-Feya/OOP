@@ -18,7 +18,7 @@
 
         public override int FieldWidth
         {
-            get { return _fieldWidth; }
+            get => _fieldWidth;
 
             set
             {
@@ -35,7 +35,7 @@
 
         public override int FieldHeight
         {
-            get { return _fieldHeight; }
+            get => _fieldHeight;
 
             set
             {
@@ -52,7 +52,7 @@
 
         public override int MinesCount
         {
-            get { return _minesCount; }
+            get => _minesCount;
 
             set
             {

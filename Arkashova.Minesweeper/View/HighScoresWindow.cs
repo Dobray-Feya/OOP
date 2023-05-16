@@ -18,7 +18,7 @@ namespace Arkashova.Minesweeper.View
             highScoresTable.RowCount = records.Count;
  
             var column1Width = 40;
-            var column2Width = 100;
+            var column2Width = 120;
             var column3Width = 80;
 
             highScoresTable.ColumnStyles.Clear();
