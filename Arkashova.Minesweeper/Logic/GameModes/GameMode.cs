@@ -95,9 +95,5 @@ namespace Arkashova.Minesweeper.Logic.GameModes
                 formatter.Serialize(stream, highScores);
             }
         }
-
-        public GameMode()
-        {
-        }
     }
 }

@@ -32,6 +32,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.gameModeLabel = new System.Windows.Forms.Label();
             this.highScoresTable = new System.Windows.Forms.TableLayoutPanel();
+            this.noWinnersLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -46,13 +47,16 @@
             // gameModeLabel
             // 
             this.gameModeLabel.AutoSize = true;
-            this.gameModeLabel.Location = new System.Drawing.Point(144, 15);
+            this.gameModeLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.gameModeLabel.Location = new System.Drawing.Point(124, 15);
             this.gameModeLabel.Name = "gameModeLabel";
-            this.gameModeLabel.Size = new System.Drawing.Size(0, 15);
+            this.gameModeLabel.Size = new System.Drawing.Size(104, 15);
             this.gameModeLabel.TabIndex = 1;
+            this.gameModeLabel.Text = "название режима";
             // 
             // highScoresTable
             // 
+            this.highScoresTable.AutoScroll = true;
             this.highScoresTable.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.highScoresTable.ColumnCount = 3;
             this.highScoresTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
@@ -66,12 +70,24 @@
             this.highScoresTable.Size = new System.Drawing.Size(337, 431);
             this.highScoresTable.TabIndex = 2;
             // 
+            // noWinnersLabel
+            // 
+            this.noWinnersLabel.AutoSize = true;
+            this.noWinnersLabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.noWinnersLabel.Location = new System.Drawing.Point(45, 40);
+            this.noWinnersLabel.Name = "noWinnersLabel";
+            this.noWinnersLabel.Size = new System.Drawing.Size(138, 15);
+            this.noWinnersLabel.TabIndex = 3;
+            this.noWinnersLabel.Text = "Пока нет победителей";
+            this.noWinnersLabel.Visible = false;
+            // 
             // HighScoresWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(459, 516);
+            this.Controls.Add(this.noWinnersLabel);
             this.Controls.Add(this.highScoresTable);
             this.Controls.Add(this.gameModeLabel);
             this.Controls.Add(this.label1);
@@ -89,5 +105,6 @@
         private Label label1;
         private Label gameModeLabel;
         private TableLayoutPanel highScoresTable;
+        private Label noWinnersLabel;
     }
 }

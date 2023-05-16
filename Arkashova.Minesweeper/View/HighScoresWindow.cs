@@ -10,7 +10,12 @@ namespace Arkashova.Minesweeper.View
 
             gameModeLabel.Text = gameModeName;
 
+            if (records.Count <= 0)
+            {
+                noWinnersLabel.Visible = true;
 
+                return;
+            }
 
             highScoresTable.Controls.Clear();
 
