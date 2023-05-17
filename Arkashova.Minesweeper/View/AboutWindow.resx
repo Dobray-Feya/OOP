@@ -57,7 +57,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="textBox3.Text" xml:space="preserve">
+  <data name="rulesTextBox.Text" xml:space="preserve">
     <value>Всё, как в классическом Сапёре. 
 Нужно открыть все ячейки, не наткнувшись на мину.
 Если вы уверены, что ячейка содержит мину, пометьте ее флажком, щелкнув по ячейке правой кнопкой мыши.

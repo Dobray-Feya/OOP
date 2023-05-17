@@ -4,8 +4,10 @@
     {
         public string? WinnerName { get; private set; } = "";
 
-        public WinnerWindow()
+        public WinnerWindow(Point location)
         {
+            Location = location;
+
             InitializeComponent();
         }
 

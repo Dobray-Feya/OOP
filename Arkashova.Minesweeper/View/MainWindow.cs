@@ -378,7 +378,7 @@ namespace Arkashova.Minesweeper
             }
             else
             {
-                BlinkNeigbouringCells(row, column);
+                BlinkNeighbouringCells(row, column);
             }
         }
 
@@ -386,29 +386,29 @@ namespace Arkashova.Minesweeper
         // ƒл€ этого кнопки сначала рисуютс€, как открытые, и через 0,1 секунды - снова как закрытые.
         // “.к. Thread.Sleep тут не работает, подсмотрела на stackoverflow, что можно сделать метод асинхронным:
         // https://ru.stackoverflow.com/questions/1399773/%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83-thread-sleep-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-%D0%B2-%D0%BD%D0%B0%D1%87%D0%B0%D0%BB%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8
-        private async void BlinkNeigbouringCells(int row, int column) 
+        private async void BlinkNeighbouringCells(int row, int column) 
         {
-            var neigbouringClosedCells = Controller.GetNeighbouringClosedCells(row, column);
+            var neighbouringClosedCells = Controller.GetNeighbouringClosedCells(row, column);
 
-            if (neigbouringClosedCells is null || neigbouringClosedCells.Count == 0)
+            if (neighbouringClosedCells is null || neighbouringClosedCells.Count == 0)
             {
                 return;
             }
 
-            var neigbouringButtons = new List<Button>();
+            var neighbouringButtons = new List<Button>();
 
-            foreach (var cell in neigbouringClosedCells)
+            foreach (var cell in neighbouringClosedCells)
             {
                 var button = FindButton(cell.Item1, cell.Item2);
 
                 ApplyOpenedButtonStyle(button);
 
-                neigbouringButtons.Add(button);
+                neighbouringButtons.Add(button);
             }
 
             await Task.Delay(100);
 
-            foreach (var button in neigbouringButtons)
+            foreach (var button in neighbouringButtons)
             {
                 ApplyClosedButtonStyle(button);
             }
@@ -426,9 +426,11 @@ namespace Arkashova.Minesweeper
 
         private void aboutButton_Click(object sender, EventArgs e)
         {
-            var window = new AboutWindow();
+            var location = new Point(Location.X + 50, Location.Y + 50);
 
-            window.Show();
+            var window = new AboutWindow(location);
+
+            window.ShowDialog();
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -447,18 +449,13 @@ namespace Arkashova.Minesweeper
 
         public string? GetWinnerName()
         {
-            var window = new WinnerWindow();
+            var location = new Point(Location.X + 50, Location.Y + 50);
 
-            /*if (window.ShowDialog(this) == DialogResult.OK)
-            {
-                return window.WinnerName;
-            }*/
+            var window = new WinnerWindow(location);
 
             window.ShowDialog(this);
 
             return window.WinnerName;
-
-           // return null;
         }
 
         private void highScoresButton_Click(object sender, EventArgs e)
@@ -467,7 +464,9 @@ namespace Arkashova.Minesweeper
 
             var gameModeName = Controller.GetGameModesNames()[Controller.GetCurrentGameModeIndex()];
 
-            var highScoresWindow = new HighScoresWindow(gameModeName, highScores);
+            var location = new Point(Location.X + 50, Location.Y + 50);
+
+            var highScoresWindow = new HighScoresWindow(location, gameModeName, highScores);
 
             highScoresWindow.Show();
         }

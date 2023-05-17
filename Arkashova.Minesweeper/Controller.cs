@@ -12,7 +12,7 @@ namespace Arkashova.Minesweeper
 
         private int _openedCellsCount;
 
-        private int _сellsCountToOpen;
+        private int _cellsCountToOpen;
 
         private int _userFlagsCount; // пока не нужно
 
@@ -43,7 +43,7 @@ namespace Arkashova.Minesweeper
 
         public List<string> GetGameModesNames()
         {
-            return (List<string>)_model.GameModes.Select(x => x.Name).ToList();
+            return _model.GameModes.Select(x => x.Name).ToList();
         }
 
         public void StartNewGame()
@@ -60,7 +60,7 @@ namespace Arkashova.Minesweeper
 
             _view.InitializeGameField(rowCount, columnCount, minesCount);
 
-            _сellsCountToOpen = rowCount * columnCount - minesCount;
+            _cellsCountToOpen = rowCount * columnCount - minesCount;
             _openedCellsCount = 0;
             _userFlagsCount = 0;
         }
@@ -111,7 +111,7 @@ namespace Arkashova.Minesweeper
                 _view.OpenCell(row, column, "");
                 _openedCellsCount++;
 
-                OpenZeroNeigbours(row, column);
+                OpenZeroNeighbours(row, column);
             }
             else
             {
@@ -119,7 +119,7 @@ namespace Arkashova.Minesweeper
                 _openedCellsCount++;
             }
 
-            if (_сellsCountToOpen == _openedCellsCount)
+            if (_cellsCountToOpen == _openedCellsCount)
             {
                 SuccessfullyCompleteGame();
             }
@@ -141,19 +141,19 @@ namespace Arkashova.Minesweeper
             }
         }
 
-        private void OpenZeroNeigbours(int row, int column)
+        private void OpenZeroNeighbours(int row, int column)
         {
-            OpenNeigbour(row - 1, column - 1);
-            OpenNeigbour(row - 1, column);
-            OpenNeigbour(row - 1, column + 1);
-            OpenNeigbour(row, column - 1);
-            OpenNeigbour(row, column + 1);
-            OpenNeigbour(row + 1, column - 1);
-            OpenNeigbour(row + 1, column);
-            OpenNeigbour(row + 1, column + 1);
+            OpenNeighbour (row - 1, column - 1);
+            OpenNeighbour (row - 1, column);
+            OpenNeighbour (row - 1, column + 1);
+            OpenNeighbour (row, column - 1);
+            OpenNeighbour (row, column + 1);
+            OpenNeighbour (row + 1, column - 1);
+            OpenNeighbour (row + 1, column);
+            OpenNeighbour (row + 1, column + 1);
         }
 
-        private void OpenNeigbour(int row, int column)
+        private void OpenNeighbour (int row, int column)
         {
             try
             {
@@ -162,18 +162,18 @@ namespace Arkashova.Minesweeper
                     return;
                 }
 
-                var neigbourValue = _model.GetValue(row, column);
+                var neighbourValue = _model.GetValue(row, column);
 
-                if (neigbourValue == 0)
+                if (neighbourValue == 0)
                 {
                     _view.OpenCell(row, column, "");
                     _openedCellsCount++;
 
-                    OpenZeroNeigbours(row, column);
+                    OpenZeroNeighbours(row, column);
                 }
                 else
                 {
-                    _view.OpenCell(row, column, neigbourValue.ToString());
+                    _view.OpenCell(row, column, neighbourValue.ToString());
                     _openedCellsCount++;
                 }
             }

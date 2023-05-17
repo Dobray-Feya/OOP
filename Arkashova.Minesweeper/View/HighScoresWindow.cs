@@ -1,12 +1,12 @@
-﻿using System.Xml;
-
-namespace Arkashova.Minesweeper.View
+﻿namespace Arkashova.Minesweeper.View
 {
     public partial class HighScoresWindow : Form
     {
-        public HighScoresWindow(string gameModeName, SortedDictionary<string, int> records)
+        public HighScoresWindow(Point location, string gameModeName, SortedDictionary<string, int> records)
         {
             InitializeComponent();
+
+            Location = location;
 
             gameModeLabel.Text = gameModeName;
 

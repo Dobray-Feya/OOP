@@ -29,119 +29,120 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutWindow));
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.ProgramIconPictureBox = new System.Windows.Forms.PictureBox();
+            this.programNameLabel = new System.Windows.Forms.Label();
+            this.authorTextBox = new System.Windows.Forms.TextBox();
+            this.DataLabel = new System.Windows.Forms.Label();
+            this.AcademItSchoolLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.extraInfoTextBox = new System.Windows.Forms.TextBox();
+            this.rulesTextBox = new System.Windows.Forms.TextBox();
+            this.rulesHeaderLabel = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.ProgramIconPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBox1
+            // ProgramIconPictureBox
             // 
-            this.pictureBox1.Image = global::Arkashova.Minesweeper.Properties.Resources.mine_140x1401;
-            this.pictureBox1.Location = new System.Drawing.Point(64, 88);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(140, 140);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.ProgramIconPictureBox.Image = global::Arkashova.Minesweeper.Properties.Resources.mine_140x1401;
+            this.ProgramIconPictureBox.Location = new System.Drawing.Point(64, 88);
+            this.ProgramIconPictureBox.Name = "ProgramIconPictureBox";
+            this.ProgramIconPictureBox.Size = new System.Drawing.Size(140, 140);
+            this.ProgramIconPictureBox.TabIndex = 0;
+            this.ProgramIconPictureBox.TabStop = false;
             // 
-            // label2
+            // programNameLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(64, 21);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(85, 32);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Сапёр";
+            this.programNameLabel.AutoSize = true;
+            this.programNameLabel.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.programNameLabel.Location = new System.Drawing.Point(64, 21);
+            this.programNameLabel.Name = "programNameLabel";
+            this.programNameLabel.Size = new System.Drawing.Size(85, 32);
+            this.programNameLabel.TabIndex = 2;
+            this.programNameLabel.Text = "Сапёр";
             // 
-            // textBox1
+            // authorTextBox
             // 
-            this.textBox1.BackColor = System.Drawing.SystemColors.Menu;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Location = new System.Drawing.Point(64, 244);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(215, 67);
-            this.textBox1.TabIndex = 3;
-            this.textBox1.TabStop = false;
-            this.textBox1.Text = "Выполнила Аркашова Полина\r\nна курсе ООП на C#\r\nв школе программирования\r\nAcadem I" +
+            this.authorTextBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.authorTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.authorTextBox.Location = new System.Drawing.Point(64, 244);
+            this.authorTextBox.Multiline = true;
+            this.authorTextBox.Name = "authorTextBox";
+            this.authorTextBox.Size = new System.Drawing.Size(215, 67);
+            this.authorTextBox.TabIndex = 3;
+            this.authorTextBox.TabStop = false;
+            this.authorTextBox.Text = "Выполнила Аркашова Полина\r\nна курсе ООП на C#\r\nв школе программирования\r\nAcadem I" +
     "T School.";
             // 
-            // label1
+            // DataLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(64, 62);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(87, 15);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Дата: май 2023";
+            this.DataLabel.AutoSize = true;
+            this.DataLabel.Location = new System.Drawing.Point(64, 62);
+            this.DataLabel.Name = "DataLabel";
+            this.DataLabel.Size = new System.Drawing.Size(87, 15);
+            this.DataLabel.TabIndex = 4;
+            this.DataLabel.Text = "Дата: май 2023";
             // 
-            // linkLabel1
+            // AcademItSchoolLinkLabel
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(64, 306);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(155, 15);
-            this.linkLabel1.TabIndex = 5;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "https://academ-it-school.ru";
+            this.AcademItSchoolLinkLabel.AutoSize = true;
+            this.AcademItSchoolLinkLabel.Location = new System.Drawing.Point(64, 306);
+            this.AcademItSchoolLinkLabel.Name = "AcademItSchoolLinkLabel";
+            this.AcademItSchoolLinkLabel.Size = new System.Drawing.Size(155, 15);
+            this.AcademItSchoolLinkLabel.TabIndex = 5;
+            this.AcademItSchoolLinkLabel.TabStop = true;
+            this.AcademItSchoolLinkLabel.Text = "https://academ-it-school.ru";
             // 
-            // textBox2
+            // extraInfoTextBox
             // 
-            this.textBox2.BackColor = System.Drawing.SystemColors.Menu;
-            this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox2.Location = new System.Drawing.Point(64, 333);
-            this.textBox2.Multiline = true;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(215, 48);
-            this.textBox2.TabIndex = 6;
-            this.textBox2.Text = "(картинки для игры позаимствовала \r\nна сайте https://minesweeper.online)";
+            this.extraInfoTextBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.extraInfoTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.extraInfoTextBox.Location = new System.Drawing.Point(64, 333);
+            this.extraInfoTextBox.Multiline = true;
+            this.extraInfoTextBox.Name = "extraInfoTextBox";
+            this.extraInfoTextBox.Size = new System.Drawing.Size(215, 48);
+            this.extraInfoTextBox.TabIndex = 6;
+            this.extraInfoTextBox.Text = "(картинки для игры позаимствовала \r\nна сайте https://minesweeper.online)";
             // 
-            // textBox3
+            // rulesTextBox
             // 
-            this.textBox3.BackColor = System.Drawing.SystemColors.Menu;
-            this.textBox3.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.textBox3.Location = new System.Drawing.Point(345, 88);
-            this.textBox3.Multiline = true;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(338, 181);
-            this.textBox3.TabIndex = 7;
-            this.textBox3.TabStop = false;
-            this.textBox3.Text = resources.GetString("textBox3.Text");
+            this.rulesTextBox.BackColor = System.Drawing.SystemColors.Menu;
+            this.rulesTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rulesTextBox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.rulesTextBox.Location = new System.Drawing.Point(345, 88);
+            this.rulesTextBox.Multiline = true;
+            this.rulesTextBox.Name = "rulesTextBox";
+            this.rulesTextBox.Size = new System.Drawing.Size(338, 181);
+            this.rulesTextBox.TabIndex = 7;
+            this.rulesTextBox.TabStop = false;
+            this.rulesTextBox.Text = resources.GetString("rulesTextBox.Text");
             // 
-            // label3
+            // rulesHeaderLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(345, 28);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(145, 25);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Правила игры";
+            this.rulesHeaderLabel.AutoSize = true;
+            this.rulesHeaderLabel.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.rulesHeaderLabel.Location = new System.Drawing.Point(345, 28);
+            this.rulesHeaderLabel.Name = "rulesHeaderLabel";
+            this.rulesHeaderLabel.Size = new System.Drawing.Size(145, 25);
+            this.rulesHeaderLabel.TabIndex = 0;
+            this.rulesHeaderLabel.Text = "Правила игры";
             // 
             // AboutWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(734, 408);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.linkLabel1);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.rulesHeaderLabel);
+            this.Controls.Add(this.rulesTextBox);
+            this.Controls.Add(this.extraInfoTextBox);
+            this.Controls.Add(this.AcademItSchoolLinkLabel);
+            this.Controls.Add(this.DataLabel);
+            this.Controls.Add(this.authorTextBox);
+            this.Controls.Add(this.programNameLabel);
+            this.Controls.Add(this.ProgramIconPictureBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AboutWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "О программе";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ProgramIconPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -149,13 +150,13 @@
 
         #endregion
 
-        private PictureBox pictureBox1;
-        private Label label2;
-        private TextBox textBox1;
-        private Label label1;
-        private LinkLabel linkLabel1;
-        private TextBox textBox2;
-        private TextBox textBox3;
-        private Label label3;
+        private PictureBox ProgramIconPictureBox;
+        private Label programNameLabel;
+        private TextBox authorTextBox;
+        private Label DataLabel;
+        private LinkLabel AcademItSchoolLinkLabel;
+        private TextBox extraInfoTextBox;
+        private TextBox rulesTextBox;
+        private Label rulesHeaderLabel;
     }
 }

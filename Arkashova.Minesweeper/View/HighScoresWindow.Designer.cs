@@ -29,20 +29,20 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HighScoresWindow));
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelForGameModeLabel = new System.Windows.Forms.Label();
             this.gameModeLabel = new System.Windows.Forms.Label();
             this.highScoresTable = new System.Windows.Forms.TableLayoutPanel();
             this.noWinnersLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // label1
+            // labelForGameModeLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(45, 15);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 15);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Режим игры:";
+            this.labelForGameModeLabel.AutoSize = true;
+            this.labelForGameModeLabel.Location = new System.Drawing.Point(45, 15);
+            this.labelForGameModeLabel.Name = "labelForGameModeLabel";
+            this.labelForGameModeLabel.Size = new System.Drawing.Size(79, 15);
+            this.labelForGameModeLabel.TabIndex = 0;
+            this.labelForGameModeLabel.Text = "Режим игры:";
             // 
             // gameModeLabel
             // 
@@ -90,10 +90,11 @@
             this.Controls.Add(this.noWinnersLabel);
             this.Controls.Add(this.highScoresTable);
             this.Controls.Add(this.gameModeLabel);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelForGameModeLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(400, 400);
             this.Name = "HighScoresWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Победители";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -102,7 +103,7 @@
 
         #endregion
 
-        private Label label1;
+        private Label labelForGameModeLabel;
         private Label gameModeLabel;
         private TableLayoutPanel highScoresTable;
         private Label noWinnersLabel;
