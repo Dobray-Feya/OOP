@@ -1,34 +1,35 @@
+using Arkashova.Minesweeper.Controller;
 using Arkashova.Minesweeper.View;
 
 namespace Arkashova.Minesweeper
 {
-    public partial class MainWindow : Form, IView
+    public partial class MainWindow : Form, IView 
     {
-        public Controller Controller { get; set; }
+        public MinesweeperController Controller { get; set; }
 
-        public Image MineImage => Image.FromFile("..\\..\\..\\View\\Icons\\mine.png");
+        private const string IMAGES_FOLDER = "..\\..\\..\\View\\Icons\\";
 
-        public Image OpenedMineImage => Image.FromFile("..\\..\\..\\View\\Icons\\openedMine.png");
+        private Image _mineImage => Image.FromFile(IMAGES_FOLDER + "mine.png");
 
-        public Image FlagImage => Image.FromFile("..\\..\\..\\View\\Icons\\flag.png");
+        private Image _explodedMineImage => Image.FromFile(IMAGES_FOLDER + "explodedMine.png");
 
-        public Image WrongFlagImage => Image.FromFile("..\\..\\..\\View\\Icons\\wrongFlag.png");
+        private Image _flagImage => Image.FromFile(IMAGES_FOLDER + "flag.png");
 
-        private Image _newGameImage = Image.FromFile("..\\..\\..\\View\\Icons\\newGame.png");
+        private Image _wrongFlagImage => Image.FromFile(IMAGES_FOLDER + "wrongFlag.png");
 
-        private Image _winGameImage = Image.FromFile("..\\..\\..\\View\\Icons\\winGame.png");
+        private Image _newGameImage = Image.FromFile(IMAGES_FOLDER + "newGame.png");
 
-        private Image _failGameImage = Image.FromFile("..\\..\\..\\View\\Icons\\failGame.png");
+        private Image _winGameImage = Image.FromFile(IMAGES_FOLDER + "winGame.png");
 
-        private Image _closedCellImage = Image.FromFile("..\\..\\..\\View\\Icons\\closedCell.png");
+        private Image _failGameImage = Image.FromFile(IMAGES_FOLDER + "failGame.png");
 
-        private readonly Color _closedCellColor = Color.AliceBlue; // Этот и следующий цвет выбраны наугад. Главное, чтобы они отличались
-
-        private readonly Color _openedCellColor = Color.AntiqueWhite;
+        private Image _closedCellImage = Image.FromFile(IMAGES_FOLDER + "closedCell.png");
 
         private bool _isFirstClickWaited;
 
-        public MainWindow(Controller controller)
+        private VisibleCellState[,] _cellsStates;
+
+        public MainWindow(MinesweeperController controller)
         {
             InitializeComponent();
 
@@ -44,6 +45,8 @@ namespace Arkashova.Minesweeper
             InitializeTimer();
 
             _isFirstClickWaited = true;
+
+            InitializeCellsStates(rowCount, columnCount);
         }
 
         private void InitializeGameModesListBox()
@@ -84,7 +87,7 @@ namespace Arkashova.Minesweeper
                 minesCountTextBox.Enabled = false;
             }
         }
-        
+
         private void InitializeGameTable(int rowCount, int columnCount)
         {
             if (rowCount < 1 || columnCount < 1)
@@ -95,12 +98,12 @@ namespace Arkashova.Minesweeper
 
             gameTable.Enabled = true;
             gameTable.Controls.Clear();
-            
+
             gameTable.RowCount = rowCount;
             gameTable.ColumnCount = columnCount;
 
             var cellSize = 40;
-            
+
             var tableHeight = cellSize * rowCount;
             var tableWidth = cellSize * columnCount;
 
@@ -127,16 +130,21 @@ namespace Arkashova.Minesweeper
                 gameTable.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, cellSize));
             }
 
-            for (int i = 0; i < rowCount; i++) // ???????????? i/j
+            for (int i = 0; i < rowCount; i++)
             {
                 for (int j = 0; j < columnCount; j++)
                 {
                     var button = new Button();
 
-                    button.Name = GetButtonName(i, j, false);
+                    button.Name = GetButtonName(i, j);
 
-                    ApplyCommonButtonStyle(button);
-                    ApplyClosedButtonStyle(button);
+                    button.Margin = new Padding(1, 1, 1, 1);
+                    button.Dock = DockStyle.Fill;
+                    button.TabStop = false;
+                    button.FlatAppearance.BorderSize = 1;
+                    button.FlatAppearance.BorderColor = Color.DarkGray;
+                    button.FlatStyle = FlatStyle.Flat;
+                    button.Image = _closedCellImage;
 
                     button.MouseDown += new MouseEventHandler(this.cell_Click!);
 
@@ -152,7 +160,20 @@ namespace Arkashova.Minesweeper
             timeTextBox.Text = "0";
 
             timer.Interval = 1000;
-            timer.Enabled = false; // false? true on first click 
+            timer.Enabled = false;
+        }
+
+        private void InitializeCellsStates(int rowCount, int columnCount)
+        {
+            _cellsStates = new VisibleCellState[rowCount, columnCount];
+
+            for (int i = 0; i < rowCount; i++)
+            {
+                for (int j = 0; j < columnCount; j++)
+                {
+                    _cellsStates[i, j] = VisibleCellState.Blank;
+                }
+            }
         }
 
         public void StopTimer()
@@ -180,12 +201,10 @@ namespace Arkashova.Minesweeper
             return Convert.ToInt32(minesCountTextBox.Text);
         }
 
-        // Кодирую в имени кнопки ее координаты и признак есть/нет флажок
-        private string GetButtonName(int row, int column, bool hasFlag)
+        // Кодирую в имени кнопки ее координаты
+        private string GetButtonName(int row, int column)
         {
-            var flag = hasFlag ? "1" : "0";
-
-            return $"{row}, {column}, {flag}";
+            return $"{row}, {column}";
         }
 
         private static int GetButtonRow(string name)
@@ -195,106 +214,95 @@ namespace Arkashova.Minesweeper
 
         private static int GetButtonColumn(string name)
         {
-            var firstCommaIndex = name.IndexOf(',');
-            var secondCommaIndex = name.IndexOf(',', firstCommaIndex + 1);
+            var commaIndex = name.IndexOf(',');
 
-            return Convert.ToInt32(name.Substring(firstCommaIndex + 1, secondCommaIndex - firstCommaIndex - 1));
+            return Convert.ToInt32(name.Substring(commaIndex + 1, name.Length - commaIndex - 1));
         }
 
-        public bool IsCellClosed(int row, int column)
+        public bool IsCellBlank(int row, int column)
+        {
+             return Equals(_cellsStates[row, column], VisibleCellState.Blank);
+        }
+
+        public bool HasFlagOnClosedCell(int row, int column)
         {
             var button = FindButton(row, column);
 
-            return Equals(button.BackColor, _closedCellColor); // ???? works???
-        }
-
-        public bool HasFlag(int row, int column)
-        {
-            var button = FindButton(row, column);
-
-            var flag = button.Name[^1] == '1' ? true : false;
-
-            return flag;
+            return Equals(_cellsStates[row, column], VisibleCellState.FlagOnClosedCell);
         }
 
         private Button FindButton(int row, int column)
         {
-            var controlsArray = Controls.Find(GetButtonName(row, column, false), true);
-
-            if (controlsArray.Length == 0)
-            {
-                controlsArray = Controls.Find(GetButtonName(row, column, true), true);
-            }
+            var controlsArray = Controls.Find(GetButtonName(row, column), true);
 
             return (Button)controlsArray[0];
         }
 
-        private void ApplyCommonButtonStyle(Button button)
+        public void OpenCell(int row, int column, int value)
         {
-            button.Margin = new Padding(1, 1, 1, 1);
-            button.Dock = DockStyle.Fill;
-            button.TabStop = false;
-            button.FlatAppearance.BorderSize = 1;
-            button.FlatAppearance.BorderColor = Color.DarkGray;
-            button.FlatStyle = FlatStyle.Flat;
+            var button = FindButton(row, column);
+
+            button.Image = GetImageForValue(value);
+
+            _cellsStates[row, column] = VisibleCellState.Value;
         }
 
-        private void ApplyClosedButtonStyle(Button button)
+        private Image GetImageForValue(int value)
         {
-            button.Image = _closedCellImage;
-            button.BackColor = _closedCellColor; // Этот цвет кодирует то, что ячейка закрыта
+            return Image.FromFile(IMAGES_FOLDER + value.ToString() + ".png");
         }
 
-        private void ApplyOpenedButtonStyle(Button button)
+        public void OpenCell(int row, int column, VisibleCellState cellState)
         {
-            button.Image = null;
-            button.BackColor = _openedCellColor; // Этот цвет кодирует то, что ячейка открыта
-        }
+            var button = FindButton(row, column);
 
-        public void OpenCell(int row, int column, string text)
-        {
-            if (IsCellClosed(row, column))
+            Image? image = null;
+
+            switch (cellState)
             {
-                var button = FindButton(row, column);
-
-                ApplyOpenedButtonStyle(button);
-
-                button.Text = text;
+                case VisibleCellState.Mine:
+                    image = _mineImage;
+                    break;
+                case VisibleCellState.ExplodedMine:
+                    image = _explodedMineImage;
+                    break;
+                case VisibleCellState.FlagOnClosedCell:
+                    image = _flagImage;
+                    break;
+                case VisibleCellState.FlagOnOpenedCell:
+                    image = _flagImage;
+                    break;
+                case VisibleCellState.WrongFlag:
+                    image = _wrongFlagImage;
+                    break;
+                default:
+                    break;
             }
-        }
 
-        public void OpenCell(int row, int column, Image image)
-        {
-            if (IsCellClosed(row, column))
+            if (image != null)
             {
-                var button = FindButton(row, column);
-
-                ApplyOpenedButtonStyle(button);
-
                 button.Image = image;
             }
+
+            _cellsStates[row, column] = cellState;
         }
 
-        public void SetFlag(int row, int column)
+        public void SetFlagOnClosedCell(int row, int column)
         {
             var button = FindButton(row, column);
 
-            var name = button.Name;
+            button.Image = _flagImage;
 
-            button.Image = FlagImage;
-
-            button.Name = name.Substring(0, name.Length - 1) + "1";
+            _cellsStates[row, column] = VisibleCellState.FlagOnClosedCell;
         }
 
-        public void RemoveFlag(int row, int column)
+        public void RemoveFlagOnClosedCell(int row, int column)
         {
             var button = FindButton(row, column);
-
-            var name = button.Name;
 
             button.Image = _closedCellImage;
 
-            button.Name = name.Substring(0, name.Length - 1) + "0";
+            _cellsStates[row, column] = VisibleCellState.Blank;
         }
 
         public void ShowError(string message)
@@ -311,7 +319,7 @@ namespace Arkashova.Minesweeper
         {
             startGameButton.Image = _failGameImage;
 
-            for (int i = 0; i < gameTable.RowCount; i++)  // i/j????
+            for (int i = 0; i < gameTable.RowCount; i++)
             {
                 for (int j = 0; j < gameTable.ColumnCount; j++)
                 {
@@ -357,24 +365,19 @@ namespace Arkashova.Minesweeper
 
                 _isFirstClickWaited = false;
             }
-            
+
             var button = (Button)sender;
 
             var row = GetButtonRow(button.Name);
             var column = GetButtonColumn(button.Name);
 
-            if (IsCellClosed(row, column))
+            if (e.Button == MouseButtons.Right)
             {
-                if (e.Button == MouseButtons.Right)
-                {
-                    Controller.SetFlag(row, column);
-
-                    //minesCountTextBox.Text = Controller.GetTableWidth(GetSelectedGameModeIndex()).ToString();
-                }
-                else
-                {
-                    Controller.OpenCell(row, column);
-                }
+                Controller.ChangeFlagOnClosedCell(row, column);
+            }
+            else if (e.Button == MouseButtons.Left)
+            {
+                Controller.OpenCell(row, column);
             }
             else
             {
@@ -383,25 +386,25 @@ namespace Arkashova.Minesweeper
         }
 
         // Этот метод заставляет мигать ячейки, соседние с заданной.
-        // Для этого кнопки сначала рисуются, как открытые, и через 0,1 секунды - снова как закрытые.
+        // Для этого кнопки сначала рисуются, как открытые , и через 0,1 секунды - снова как закрытые.
         // Т.к. Thread.Sleep тут не работает, подсмотрела на stackoverflow, что можно сделать метод асинхронным:
         // https://ru.stackoverflow.com/questions/1399773/%D0%9F%D0%BE%D1%87%D0%B5%D0%BC%D1%83-thread-sleep-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%D0%B5%D1%82-%D0%B2-%D0%BD%D0%B0%D1%87%D0%B0%D0%BB%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8
-        private async void BlinkNeighbouringCells(int row, int column) 
+        private async void BlinkNeighbouringCells(int row, int column)
         {
-            var neighbouringClosedCells = Controller.GetNeighbouringClosedCells(row, column);
+            var neighbouringBlankCells = Controller.GetNeighbouringBlankCells(row, column);
 
-            if (neighbouringClosedCells is null || neighbouringClosedCells.Count == 0)
+            if (neighbouringBlankCells is null || neighbouringBlankCells.Count == 0)
             {
                 return;
             }
 
             var neighbouringButtons = new List<Button>();
 
-            foreach (var cell in neighbouringClosedCells)
+            foreach (var cell in neighbouringBlankCells)
             {
-                var button = FindButton(cell.Item1, cell.Item2);
+                var button = FindButton(cell.X, cell.Y);
 
-                ApplyOpenedButtonStyle(button);
+                button.Image = GetImageForValue(0);
 
                 neighbouringButtons.Add(button);
             }
@@ -410,7 +413,7 @@ namespace Arkashova.Minesweeper
 
             foreach (var button in neighbouringButtons)
             {
-                ApplyClosedButtonStyle(button);
+                button.Image = _closedCellImage;
             }
         }
 

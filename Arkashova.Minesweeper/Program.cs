@@ -1,5 +1,6 @@
 using Arkashova.Minesweeper.Logic;
 using Arkashova.Minesweeper.Logic.GameModes;
+using Arkashova.Minesweeper.Controller;
 
 namespace Arkashova.Minesweeper
 {
@@ -24,7 +25,7 @@ namespace Arkashova.Minesweeper
 
             var model = new MinesweeperModel(gameModesList, 0);
 
-            var controller = new Controller(model);
+            var controller = new MinesweeperController(model);
 
             var view = new MainWindow(controller);
 
