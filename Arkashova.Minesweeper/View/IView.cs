@@ -38,6 +38,8 @@ namespace Arkashova.Minesweeper.View
 
         int GetGameTime();
 
+        void StartTimer();
+
         void StopTimer();
 
         string? GetWinnerName();

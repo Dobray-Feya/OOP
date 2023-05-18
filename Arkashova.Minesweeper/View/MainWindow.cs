@@ -12,15 +12,15 @@ namespace Arkashova.Minesweeper
 
         private const string IMAGES_FOLDER = "..\\..\\..\\View\\Icons\\";
 
-        private Image _mineImage => Image.FromFile(IMAGES_FOLDER + "mine.png");
-        private Image _explodedMineImage => Image.FromFile(IMAGES_FOLDER + "explodedMine.png");
-        private Image _flagImage => Image.FromFile(IMAGES_FOLDER + "flag.png");
-        private Image _wrongFlagImage => Image.FromFile(IMAGES_FOLDER + "wrongFlag.png");
-        private Image _blankCellImage = Image.FromFile(IMAGES_FOLDER + "blankCell.png");
+        private readonly Image _mineImage = Image.FromFile(IMAGES_FOLDER + "mine.png");
+        private readonly Image _explodedMineImage = Image.FromFile(IMAGES_FOLDER + "explodedMine.png");
+        private readonly Image _flagImage = Image.FromFile(IMAGES_FOLDER + "flag.png");
+        private readonly Image _wrongFlagImage = Image.FromFile(IMAGES_FOLDER + "wrongFlag.png");
+        private readonly Image _blankCellImage = Image.FromFile(IMAGES_FOLDER + "blankCell.png");
 
-        private Image _newGameImage = Image.FromFile(IMAGES_FOLDER + "newGame.png");
-        private Image _winGameImage = Image.FromFile(IMAGES_FOLDER + "winGame.png");
-        private Image _failGameImage = Image.FromFile(IMAGES_FOLDER + "failGame.png");
+        private readonly Image _newGameImage = Image.FromFile(IMAGES_FOLDER + "newGame.png");
+        private readonly Image _winGameImage = Image.FromFile(IMAGES_FOLDER + "winGame.png");
+        private readonly Image _failGameImage = Image.FromFile(IMAGES_FOLDER + "failGame.png");
 
         private VisibleCellState[,] _cellsStates;
 
@@ -174,6 +174,11 @@ namespace Arkashova.Minesweeper
         public void StopTimer()
         {
             timer.Stop();
+        }
+
+        public void StartTimer()
+        {
+            timer.Start();
         }
 
         public int GetSelectedGameModeIndex()
@@ -365,23 +370,14 @@ namespace Arkashova.Minesweeper
             }
             else if (e.Button == MouseButtons.Left)
             {
-                if (HasFlagOnClosedCell(row, column))  // Возможно, это правильнее перенести в Controller, но изящно не получилось, поэтому оставила проверку здесь - во View
-                {
-                    return;
-                }
-
                 if (IsFirstClickWaited)
                 {
                     Controller.OpenFirstCell(row, column);
-
-                    timer.Start();
-
-                    IsFirstClickWaited = false;
-
-                    return;
                 }
-
-                Controller.OpenCell(row, column);
+                else
+                {
+                    Controller.OpenCell(row, column);
+                }
             }
             else
             {

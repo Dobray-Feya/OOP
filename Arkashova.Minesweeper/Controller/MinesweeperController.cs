@@ -82,6 +82,11 @@ namespace Arkashova.Minesweeper.Controller
 
         public void OpenCell(int row, int column)
         {
+            if (!_view.IsCellBlank(row, column))
+            {
+                return;
+            }
+
             if (_model.IsMine(row, column))
             {
                 _view.OpenCell(row, column, VisibleCellState.ExplodedMine);
@@ -114,13 +119,19 @@ namespace Arkashova.Minesweeper.Controller
 
         public void OpenFirstCell(int row, int column)
         {
-            var i = 0;
+            if (!_view.IsCellBlank(row, column))
+            {
+                return;
+            }
 
             while (_model.IsMine(row, column))
             {
                 _model.StartNewGame();
-                i++;
             }
+
+            _view.StartTimer();
+
+            _view.IsFirstClickWaited = false;
 
             OpenCell(row, column);
         }
@@ -210,8 +221,6 @@ namespace Arkashova.Minesweeper.Controller
 
         public void FailGame()
         {
-            _view.StopTimer();
-
             var currentIndex = GetCurrentGameModeIndex();
 
             for (int i = 0; i < _model.GameModes[currentIndex].FieldHeight; i++)
@@ -238,6 +247,8 @@ namespace Arkashova.Minesweeper.Controller
                     }
                 }
             }
+
+            _view.StopTimer();
 
             _view.FailGame();
         }
