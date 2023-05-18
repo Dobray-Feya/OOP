@@ -1,5 +1,6 @@
 using Arkashova.Minesweeper.Controller;
 using Arkashova.Minesweeper.View;
+using System.Windows.Forms;
 
 namespace Arkashova.Minesweeper
 {
@@ -7,25 +8,19 @@ namespace Arkashova.Minesweeper
     {
         public MinesweeperController Controller { get; set; }
 
+        public bool IsFirstClickWaited { get; set; }
+
         private const string IMAGES_FOLDER = "..\\..\\..\\View\\Icons\\";
 
         private Image _mineImage => Image.FromFile(IMAGES_FOLDER + "mine.png");
-
         private Image _explodedMineImage => Image.FromFile(IMAGES_FOLDER + "explodedMine.png");
-
         private Image _flagImage => Image.FromFile(IMAGES_FOLDER + "flag.png");
-
         private Image _wrongFlagImage => Image.FromFile(IMAGES_FOLDER + "wrongFlag.png");
+        private Image _blankCellImage = Image.FromFile(IMAGES_FOLDER + "blankCell.png");
 
         private Image _newGameImage = Image.FromFile(IMAGES_FOLDER + "newGame.png");
-
         private Image _winGameImage = Image.FromFile(IMAGES_FOLDER + "winGame.png");
-
         private Image _failGameImage = Image.FromFile(IMAGES_FOLDER + "failGame.png");
-
-        private Image _closedCellImage = Image.FromFile(IMAGES_FOLDER + "closedCell.png");
-
-        private bool _isFirstClickWaited;
 
         private VisibleCellState[,] _cellsStates;
 
@@ -44,7 +39,7 @@ namespace Arkashova.Minesweeper
 
             InitializeTimer();
 
-            _isFirstClickWaited = true;
+            IsFirstClickWaited = true;
 
             InitializeCellsStates(rowCount, columnCount);
         }
@@ -144,7 +139,7 @@ namespace Arkashova.Minesweeper
                     button.FlatAppearance.BorderSize = 1;
                     button.FlatAppearance.BorderColor = Color.DarkGray;
                     button.FlatStyle = FlatStyle.Flat;
-                    button.Image = _closedCellImage;
+                    button.Image = _blankCellImage;
 
                     button.MouseDown += new MouseEventHandler(this.cell_Click!);
 
@@ -300,7 +295,7 @@ namespace Arkashova.Minesweeper
         {
             var button = FindButton(row, column);
 
-            button.Image = _closedCellImage;
+            button.Image = _blankCellImage;
 
             _cellsStates[row, column] = VisibleCellState.Blank;
         }
@@ -359,13 +354,6 @@ namespace Arkashova.Minesweeper
 
         private void cell_Click(object sender, MouseEventArgs e)
         {
-            if (_isFirstClickWaited)
-            {
-                timer.Start();
-
-                _isFirstClickWaited = false;
-            }
-
             var button = (Button)sender;
 
             var row = GetButtonRow(button.Name);
@@ -377,6 +365,22 @@ namespace Arkashova.Minesweeper
             }
             else if (e.Button == MouseButtons.Left)
             {
+                if (HasFlagOnClosedCell(row, column))  // Возможно, это правильнее перенести в Controller, но изящно не получилось, поэтому оставила проверку здесь - во View
+                {
+                    return;
+                }
+
+                if (IsFirstClickWaited)
+                {
+                    Controller.OpenFirstCell(row, column);
+
+                    timer.Start();
+
+                    IsFirstClickWaited = false;
+
+                    return;
+                }
+
                 Controller.OpenCell(row, column);
             }
             else
@@ -413,7 +417,7 @@ namespace Arkashova.Minesweeper
 
             foreach (var button in neighbouringButtons)
             {
-                button.Image = _closedCellImage;
+                button.Image = _blankCellImage;
             }
         }
 

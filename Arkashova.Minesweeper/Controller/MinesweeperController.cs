@@ -1,5 +1,6 @@
 ﻿using Arkashova.Minesweeper.Logic;
 using Arkashova.Minesweeper.View;
+using System.Data.Common;
 
 namespace Arkashova.Minesweeper.Controller
 {
@@ -81,11 +82,6 @@ namespace Arkashova.Minesweeper.Controller
 
         public void OpenCell(int row, int column)
         {
-            if (_view.HasFlagOnClosedCell(row, column))
-            {
-                return;
-            }
-
             if (_model.IsMine(row, column))
             {
                 _view.OpenCell(row, column, VisibleCellState.ExplodedMine);
@@ -114,6 +110,19 @@ namespace Arkashova.Minesweeper.Controller
             {
                 SuccessfullyCompleteGame();
             }
+        }
+
+        public void OpenFirstCell(int row, int column)
+        {
+            var i = 0;
+
+            while (_model.IsMine(row, column))
+            {
+                _model.StartNewGame();
+                i++;
+            }
+
+            OpenCell(row, column);
         }
 
         public void ChangeFlagOnClosedCell(int row, int column)

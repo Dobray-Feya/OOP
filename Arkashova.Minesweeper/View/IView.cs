@@ -6,6 +6,8 @@ namespace Arkashova.Minesweeper.View
     {
         MinesweeperController Controller { get; set; }
 
+        bool IsFirstClickWaited { get; set; }
+
         void InitializeGameField(int rowCount, int columnCount, int minesCount);
 
         int GetSelectedGameModeIndex();

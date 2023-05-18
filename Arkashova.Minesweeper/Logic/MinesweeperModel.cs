@@ -19,14 +19,6 @@ namespace Arkashova.Minesweeper.Logic
             StartNewGame();
         }
 
-        private void CheckGameModeIndex(int value)
-        {
-            if (value < 0 || value >= GameModes.Count)
-            {
-                throw new IndexOutOfRangeException($"Индекс режима должен быть не меньше 0 и не больше {GameModes.Count - 1}. Передан индекс {value}");
-            }
-        }
-
         public void StartNewGame()
         {
             _table = new int[GameModes[CurrentGameModeIndex].FieldHeight, GameModes[CurrentGameModeIndex].FieldWidth];
@@ -52,12 +44,6 @@ namespace Arkashova.Minesweeper.Logic
                 if (!randomNumbers.Contains(number))
                 {
                     randomNumbers.Add(number);
-
-                    /*var x = (int)Math.Ceiling((double)number / fieldHeight) - 1;
-
-                    var y = number - x * fieldHeight - 1;
-
-                    _table[x, y] = MINE;*/
 
                     var row = (int)Math.Ceiling((double)number / fieldWidth) - 1;
 
