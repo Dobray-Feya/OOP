@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization.Formatters.Binary;
+﻿using Arkashova.Minesweeper.Logic.GameModes.HighScores;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Arkashova.Minesweeper.Logic.GameModes
 {
@@ -11,6 +12,8 @@ namespace Arkashova.Minesweeper.Logic.GameModes
         public virtual bool IsCustom => false;
 
         private int _fieldWidth;
+        private int _fieldHeight;
+        private int _minesCount;
 
         public virtual int FieldWidth
         {
@@ -27,8 +30,6 @@ namespace Arkashova.Minesweeper.Logic.GameModes
             }
         }
 
-        private int _fieldHeight;
-
         public virtual int FieldHeight
         {
             get => _fieldHeight;
@@ -43,8 +44,6 @@ namespace Arkashova.Minesweeper.Logic.GameModes
                 _fieldHeight = value;
             }
         }
-
-        private int _minesCount;
 
         public virtual int MinesCount
         {
@@ -89,6 +88,8 @@ namespace Arkashova.Minesweeper.Logic.GameModes
             var highScores = GetHighScores();
 
             highScores.Add((name, score));
+
+            highScores.Sort(new HighScoresComparer());
 
             var formatter = new BinaryFormatter();
 

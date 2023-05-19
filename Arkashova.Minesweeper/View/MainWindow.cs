@@ -481,7 +481,7 @@ namespace Arkashova.Minesweeper
 
             var highScoresWindow = new HighScoresWindow(location, gameModeName, highScores);
 
-            highScoresWindow.Show();
+            highScoresWindow.ShowDialog();
         }
 
         private void highScoresButton_Click(object sender, EventArgs e)
