@@ -4,8 +4,8 @@ namespace Arkashova.Minesweeper.Logic
 {
     public class MinesweeperModel : IModel
     {
-        private const int MINE = 9; 
-        
+        private const int MINE = 9;
+
         private int[,] _table;
 
         public List<GameMode> GameModes { get; set; }
@@ -90,7 +90,7 @@ namespace Arkashova.Minesweeper.Logic
 
         public bool IsMine(int row, int column)
         {
-            CheckRowIndex(row); 
+            CheckRowIndex(row);
             CheckColumnIndex(column);
 
             return _table[row, column] == MINE;
@@ -98,7 +98,7 @@ namespace Arkashova.Minesweeper.Logic
 
         public int GetValue(int row, int column)
         {
-            CheckRowIndex(row); 
+            CheckRowIndex(row);
             CheckColumnIndex(column);
 
             return _table[row, column];

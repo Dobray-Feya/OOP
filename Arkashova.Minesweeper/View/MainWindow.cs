@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace Arkashova.Minesweeper
 {
-    public partial class MainWindow : Form, IView 
+    public partial class MainWindow : Form, IView
     {
         public MinesweeperController Controller { get; set; }
 
@@ -231,7 +231,7 @@ namespace Arkashova.Minesweeper
 
         public bool IsCellBlank(int row, int column)
         {
-             return Equals(_cellsStates[row, column], VisibleCellState.Blank);
+            return Equals(_cellsStates[row, column], VisibleCellState.Blank);
         }
 
         public bool HasFlagOnClosedCell(int row, int column)

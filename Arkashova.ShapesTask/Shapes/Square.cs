@@ -1,6 +1,6 @@
 ﻿namespace Arkashova.ShapesTask.Shapes
 {
-    internal class Square : IShape
+    public class Square : IShape
     {
         public double SideLength { get; set; }
 

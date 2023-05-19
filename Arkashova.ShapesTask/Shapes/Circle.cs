@@ -4,6 +4,15 @@
     {
         public double Radius { get; set; }
 
+        private int secret = 2023; // Сделала приватное поле и метод для того, чтобы попрактиковаться с Reflection (проект AboutReflection).
+
+        public int openField = 2000;
+
+        private void PrintSecret()
+        {
+            Console.WriteLine("Секрет это: " + secret);
+        }
+
         public Circle(double radius)
         {
             Radius = radius;
