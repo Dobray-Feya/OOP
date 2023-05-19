@@ -9,7 +9,5 @@
         public override int FieldHeight => 16;
 
         public override int MinesCount => 99;
-
-        public override string HighScoresFileName => "..\\..\\..\\Logic\\GameModes\\HighScores\\ExpertModeHighScores.txt";
     }
 }

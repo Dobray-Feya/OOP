@@ -70,7 +70,7 @@
             // 
             this.startGameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.startGameButton.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.startGameButton.Location = new System.Drawing.Point(260, 32);
+            this.startGameButton.Location = new System.Drawing.Point(263, 28);
             this.startGameButton.Name = "startGameButton";
             this.startGameButton.Size = new System.Drawing.Size(50, 50);
             this.startGameButton.TabIndex = 4;
@@ -82,10 +82,10 @@
             this.borderPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.borderPanel.Controls.Add(this.gameTable);
             this.borderPanel.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.borderPanel.Location = new System.Drawing.Point(80, 180);
+            this.borderPanel.Location = new System.Drawing.Point(0, 157);
             this.borderPanel.Margin = new System.Windows.Forms.Padding(0);
             this.borderPanel.Name = "borderPanel";
-            this.borderPanel.Size = new System.Drawing.Size(456, 409);
+            this.borderPanel.Size = new System.Drawing.Size(320, 320);
             this.borderPanel.TabIndex = 2;
             this.borderPanel.Visible = false;
             // 
@@ -101,7 +101,7 @@
             // 
             // heightTextBox
             // 
-            this.heightTextBox.Location = new System.Drawing.Point(184, 47);
+            this.heightTextBox.Location = new System.Drawing.Point(184, 56);
             this.heightTextBox.Name = "heightTextBox";
             this.heightTextBox.Size = new System.Drawing.Size(40, 23);
             this.heightTextBox.TabIndex = 2;
@@ -110,7 +110,7 @@
             // widthLabel
             // 
             this.widthLabel.AutoSize = true;
-            this.widthLabel.Location = new System.Drawing.Point(125, 13);
+            this.widthLabel.Location = new System.Drawing.Point(125, 31);
             this.widthLabel.Name = "widthLabel";
             this.widthLabel.Size = new System.Drawing.Size(55, 15);
             this.widthLabel.TabIndex = 6;
@@ -119,7 +119,7 @@
             // heightLabel
             // 
             this.heightLabel.AutoSize = true;
-            this.heightLabel.Location = new System.Drawing.Point(130, 50);
+            this.heightLabel.Location = new System.Drawing.Point(130, 59);
             this.heightLabel.Name = "heightLabel";
             this.heightLabel.Size = new System.Drawing.Size(50, 15);
             this.heightLabel.TabIndex = 7;
@@ -142,16 +142,17 @@
             this.toolsPanel.Controls.Add(this.widthLabel);
             this.toolsPanel.Controls.Add(this.heightTextBox);
             this.toolsPanel.Controls.Add(this.gameModesListBox);
-            this.toolsPanel.Location = new System.Drawing.Point(80, 30);
+            this.toolsPanel.Location = new System.Drawing.Point(0, 0);
+            this.toolsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.toolsPanel.Name = "toolsPanel";
             this.toolsPanel.Size = new System.Drawing.Size(480, 120);
             this.toolsPanel.TabIndex = 8;
             // 
             // timeTextBox
             // 
-            this.timeTextBox.Location = new System.Drawing.Point(266, 84);
+            this.timeTextBox.Location = new System.Drawing.Point(263, 84);
             this.timeTextBox.Name = "timeTextBox";
-            this.timeTextBox.Size = new System.Drawing.Size(40, 23);
+            this.timeTextBox.Size = new System.Drawing.Size(50, 23);
             this.timeTextBox.TabIndex = 14;
             this.timeTextBox.Text = "0";
             // 
@@ -159,7 +160,7 @@
             // 
             this.startLabel.AutoSize = true;
             this.startLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.startLabel.Location = new System.Drawing.Point(258, 9);
+            this.startLabel.Location = new System.Drawing.Point(263, 7);
             this.startLabel.Name = "startLabel";
             this.startLabel.Size = new System.Drawing.Size(52, 19);
             this.startLabel.TabIndex = 13;
@@ -186,7 +187,7 @@
             // 
             // highScoresButton
             // 
-            this.highScoresButton.Location = new System.Drawing.Point(356, 10);
+            this.highScoresButton.Location = new System.Drawing.Point(356, 28);
             this.highScoresButton.Name = "highScoresButton";
             this.highScoresButton.Size = new System.Drawing.Size(100, 23);
             this.highScoresButton.TabIndex = 5;
@@ -196,7 +197,7 @@
             // 
             // widthTextBox
             // 
-            this.widthTextBox.Location = new System.Drawing.Point(184, 10);
+            this.widthTextBox.Location = new System.Drawing.Point(184, 28);
             this.widthTextBox.Name = "widthTextBox";
             this.widthTextBox.Size = new System.Drawing.Size(40, 23);
             this.widthTextBox.TabIndex = 1;
@@ -204,7 +205,7 @@
             // 
             // aboutButton
             // 
-            this.aboutButton.Location = new System.Drawing.Point(356, 47);
+            this.aboutButton.Location = new System.Drawing.Point(356, 56);
             this.aboutButton.Name = "aboutButton";
             this.aboutButton.Size = new System.Drawing.Size(100, 23);
             this.aboutButton.TabIndex = 6;
@@ -238,12 +239,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1484, 861);
+            this.ClientSize = new System.Drawing.Size(564, 541);
             this.Controls.Add(this.borderPanel);
             this.Controls.Add(this.toolsPanel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(600, 600);
+            this.MaximizeBox = false;
             this.Name = "MainWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Сапёр";
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.borderPanel.ResumeLayout(false);

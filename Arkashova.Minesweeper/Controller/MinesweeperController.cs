@@ -140,9 +140,9 @@ namespace Arkashova.Minesweeper.Controller
         {
             if (_view.IsCellBlank(row, column))
             {
-                _view.SetFlagOnClosedCell(row, column);;
+                _view.SetFlagOnClosedCell(row, column); ;
             }
-            else  if (_view.HasFlagOnClosedCell(row, column))
+            else if (_view.HasFlagOnClosedCell(row, column))
             {
                 _view.RemoveFlagOnClosedCell(row, column);
             }
@@ -273,21 +273,20 @@ namespace Arkashova.Minesweeper.Controller
             _view.SuccessfullyCompleteGame();
 
             UpdateHighScores();
+
+            _view.ShowHighScores();
         }
 
         private void UpdateHighScores()
         {
             var userName = _view.GetWinnerName();
 
-            if (userName != null)
-            {
-                var score = _view.GetGameTime();
+            var score = _view.GetGameTime();
 
-                _model.GameModes[GetCurrentGameModeIndex()].AddHighScore(userName, score);
-            }
+            _model.GameModes[GetCurrentGameModeIndex()].AddHighScore(userName, score);
         }
 
-        public SortedDictionary<string, int> GetHighScores()
+        public List<(string, int)> GetHighScores()
         {
             return _model.GameModes[GetCurrentGameModeIndex()].GetHighScores();
         }

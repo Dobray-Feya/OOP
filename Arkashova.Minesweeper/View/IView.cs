@@ -43,5 +43,7 @@ namespace Arkashova.Minesweeper.View
         void StopTimer();
 
         string? GetWinnerName();
+
+        void ShowHighScores();
     }
 }

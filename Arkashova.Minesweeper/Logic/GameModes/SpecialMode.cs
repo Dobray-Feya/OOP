@@ -14,8 +14,6 @@
 
         public int GetMinMinesCount() => 1;
 
-        public override string HighScoresFileName => "..\\..\\..\\Logic\\GameModes\\HighScores\\SpecialModeHighScores.txt";
-
         private int _fieldWidth;
 
         public override int FieldWidth
@@ -74,6 +72,8 @@
             FieldHeight = height;
             FieldWidth = width;
             MinesCount = minesCount;
+
+            //HighScoresFileName = $"..\\..\\..\\Logic\\GameModes\\HighScores\\SpecialModeHighScores ({FieldHeight},{FieldWidth},{MinesCount}).txt";
         }
 
         public SpecialMode() // такие начальные значения сама придумала
@@ -81,6 +81,8 @@
             FieldWidth = (GetMinWidth() + GetMaxWidth()) / 2;
             FieldHeight = (GetMinHeight() + GetMaxHeight()) / 2;
             MinesCount = FieldWidth * FieldHeight / 6;
+
+            //HighScoresFileName = $"..\\..\\..\\Logic\\GameModes\\HighScores\\SpecialModeHighScores ({FieldHeight},{FieldWidth},{MinesCount}).txt";
         }
     }
 }

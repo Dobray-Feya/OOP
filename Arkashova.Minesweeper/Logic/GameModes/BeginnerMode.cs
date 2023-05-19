@@ -9,7 +9,5 @@
         public override int FieldHeight => 9;
 
         public override int MinesCount => 10;
-
-        public override string HighScoresFileName => "..\\..\\..\\Logic\\GameModes\\HighScores\\BeginnerModeHighScores.txt";
     }
 }

@@ -2,7 +2,7 @@
 {
     public partial class HighScoresWindow : Form
     {
-        public HighScoresWindow(Point location, string gameModeName, SortedDictionary<string, int> records)
+        public HighScoresWindow(Point location, string gameModeName, List<(string, int)> records)
         {
             InitializeComponent();
 
@@ -46,11 +46,11 @@
                 highScoresTable.Controls.Add(countLabel, 0, i - 1);
 
                 var userNameLabel = new Label();
-                userNameLabel.Text = record.Key.ToString();
+                userNameLabel.Text = record.Item1;
                 highScoresTable.Controls.Add(userNameLabel, 1, i - 1);
 
                 var userScoreLabel = new Label();
-                userScoreLabel.Text = record.Value.ToString();
+                userScoreLabel.Text = record.Item2.ToString();
                 highScoresTable.Controls.Add(userScoreLabel, 2, i - 1);
 
                 i++;

@@ -1,6 +1,7 @@
 using Arkashova.Minesweeper.Controller;
 using Arkashova.Minesweeper.View;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace Arkashova.Minesweeper
 {
@@ -12,12 +13,14 @@ namespace Arkashova.Minesweeper
 
         private const string IMAGES_FOLDER = "..\\..\\..\\View\\Icons\\";
 
+        // картинки для ячеек
         private readonly Image _mineImage = Image.FromFile(IMAGES_FOLDER + "mine.png");
         private readonly Image _explodedMineImage = Image.FromFile(IMAGES_FOLDER + "explodedMine.png");
         private readonly Image _flagImage = Image.FromFile(IMAGES_FOLDER + "flag.png");
         private readonly Image _wrongFlagImage = Image.FromFile(IMAGES_FOLDER + "wrongFlag.png");
         private readonly Image _blankCellImage = Image.FromFile(IMAGES_FOLDER + "blankCell.png");
 
+        //картинки для кнопки запуска игры
         private readonly Image _newGameImage = Image.FromFile(IMAGES_FOLDER + "newGame.png");
         private readonly Image _winGameImage = Image.FromFile(IMAGES_FOLDER + "winGame.png");
         private readonly Image _failGameImage = Image.FromFile(IMAGES_FOLDER + "failGame.png");
@@ -98,6 +101,7 @@ namespace Arkashova.Minesweeper
             gameTable.ColumnCount = columnCount;
 
             var cellSize = 40;
+            var edgeSize = 50;
 
             var tableHeight = cellSize * rowCount;
             var tableWidth = cellSize * columnCount;
@@ -108,8 +112,14 @@ namespace Arkashova.Minesweeper
             borderPanel.Height = tableHeight + 2;
             borderPanel.Visible = true;
 
-            Width = tableWidth + 2 * 100;
-            Height = tableHeight + 2 * 100 + 100;
+            // размер окна программы
+            Width = Math.Max(borderPanel.Width, toolsPanel.Width) + 2 * edgeSize;
+            Height = borderPanel.Height + toolsPanel.Height + 3 * edgeSize;
+
+            FormBorderStyle = FormBorderStyle.Fixed3D;
+
+            toolsPanel.Location = new Point((-20 + Width - toolsPanel.Width) / 2, edgeSize / 2);
+            borderPanel.Location = new Point((-20 + Width - borderPanel.Width) / 2, -10 + toolsPanel.Height + 3 * edgeSize / 2);
 
             gameTable.RowStyles.Clear();
 
@@ -141,7 +151,7 @@ namespace Arkashova.Minesweeper
                     button.FlatStyle = FlatStyle.Flat;
                     button.Image = _blankCellImage;
 
-                    button.MouseDown += new MouseEventHandler(this.cell_Click!);
+                    button.MouseDown += cell_Click!;
 
                     gameTable.Controls.Add(button, j, i);
                 }
@@ -202,7 +212,7 @@ namespace Arkashova.Minesweeper
         }
 
         // Кодирую в имени кнопки ее координаты
-        private string GetButtonName(int row, int column)
+        private static string GetButtonName(int row, int column)
         {
             return $"{row}, {column}";
         }
@@ -247,7 +257,7 @@ namespace Arkashova.Minesweeper
             _cellsStates[row, column] = VisibleCellState.Value;
         }
 
-        private Image GetImageForValue(int value)
+        private static Image GetImageForValue(int value)
         {
             return Image.FromFile(IMAGES_FOLDER + value.ToString() + ".png");
         }
@@ -325,7 +335,7 @@ namespace Arkashova.Minesweeper
                 {
                     var button = FindButton(i, j);
 
-                    button.MouseDown -= new MouseEventHandler(this.cell_Click!);
+                    button.MouseDown -= cell_Click!;
                 }
             }
         }
@@ -461,7 +471,7 @@ namespace Arkashova.Minesweeper
             return window.WinnerName;
         }
 
-        private void highScoresButton_Click(object sender, EventArgs e)
+        public void ShowHighScores()
         {
             var highScores = Controller.GetHighScores();
 
@@ -472,6 +482,11 @@ namespace Arkashova.Minesweeper
             var highScoresWindow = new HighScoresWindow(location, gameModeName, highScores);
 
             highScoresWindow.Show();
+        }
+
+        private void highScoresButton_Click(object sender, EventArgs e)
+        {
+            ShowHighScores();
         }
     }
 }

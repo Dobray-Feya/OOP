@@ -6,6 +6,8 @@ namespace Arkashova.Minesweeper.Logic.GameModes
     {
         public virtual string Name => "Название режима";
 
+        public string HighScoresFileName => $"..\\..\\..\\Logic\\GameModes\\HighScores\\{Name} {FieldHeight},{FieldWidth},{MinesCount}.txt";
+
         public virtual bool IsCustom => false;
 
         private int _fieldWidth;
@@ -59,9 +61,7 @@ namespace Arkashova.Minesweeper.Logic.GameModes
             }
         }
 
-        public virtual string HighScoresFileName => "полный путь к текстовому файлу с результатами игры для данного режима";
-
-        public SortedDictionary<string, int> GetHighScores()
+        public List<(string, int)> GetHighScores()
         {
             try
             {
@@ -70,28 +70,31 @@ namespace Arkashova.Minesweeper.Logic.GameModes
                 using (Stream stream = new FileStream(HighScoresFileName, FileMode.OpenOrCreate, FileAccess.Read))
                 {
 #pragma warning disable SYSLIB0011  // Сериализация BinaryFormatter устарела - компиллятор выдает предупреждение.
-                    //TODO: попробовать другую сериализацию
-                    return (SortedDictionary<string, int>)formatter.Deserialize(stream);
+                    return (List<(string, int)>)formatter.Deserialize(stream);
                 }
             }
             catch (Exception)
             {
-                return new SortedDictionary<string, int>();
+                return new List<(string, int)>();
             }
         }
 
-        public void AddHighScore(string name, int score)
+        public void AddHighScore(string? name, int score)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                return;
+            }
+
             var highScores = GetHighScores();
 
-            highScores.Add(name, score);
+            highScores.Add((name, score));
 
             var formatter = new BinaryFormatter();
 
             using (Stream stream = new FileStream(HighScoresFileName, FileMode.OpenOrCreate, FileAccess.Write))
             {
 #pragma warning disable SYSLIB0011
-
                 formatter.Serialize(stream, highScores);
             }
         }
