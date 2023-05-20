@@ -62,12 +62,13 @@
             this.highScoresTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.highScoresTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.highScoresTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.highScoresTable.GrowStyle = System.Windows.Forms.TableLayoutPanelGrowStyle.AddColumns;
             this.highScoresTable.Location = new System.Drawing.Point(45, 73);
             this.highScoresTable.Name = "highScoresTable";
-            this.highScoresTable.RowCount = 2;
+            this.highScoresTable.RowCount = 1;
             this.highScoresTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.highScoresTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.highScoresTable.Size = new System.Drawing.Size(337, 431);
+            this.highScoresTable.Size = new System.Drawing.Size(337, 415);
             this.highScoresTable.TabIndex = 2;
             // 
             // noWinnersLabel
@@ -92,7 +93,8 @@
             this.Controls.Add(this.gameModeLabel);
             this.Controls.Add(this.labelForGameModeLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(400, 400);
+            this.MaximumSize = new System.Drawing.Size(475, 1000);
+            this.MinimumSize = new System.Drawing.Size(475, 400);
             this.Name = "HighScoresWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Победители";

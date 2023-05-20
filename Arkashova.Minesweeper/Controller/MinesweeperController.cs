@@ -1,6 +1,6 @@
 ﻿using Arkashova.Minesweeper.Logic;
 using Arkashova.Minesweeper.View;
-using System.Data.Common;
+using System.Drawing;
 
 namespace Arkashova.Minesweeper.Controller
 {
@@ -150,17 +150,28 @@ namespace Arkashova.Minesweeper.Controller
 
         private void OpenZeroNeighbours(int row, int column)
         {
-            OpenNeighbour(row - 1, column - 1);
-            OpenNeighbour(row - 1, column);
-            OpenNeighbour(row - 1, column + 1);
-            OpenNeighbour(row, column - 1);
-            OpenNeighbour(row, column + 1);
-            OpenNeighbour(row + 1, column - 1);
-            OpenNeighbour(row + 1, column);
-            OpenNeighbour(row + 1, column + 1);
+            var point = new Point(row, column);
+
+            var queue = new Queue<Point>();
+
+            queue.Enqueue(point);
+
+            while (queue.Count > 0)
+            {
+                var item = queue.Dequeue();
+
+                OpenNeighbour(queue, item.X - 1, item.Y - 1);
+                OpenNeighbour(queue, item.X - 1, item.Y);
+                OpenNeighbour(queue, item.X - 1, item.Y + 1);
+                OpenNeighbour(queue, item.X, item.Y - 1);
+                OpenNeighbour(queue, item.X, item.Y + 1);
+                OpenNeighbour(queue, item.X + 1, item.Y - 1);
+                OpenNeighbour(queue, item.X + 1, item.Y);
+                OpenNeighbour(queue, item.X + 1, item.Y + 1);
+            }
         }
 
-        private void OpenNeighbour(int row, int column)
+        private void OpenNeighbour(Queue<Point> queue, int row, int column)
         {
             try
             {
@@ -169,19 +180,14 @@ namespace Arkashova.Minesweeper.Controller
                     return;
                 }
 
-                var neighbourValue = _model.GetValue(row, column);
+                var value = _model.GetValue(row, column);
 
-                if (neighbourValue == 0)
-                {
-                    _view.OpenCell(row, column, 0);
-                    _openedCellsCount++;
+                _view.OpenCell(row, column, value);
+                _openedCellsCount++;
 
-                    OpenZeroNeighbours(row, column);
-                }
-                else
+                if (value == 0)
                 {
-                    _view.OpenCell(row, column, neighbourValue);
-                    _openedCellsCount++;
+                    queue.Enqueue(new Point(row, column));
                 }
             }
             catch (Exception)

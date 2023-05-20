@@ -24,7 +24,9 @@
  
             var column1Width = 40;
             var column2Width = 120;
-            var column3Width = 80;
+            var column3Width = 50;
+
+            highScoresTable.Width = column1Width + column2Width + column3Width;
 
             highScoresTable.ColumnStyles.Clear();
             highScoresTable.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, column1Width));
